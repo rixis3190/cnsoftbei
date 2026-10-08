@@ -64,7 +64,7 @@ const FeedbackManage: React.FC = () => {
       title: '提交人',
       key: 'user',
       width: 120,
-      render: (_: any, r: Feedback) => (
+      render: (_: unknown, r: Feedback) => (
         <Space size={4}>
           <Text>{r.userName}</Text>
           <Tag style={{ fontSize: 11 }}>{r.userRole === 'student' ? '学生' : r.userRole === 'teacher' ? '老师' : '管理员'}</Tag>
@@ -92,7 +92,7 @@ const FeedbackManage: React.FC = () => {
       title: '操作',
       key: 'actions',
       width: 200,
-      render: (_: any, r: Feedback) => (
+      render: (_: unknown, r: Feedback) => (
         <Space>
           <Button size="small" icon={<EyeOutlined />} onClick={() => handleView(r)}>查看</Button>
           {r.status === 'pending' && (

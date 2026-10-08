@@ -10,14 +10,14 @@ import { useState, useCallback, useRef } from 'react'
  * const [submitting, handleSubmit] = useDebounce(async () => { ... })
  * <Button loading={submitting} onClick={handleSubmit}>提交</Button>
  */
-export function useDebounce<T extends (...args: any[]) => any>(
+export function useDebounce<T extends (...args: never[]) => unknown>(
   fn: T,
 ): [boolean, T] {
   const [loading, setLoading] = useState(false)
   const lockRef = useRef(false)
 
   const wrapped = useCallback(
-    async (...args: any[]) => {
+    async (...args: Parameters<T>) => {
       if (lockRef.current) return
       lockRef.current = true
       setLoading(true)

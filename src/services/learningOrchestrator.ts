@@ -603,7 +603,7 @@ export const SYSTEM_EVENTS = {
 } as const;
 
 /** 广播系统事件，通知其他页面刷新 */
-export function broadcastEvent(eventName: string, detail?: any) {
+export function broadcastEvent(eventName: string, detail?: unknown) {
   window.dispatchEvent(new CustomEvent(eventName, { detail }));
 }
 

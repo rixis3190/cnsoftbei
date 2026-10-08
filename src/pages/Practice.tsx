@@ -54,8 +54,15 @@ interface QuestionResult {
   isSubmitted: boolean;
 }
 
+/** 会话缓存内容：跨页面切换时需要保留的练习页状态 */
+interface PracticeCacheState {
+  activeTab: string;
+  batchIndex: number;
+  results: Record<string, QuestionResult>;
+}
+
 const Practice: React.FC = () => {
-  const { cachedState, saveState } = usePageCache(PAGE_KEY);
+  const { cachedState, saveState } = usePageCache<PracticeCacheState>(PAGE_KEY);
 
   const practiceState = getOrCreatePracticeState();
   const tagScores = practiceState.tagScores;

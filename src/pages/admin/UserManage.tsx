@@ -102,7 +102,7 @@ const UserManage: React.FC = () => {
     {
       title: '操作',
       key: 'actions',
-      render: (_: any, record: User) => (
+      render: (_: unknown, record: User) => (
         <Space>
           <Button
             size="small"

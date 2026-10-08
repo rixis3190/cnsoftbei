@@ -37,6 +37,20 @@ const { TextArea } = Input;
 
 const PAGE_KEY = 'tutor';
 
+/** 会话缓存内容：跨页面切换时需要保留的辅导页状态 */
+interface TutorCacheState {
+  question: string;
+  currentAnswer: string;
+  activeMode: 'text' | 'image' | 'video' | 'code';
+  history: QAItem[];
+  feedbackMap: Record<string, 'like' | 'dislike' | null>;
+  quickCache: Record<string, string>;
+  regeneratingId: string | null;
+  followUpParent: QAItem | null;
+  lastGeneratedId: string | null;
+  isGenerating: boolean;
+}
+
 // 模块级引用，确保跨页面切换时后台生成不中断
 const abortRef: { current: AbortController | null } = { current: null };
 let pendingHistory: QAItem[] | null = null;
@@ -94,7 +108,7 @@ function getRecommendedQuestions(userQuestion: string, aiAnswer: string): Practi
 }
 
 const Tutor: React.FC = () => {
-  const { cachedState, saveState } = usePageCache(PAGE_KEY);
+  const { cachedState, saveState } = usePageCache<TutorCacheState>(PAGE_KEY);
 
   const [question, setQuestion] = useState(() => cachedState?.question ?? '');
   const [isGenerating, setIsGenerating] = useState(() => cachedState?.isGenerating ?? false);
@@ -114,8 +128,7 @@ const Tutor: React.FC = () => {
   saveStateRef.current = saveState;
 
   // 直接将进度写入页面缓存，确保跨页面切换不丢失
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const persistProgress = (overrides: Record<string, any>) => {
+  const persistProgress = (overrides: Partial<TutorCacheState>) => {
     saveStateRef.current({
       question, currentAnswer, activeMode, history, feedbackMap, quickCache,
       regeneratingId, followUpParent, lastGeneratedId, isGenerating,

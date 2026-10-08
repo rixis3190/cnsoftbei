@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useCallback, useRef } from 'react';
 
 interface PageState {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface PageCacheContextType {
-  getState: (pageKey: string) => any;
-  setState: (pageKey: string, state: any) => void;
+  getState: (pageKey: string) => unknown;
+  setState: (pageKey: string, state: unknown) => void;
   clearState: (pageKey: string) => void;
 }
 
@@ -34,7 +34,7 @@ export const PageCacheProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return undefined;
   }, []);
 
-  const setState = useCallback((pageKey: string, state: any) => {
+  const setState = useCallback((pageKey: string, state: unknown) => {
     cacheRef.current[pageKey] = state;
     try {
       sessionStorage.setItem(SESSION_KEY_PREFIX + pageKey, JSON.stringify(state));
@@ -59,7 +59,16 @@ export const PageCacheProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   );
 };
 
-export const usePageCache = (pageKey: string) => {
+/**
+ * 读取/写入指定页面的会话缓存。
+ *
+ * `T` 为该页面缓存对象的结构，由调用方显式声明，
+ * 这样 `cachedState` 的字段访问与 `saveState` 的入参都受类型约束。
+ */
+export function usePageCache<T>(pageKey: string): {
+  cachedState: T | undefined;
+  saveState: (state: T) => void;
+} {
   const context = useContext(PageCacheContext);
   if (!context) {
     throw new Error('usePageCache must be used within PageCacheProvider');
@@ -67,11 +76,11 @@ export const usePageCache = (pageKey: string) => {
 
   const { getState, setState } = context;
 
-  const cachedState = getState(pageKey);
+  const cachedState = getState(pageKey) as T | undefined;
 
-  const saveState = (state: any) => {
+  const saveState = (state: T) => {
     setState(pageKey, state);
   };
 
   return { cachedState, saveState };
-};
+}

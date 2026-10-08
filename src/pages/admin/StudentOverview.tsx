@@ -68,13 +68,13 @@ const StudentOverview: React.FC = () => {
     {
       title: '画像状态',
       key: 'profile',
-      render: (_: any, record: StudentData) =>
+      render: (_: unknown, record: StudentData) =>
         record.profile ? <Tag color="green">已构建</Tag> : <Tag color="default">未构建</Tag>,
     },
     {
       title: '练习题数',
       key: 'practice',
-      render: (_: any, record: StudentData) => {
+      render: (_: unknown, record: StudentData) => {
         const count = record.practice?.results?.length || 0
         return count > 0 ? <Tag color="blue">{count} 题</Tag> : <Tag color="default">未练习</Tag>
       },
@@ -82,13 +82,13 @@ const StudentOverview: React.FC = () => {
     {
       title: '学习路径',
       key: 'path',
-      render: (_: any, record: StudentData) =>
+      render: (_: unknown, record: StudentData) =>
         record.pathPlan ? <Tag color="purple">{record.pathPlan.stages.length} 阶段</Tag> : <Tag color="default">未生成</Tag>,
     },
     {
       title: '操作',
       key: 'actions',
-      render: (_: any, record: StudentData) => (
+      render: (_: unknown, record: StudentData) => (
         <Button
           size="small"
           icon={<EyeOutlined />}

@@ -25,6 +25,25 @@ const { Panel } = Collapse;
 
 const PAGE_KEY = 'path';
 
+/** 会话缓存内容：跨页面切换时需要保留的学习路径页状态 */
+interface PathCacheState {
+  pathData: LearningPath;
+  activeNode: string;
+  isPlanning: boolean;
+  planningResult: string | null;
+  currentPlanText: string;
+}
+
+/**
+ * LLM 返回的学习路径节点。
+ * 模型输出不做运行时校验，这里以断言表达「信任 LLM 已按约定返回 title/description」的既有行为。
+ */
+interface PlannedNode {
+  title: string;
+  description: string;
+  estimatedHours?: number;
+}
+
 function loadProfile(): StudentProfile | null {
   try {
     const saved = localStorage.getItem(userKey('studentProfile'));
@@ -56,7 +75,7 @@ function buildProfileContext(profile: StudentProfile | null): string {
 }
 
 const Path: React.FC<{ onNavigate?: (key: string) => void }> = ({ onNavigate }) => {
-  const { cachedState, saveState } = usePageCache(PAGE_KEY);
+  const { cachedState, saveState } = usePageCache<PathCacheState>(PAGE_KEY);
 
   const [pathData, setPathData] = useState<LearningPath>(() => {
     const cached = cachedState?.pathData;
@@ -160,7 +179,8 @@ ${profileCtx ? '\n请务必根据以上学生画像调整学习路径的难度�
         const planData = JSON.parse(jsonStr.includes('{') ? jsonStr.substring(jsonStr.indexOf('{')).replace(/```/g, '') : jsonStr);
         hasJsonParsed = true;
 
-        const newNodes = planData.nodes.map((node: any, index: number) => ({
+        const plannedNodes = planData.nodes as PlannedNode[];
+        const newNodes = plannedNodes.map((node, index: number) => ({
           id: `node-${index + 1}`,
           title: node.title,
           description: node.description,
@@ -200,12 +220,13 @@ ${profileCtx ? '\n请务必根据以上学生画像调整学习路径的难度�
         setPlanningResult('路径解析异常，请查看生成内容');
       }
 
-    } catch (error: any) {
-      if (error?.name === 'AbortError') {
+    } catch (error) {
+      const err = error as Error;
+      if (err?.name === 'AbortError') {
         message.info('已取消路径生成');
       } else {
-        console.error('Path planning failed:', error);
-        message.error('路径规划失败：' + error.message);
+        console.error('Path planning failed:', err);
+        message.error('路径规划失败：' + err.message);
       }
     } finally {
       setIsPlanning(false);
