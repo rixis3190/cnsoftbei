@@ -1,9 +1,10 @@
 /**
  * qualityFunnel 单测（S3-9）
  * 核心断言：
- * - 规则不过 → 后续层完全不跑；
- * - 语义不过 → chatCompletion（模型层）**未被调用**（省额度，计划 S3-3 硬要求）；
- * - 模型层异常/解析失败 → modelDegraded=true 且不阻塞；
+ * - 规则不过 → 后续层完全不跑（用 layersRun / layersSkipped 精确断言，不用「不是模型层拦的」这种永真句式）；
+ * - 语义不过 → chatCompletion（模型层）**未被调用**（省额度，计划 S3-3 硬要求），
+ *   样本必须能过规则层，否则断言退化为永真；
+ * - 模型层异常/解析失败 → modelDegraded=true，默认不阻塞、开关打开时阻塞；
  * - 拦截原因完整传递到重生成提示词。
  */
 
@@ -20,6 +21,14 @@ const QUESTION = '请说明 Java 中 HashMap 的底层实现与树化条件。'
 const GOOD_ANSWER =
   'HashMap 在 JDK8 之后用红黑树实现链表：当单链表长度超过 8 且数组容量至少为 64 时链表树化，把最坏查找复杂度从 O(n) 降到 O(log n)。'
 const BAD_ANSWER = '记不太清，抱歉。'
+/**
+ * 刻意构造的「过规则层、但语义分极低」样本（65 字）。
+ * 用于把「语义层拦截」与「规则层拦截」区分开 —— 用 BAD_ANSWER 这类短回答测语义层，
+ * 实际永远在规则层就被拦下，断言会退化成永真（评审 MAJOR-7）。
+ * 实测语义分 total≈14.5（阈值 61）。
+ */
+const RULE_PASSING_LOW_SEMANTIC =
+  '这个问题涉及 Java 集合框架的底层结构，回答的时候需要结合源码中的具体实现来说明一下相关的细节内容。'
 const REFERENCE: GoldenReferenceLike = {
   referenceAnswer: GOOD_ANSWER,
   expectedPoints: ['红黑树实现链表', '单链表长度超过 8', '容量至少为 64', 'O(log n)'],
@@ -64,10 +73,10 @@ describe('第 1 层：规则校验', () => {
 })
 
 describe('第 2 层：语义层', () => {
-  it('语义分低 → 拦截且模型层未被调用', async () => {
+  it('规则层拦截时，语义与模型层都不执行', async () => {
     const callModel = vi.fn().mockResolvedValue(95)
     const result = await runQualityFunnel({
-      answer: BAD_ANSWER + '。',
+      answer: BAD_ANSWER,
       questionText: QUESTION,
       reference: REFERENCE,
       scorer,
@@ -75,8 +84,29 @@ describe('第 2 层：语义层', () => {
       callModel,
       switches: STRICT_SWITCHES,
     })
-    // 规则层会因为「与问题无关键词重叠」先拦下来，这里要保证一定不是模型层拦的
-    expect(result.blockedBy).not.toBe('model')
+    expect(result.blockedBy).toBe('rule')
+    expect(result.layersRun).toEqual(['rule'])
+    expect(result.layersSkipped).toEqual(['semantic', 'model'])
+    expect(callModel).not.toHaveBeenCalled()
+  })
+
+  it('语义分低 → 语义层拦截，模型层未被调用（省额度硬要求）', async () => {
+    // 该样本 65 字、过了规则层，但与参考答案语义几乎无关，语义分必然低于阈值：
+    // 实测 total≈14.5（阈值 61），确保拦截发生在**语义层**而不是规则层。
+    const callModel = vi.fn().mockResolvedValue(95)
+    const result = await runQualityFunnel({
+      answer: RULE_PASSING_LOW_SEMANTIC,
+      questionText: QUESTION,
+      reference: REFERENCE,
+      scorer,
+      enableModel: true,
+      callModel,
+      switches: STRICT_SWITCHES,
+    })
+    expect(result.blockedBy).toBe('semantic')
+    expect(result.layersRun).toEqual(['rule', 'semantic'])
+    expect(result.semanticScore).not.toBeNull()
+    expect(result.semanticScore!).toBeLessThan(61)
     expect(callModel).not.toHaveBeenCalled()
   })
 
@@ -96,16 +126,30 @@ describe('第 2 层：语义层', () => {
     expect(callModel).toHaveBeenCalledTimes(1)
   })
 
-  it('影子模式下语义分只记录不拦截', async () => {
-    const result = await runQualityFunnel({
-      answer: GOOD_ANSWER,
+  it('影子模式：同一个低分回答「关影子会被拦、开影子会放行」（配对断言）', async () => {
+    // 用低分样本做配对，否则「影子模式不拦截」在好回答上恒真，测不出任何东西。
+    const strict = await runQualityFunnel({
+      answer: RULE_PASSING_LOW_SEMANTIC,
+      questionText: QUESTION,
+      reference: REFERENCE,
+      scorer,
+      switches: { SEMANTIC_LAYER_ENABLED: true, SEMANTIC_SHADOW_MODE: false },
+    })
+    expect(strict.accepted).toBe(false)
+    expect(strict.blockedBy).toBe('semantic')
+
+    const shadow = await runQualityFunnel({
+      answer: RULE_PASSING_LOW_SEMANTIC,
       questionText: QUESTION,
       reference: REFERENCE,
       scorer,
       switches: { SEMANTIC_LAYER_ENABLED: true, SEMANTIC_SHADOW_MODE: true },
     })
-    expect(result.accepted).toBe(true)
-    expect(result.semanticScore).not.toBeNull()
+    expect(shadow.accepted).toBe(true)
+    expect(shadow.blockedBy).toBeNull()
+    // 影子模式下分数照算（可观测），且与严格模式完全一致
+    expect(shadow.semanticScore).toBe(strict.semanticScore)
+    expect(shadow.semanticScore).not.toBeNull()
   })
 
   it('命中禁止项 → 直接语义层否决', async () => {
@@ -131,7 +175,37 @@ describe('第 2 层：语义层', () => {
       switches: STRICT_SWITCHES,
     })
     expect(result.layersRun).toEqual(['rule'])
+    expect(result.layersSkipped).toContain('semantic')
     expect(result.semanticScore).toBeNull()
+  })
+
+  it('语义分不可用（缺 provider）→ 显式计入 layersSkipped 语义外的情况且不伪装拦截', async () => {
+    // 不注入 scorer：scoreAnswer 会返回 semanticAvailable=false，
+    // 此时阈值判定被短路，必须能从结果里看出「语义层跑了但没有效分数」。
+    const result = await runQualityFunnel({
+      answer: RULE_PASSING_LOW_SEMANTIC,
+      questionText: QUESTION,
+      reference: REFERENCE,
+      switches: { SEMANTIC_LAYER_ENABLED: true, SEMANTIC_SHADOW_MODE: false },
+    })
+    expect(result.layersRun).toEqual(['rule', 'semantic'])
+    expect(result.semanticAvailable).toBe(false)
+    expect(result.blockedBy).not.toBe('semantic')
+  })
+
+  it('MODEL_DEGRADE_IS_BLOCKING=true 时模型层降级会阻塞（开关真的生效）', async () => {
+    const result = await runQualityFunnel({
+      answer: GOOD_ANSWER,
+      questionText: QUESTION,
+      enableModel: true,
+      callModel: async () => {
+        throw new Error('评审超时')
+      },
+      switches: { ...STRICT_SWITCHES, MODEL_DEGRADE_IS_BLOCKING: true },
+    })
+    expect(result.modelDegraded).toBe(true)
+    expect(result.accepted).toBe(false)
+    expect(result.blockedBy).toBe('model')
   })
 
   it('语义层抛异常 → 降级 L1，不阻塞（L1 降级演练）', async () => {

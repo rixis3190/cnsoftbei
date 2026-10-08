@@ -789,6 +789,61 @@ describe('assertScoreReasonable', () => {
   })
 })
 
+// ==================== 相似度口径回归（防阈值语义静默漂移） ====================
+
+/**
+ * 相似度实现曾被从「中文单字 + 英文整词」换成「中文 2-gram + 英文整词」，
+ * 两种口径的数值分布在**中低相似区间相差 0.02~0.10**，会移动 0.6 / 0.2 两个判定边界。
+ * 这里把关键区间的实际数值钉住：任何再次更换实现都会让本用例立刻失败，
+ * 迫使改动者显式重新评估阈值，而不是静默漂移（评审 MAJOR-1）。
+ */
+describe('相似度口径回归（assertScoreReasonable 的判定边界）', () => {
+  it('完全相同 → 100% 相似，低分必判不合理', () => {
+    const text = 'HashMap 在 JDK8 之后用红黑树处理长链表'
+    expect(assertScoreReasonable(20, text, text).reasonable).toBe(false)
+  })
+
+  it('仅差一个从句 → 相似度落在 0.6 以上，低分仍判不合理', () => {
+    const result = assertScoreReasonable(
+      20,
+      'Python 是一种解释型编程语言',
+      'Python 是一种解释型编程语言，支持面向对象',
+    )
+    expect(result.reasonable).toBe(false)
+  })
+
+  it('完全无关 → 相似度为 0，高分必判不合理', () => {
+    const result = assertScoreReasonable(
+      90,
+      '事务的隔离级别包括读未提交和读已提交',
+      '今天天气不错',
+    )
+    expect(result.reasonable).toBe(false)
+  })
+
+  it('同主题部分覆盖 → 相似度贴近 0.2 下界（实测 0.207），中等分数不误伤', () => {
+    // 这一对是漂移的敏感点：旧口径 0.308 → 新口径 0.207，离 0.2 只剩 0.007。
+    // 若相似度实现再变动，本用例会立刻失败并提醒重新标定阈值。
+    const result = assertScoreReasonable(
+      70,
+      '事务的隔离级别包括读未提交和读已提交',
+      '隔离级别共有四种，其中读未提交可能出现脏读',
+    )
+    expect(result.reasonable).toBe(true)
+  })
+
+  it('同主题部分覆盖 + 高分 → 相似度仍高于 0.2，不触发「高分不合理」', () => {
+    // 明确记录边界方向：该样本在新口径下**没有**跌破 0.2，
+    // 所以不会额外触发 gradeByAIVerified 的 3 次评审。
+    const result = assertScoreReasonable(
+      85,
+      '事务的隔离级别包括读未提交和读已提交',
+      '隔离级别共有四种，其中读未提交可能出现脏读',
+    )
+    expect(result.reasonable).toBe(true)
+  })
+})
+
 // ==================== gradeByAIVerified 测试 ====================
 
 describe('gradeByAIVerified', () => {

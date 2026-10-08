@@ -241,6 +241,8 @@ const Tutor: React.FC = () => {
     }
 
     // AI 交叉评审（带漏斗：规则 → 语义 → 模型，计划 S3-6）
+    // 注意：这里**不注入 reference/scorer** —— 自由提问没有标准答案，
+    // 因此生产链路上语义层恒为 skipped（会在下方统一记录，不静默）。
     let lastAnswer = fullAnswer;
     let degradedCount = 0;
     for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -257,6 +259,10 @@ const Tutor: React.FC = () => {
         },
       });
       if (funnel.modelDegraded) degradedCount++;
+      // 降级可观测：未执行的层必须被记录，否则「通过」与「没跑」在生产上不可区分
+      if (funnel.layersSkipped.length > 0) {
+        console.log(`[Tutor QA] 未执行的层：${funnel.layersSkipped.join(',')}`);
+      }
       if (funnel.accepted) {
         if (funnel.modelDegraded) {
           console.log(`[Tutor QA] 模型评审降级（不阻塞），降级次数 ${degradedCount}`);
@@ -281,6 +287,9 @@ const Tutor: React.FC = () => {
       );
     }
 
+    // 重试次数耗尽：最后一份回答**没有通过任何一层复检**，必须留下痕迹
+    // （否则用户看到的是一份质量未知的回答，运维侧还以为一切正常）
+    console.warn(`[Tutor QA] 重试 ${maxRetries} 次仍未通过质量校验，返回最后一份回答（未复检）`);
     return lastAnswer;
   };
 

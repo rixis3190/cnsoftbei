@@ -40,10 +40,16 @@ function envFlag(name: string, fallback: boolean): boolean {
 /**
  * 默认值刻意保守（计划 §1.2 + T3-1 兜底）：
  * - RAG 关：计划 S4-R1 判定「RAG 反而让回答变差」是最高概率风险，必须 A/B 对照后再开；
- * - 语义层开但**影子模式**：阈值来自脚本派生的模板锚点（reviewed=false），
- *   区分度未经人工审校确认，因此只记录不拦截 —— 误杀率 0（计划 T3-1 的兜底方向）；
+ * - **语义层默认关闭**：阈值来自脚本派生的模板锚点（reviewed=false），区分度未经人工审校。
+ *   另外要注意：Tutor 的生产链路不注入 reference/scorer（自由提问没有标准答案），
+ *   因此即使把本开关打开，语义层在生产里也不会执行 —— 它只在评测链路中被使用。
+ *   这条事实同时写在 docs/eval-methodology.md，两处必须一致。
+ * - 影子模式默认开：语义层一旦被启用（评测链路/未来接入题库题），仍然只记录不拦截；
  * - 模型层开：改造前 Tutor 就有 AI 评审，关掉等于功能回退；
- * - EVAL_MODE=offline：offline 下任何真实 LLM 调用都视为 bug。
+ * - EVAL_MODE=offline：offline 下不期望真实 LLM 调用。
+ *
+ * 环境变量名前缀说明：走 Vite 的 `import.meta.env`，因此**必须带 `VITE_` 前缀**
+ * （计划文档里写的 `EVAL_MODE` 是简写，实际读的是 `VITE_EVAL_MODE`）。
  */
 export const EVAL_SWITCHES: EvalSwitches = {
   RAG_ENABLED: envFlag('VITE_RAG_ENABLED', false),
@@ -54,7 +60,14 @@ export const EVAL_SWITCHES: EvalSwitches = {
   MODEL_DEGRADE_IS_BLOCKING: envFlag('VITE_MODEL_DEGRADE_IS_BLOCKING', false),
 }
 
-/** 是否允许真实 LLM 调用（双重 gate：开关 + 模式） */
+/**
+ * 是否允许真实 LLM 调用（双重 gate：开关 + 模式）。
+ *
+ * **已知现状（不要误以为它已经生效）**：目前 `api.ts` 还没有接入这个 gate，
+ * 真实调用的隔离实际由「测试侧」保证 —— `vitest.config.ts` 排除了 `tests/integration/**`，
+ * 真实接口用例必须显式 `npm run test:api` 才会跑（见 T-8）。
+ * 保留本函数是给后续「运行期出网守卫」留的入口，接线前不要在文档里声称它已生效。
+ */
 export function liveEvalAllowed(): boolean {
   return EVAL_SWITCHES.EVAL_MODE === 'live'
 }

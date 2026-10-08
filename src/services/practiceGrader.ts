@@ -117,11 +117,25 @@ export async function gradeByAI(
 }
 
 // ==================== 答案相似度计算（Jaccard） ====================
-// 相似度口径已统一到 tutorQuality.jaccardText（计划 S3-5 / S6-1，消除双份真相）。
-// 口径差异说明：旧实现按「单字 + 英文词」切词、两段皆空返回 1；
-// tutorQuality.extractTokens 按中文 2-gram 切词、两段皆空返回 0。
-// 统一后 practiceGrader 全部测试零改动通过（assertScoreReasonable 的判定边界未变），
-// 说明该差异不影响既有判分结论。
+/**
+ * 相似度阈值（口径 = tutorQuality.jaccardText，中文 2-gram + 英文整词）。
+ *
+ * **口径变更记录（评审 MAJOR-1）**：本文件原有一套私有实现（中文单字 + 英文整词），
+ * 计划 S3-5/S6-1 把它收敛到 `tutorQuality.jaccardText`。两种口径的数值**并不相等**，
+ * 实测差异（同一组文本、两种口径）：
+ *   - 完全相同            1.000 → 1.000
+ *   - 仅差一个从句        0.700 → 0.684
+ *   - 同主题不同表述      0.111 → 0.057
+ *   - 同主题部分覆盖      0.308 → 0.207
+ * 即：新口径在中低相似区间整体**偏低约 0.02~0.10**。影响面：
+ *   - 分支 1（相似但低分）判定更严格 → 漏报略增，误报减少（保守，可接受）；
+ *   - 分支 2（差异大但高分）判定更敏感 → 会多触发 `gradeByAIVerified` 的 3 次评审。
+ * 当前**刻意保留** 0.6 / 0.2 不动：教育场景里「判分明显偏高却放行」比多花几次评审更糟。
+ * 若要重新标定，请用 tests/unit/practiceGrader.test.ts 里的分布回归用例做依据，
+ * 不要凭感觉改数字。
+ */
+const SIMILARITY_HIGH = 0.6;
+const SIMILARITY_LOW = 0.2;
 
 // ==================== AI 判分合理性断言 ====================
 export function assertScoreReasonable(
@@ -137,7 +151,7 @@ export function assertScoreReasonable(
   const similarity = jaccardText(userAnswer, sampleAnswer);
 
   // 答案高度相似但分数过低
-  if (similarity > 0.6 && score < 40) {
+  if (similarity > SIMILARITY_HIGH && score < 40) {
     return {
       reasonable: false,
       reason: `答案相似度 ${(similarity * 100).toFixed(0)}% 但分数仅 ${score}，AI 判分可能偏低`,
@@ -145,7 +159,7 @@ export function assertScoreReasonable(
   }
 
   // 答案差异很大但分数过高
-  if (similarity < 0.2 && score > 80) {
+  if (similarity < SIMILARITY_LOW && score > 80) {
     return {
       reasonable: false,
       reason: `答案相似度仅 ${(similarity * 100).toFixed(0)}% 但分数 ${score}，AI 判分可能偏高`,
