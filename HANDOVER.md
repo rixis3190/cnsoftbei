@@ -701,7 +701,7 @@ git --no-pager log --oneline -20
 
 **五级降级链**：L0 正常 → L1 语义层降级（只记录）→ L2 模型层降级（`modelDegraded=true`，是否阻塞由 `MODEL_DEGRADE_IS_BLOCKING` 决定）→ L3 RAG 降级（不注入上下文，**绝不注入空上下文**）→ L4 纯规则降级（等价于改造前）。
 
-**硬性实现约束**：语义层与模型层必须被 `try/catch` 包住且**绝不向 `Tutor.tsx` 抛异常**；`buildIndex` 捕获导入/解码失败后返回 `null`，检索见到 `null` 返回 `[]` 并打 `ragUnavailable` 标记；每层是否执行由 `FunnelResult.layersRun` / `layersSkipped` 显式记录（**目前只写 console 日志，`eval-report.html` 侧尚未接线降级卡片** —— 若要按「任何降级都要在报告里看到」执行，先补齐报告再引用本条）。
+**硬性实现约束**：语义层与模型层必须被 `try/catch` 包住且**绝不向 `Tutor.tsx` 抛异常**；`buildIndex` 捕获导入/解码失败后返回 `null`，检索见到 `null` 返回 `[]` 并打 `ragUnavailable` 标记；每层是否执行由 `FunnelResult.layersRun` / `layersSkipped` 显式记录（**2026-10-08 更新**：报告侧已接线降级卡片，见 `scripts/gen-eval-report.ts` 的 `renderDegradation` 与 `docs/eval-methodology.md` §0；卡片统计的是「规则层否决 / 覆盖率不达标 / 检索无覆盖」三项，**仅 L2 模型层降级尚未接入**，已登记 §13 B-27）。
 
 ---
 
@@ -877,7 +877,8 @@ $env:LLM_E2E='1'; $env:MINIMAX_API_KEY='<新Key>'; npm test -- tests/integration
 | 34 | 2026-10-08 | 环境修复 | `npm run vectors:build -- --check` 在 Windows 上恒失败：仓库 blob 为 LF，`core.autocrlf=true` 使 checkout 展开为 CRLF，而 `--check` 用 `readFileSync(file,'utf8')` 逐字符比对。新增 `.gitattributes` 对这 4 个构建期产物声明 `-text`（不改动其它文件策略），并把工作区重置为 LF | `.gitattributes`（新增） | 该检查是 CI eval job 的门禁项，假失败会掩盖真实漂移（HANDOVER §3 坑 1 同源） | `npm run vectors:build -- --check` exit 0（448 块，hash=c290b1a5）；工作区字节检查 CRLF=0；`git status` 不再出现假修改 | CodeBuddy |
 | 35 | 2026-10-08 | 步骤 1（R4） | **基准集定向审校**（计划 §9.5 R4）：① 生成器查误区表前先做标签归一化（database 题库原始标签是中文，原实现命中 0 条候选 → 15 条题的禁止项退化为占位项）② 禁止项按与参考答案的词面重合排序并剔出自相矛盾项 ③ 要点改为句子级抽取（保护括号与列表序号，消除 `a=[1,2]`/`不可变对象(int` 式碎片）④ 锚点长度单调改由构造保证，poor 改为「答得很少且含糊」的低质量回答（原 113 条全为「不知道。」）⑤ `reviewed` 全量置 true，meta 增 `anchorSource='curated'` 与 `reviewedBy` | `scripts/gen-golden-dataset.ts`、`tests/golden/goldenSet.json`、`tests/golden/goldenSet.ts` | 计划 §9.5 R4 为最高优先级质量任务：`reviewed=0` 时任何评测数字都不可用（附录 B 禁写） | `npm run golden:check` exit 0（113 条 == 生成器）；`npm test` 513 用例全绿；产物 `tests/golden/goldenSet.json` 与生成器逐字段一致 | CodeBuddy |
 | 36 | 2026-10-08 | 步骤 3（R5） | **语义阈值重新标定**（计划 §9.5 R5）：`usable` 判定新增「最强负样本 < 阈值 ≤ 最弱正样本」两条硬条件（防止只有中位数可分时的假可用），复核后 `SEMANTIC_PASS_SCORE` 61 → **77**，`anchorSource='curated'`、新增 `structuralReview='ai-assisted-systematic-review'`；**`humanReviewed` 保持 false**（该字段是 `usable` 的实质闸门，人工抽检未完成前不得置真，见 §13 B-24） | `src/config/qualityThresholds.ts`、`scripts/tune-threshold.ts`、`tests/unit/tuneThreshold.test.ts` | 阈值入库是计划 S3-8 要求；旧值 61 建立在模板锚点上，锚点重构后必须重标 | `npm run threshold:tune` 实测：最优 77、J=1.00、TPR/FPR=1.00/0.00、最强负 60.54 < 77 ≤ 最弱正 100、负样本唯一值 68 种（原为 1）；`usable=false`（人工抽检未完成，刻意闸门）；`npm test` 全绿 | CodeBuddy |
-| 37 | 2026-10-08 | 评测口径 | 断言口径随 R4/R5 更新：`runGoldenEval` 的逐条有序断言限定在「参考答案 ≥4 字」的 54 条（单 token 填空题在规则层结构上不可区分，区分度由语义层承担）；`rag-eval` 的饱和度断言改为「excellent 饱和 / fair 不饱和」 | `tests/eval/runGoldenEval.test.ts`、`tests/eval/rag-eval.test.ts` | 旧断言基于阈值 61 + 模板锚点，锚点重构后其表述已与事实不符；改成钉住**当前真实行为**，漂移时会失败 | `npm test` 22 文件 / 513 用例全绿 | CodeBuddy |
+| 37 | 2026-10-08 | 评测口径 | 断言口径随 R4/R5 更新：`runGoldenEval` 的逐条有序断言限定在「参考答案 ≥4 字」的 54 条（单 token 填空题在规则层结构上不可区分，区分度由语义层承担）；`rag-eval` 的饱和度断言改为「excellent 饱和 / fair 不饱和」 | `tests/eval/runGoldenEval.test.ts`、`tests/eval/rag-eval.test.ts` | 旧断言基于阈值 61 + 模板锚点，锚点重构后其表述已与事实不符；改成钉住**当前真实行为**，漂移时会失败 | `npm test` 22 文件 / 513 用例全绿。**注：#37 的 54 条豁免已于 #38 随 `pointCoverage` 缺陷修复一并移除** | CodeBuddy |
+| 38 | 2026-10-08 | 评审修复 | 累积代码评审（两轮）后的修复：① `THRESHOLD_PROVENANCE.humanReviewed` 恢复 `false`（它是 `usable` 的实质闸门，人工抽检未完成前不得置真），新增 `structuralReview` 字段；② `runGoldenEval` 新增 `persist` 参数，只有负样本轮落盘（此前最后落盘的是 excellent 轮，导致报告降级卡片两项结构性恒为 0）；③ 检索无覆盖改用生产口径 `retrieveForQuestion` + `RETRIEVAL_FLOOR`；④ `textMatch.pointCoverage` 对纯标号要点改为对候选原文做子串判定（此前恒返回 1，空回答在单符号题上得 100 分），空白要点前置拦截；⑤ 生成器 `meta.note` 与实现对齐、要点截断改按子句边界、移除失效参数与不可达分支；⑥ `tuneThreshold` 的 ±2 硬容差改为「落在平台区内」；⑦ 报告卡片标注负样本轮、新增 floor 敏感性守卫、登记 B-27/B-28 | `src/services/textMatch.ts`、`src/config/qualityThresholds.ts`、`src/config/evalConfig.ts`、`scripts/gen-golden-dataset.ts`、`scripts/tune-threshold.ts`、`scripts/gen-eval-report.ts`、`tests/golden/goldenSet.json`、`tests/eval/*.test.ts`、`tests/unit/tuneThreshold.test.ts`、`vitest.config.ts`、`docs/eval-methodology.md`、`实施计划_细化版.md` | 评审 MAJOR-1/2/3/4 + MINOR/NIT 批次；两轮评审结论：第 1 轮 CHANGES_REQUESTED → 修复后第 2 轮 APPROVE | `npm run lint` 0 error / 1 warning；`npm test` 22 文件 / **517 用例**全绿；`npm run test:coverage` 门槛通过；`build` / `golden:check` / `vectors:build -- --check` / `threshold:tune -- --check` / `eval:golden` / `eval:rag` / `eval:report` 全部 exit 0；空回答全库最高分由 100 降为 **0.00**（`scripts/tmp/diag-order2.ts` 实测） | CodeBuddy |
 
 > **注（台账 #5 的更正）**：`api.ts` 的硬编码 Key、模型名硬编码、以及 `api-real.test.ts` 的直连问题，已于 2026-10-07 21:36~21:40 由**并行修改**解决（转为 DeepSeek / OpenAI 兼容格式 + Key 走 env + 真实 API 测试隔离）。因此原计划"步骤 0：Key 止损"的主体任务**已由他人完成**，本轮只补了漏掉的守卫（#9）与配置修复（#7、#8）。行号索引（§4.2）随之部分失效，见 P-16。
 
@@ -933,7 +934,9 @@ git --no-pager log --stat -20
 | B-22 | 弹窗 lazy 化（可选优化）：`App.tsx` 静态引用的两个 `Modal`（信息登记 / 意见反馈）连同`Form`/`Select`/`Input` 约占首屏 137 kB raw / 45 kB gzip。抽成 lazy 子组件可移出首屏 | 首屏 gzip 若要继续压到 200 KB 以下；注意学生首次登录会立刻弹「信息登记」，收益会被部分抵消 | 1~2h | P3 |
 | B-23 | ~~补 `.env` 忽略规则 + 加 `tsx` 到 devDependencies~~ | **已完成**（台账 #19） | — | **已完成** |
 | B-24 | **基准集人工抽检**：`tests/golden/goldenSet.json` 的 `meta.reviewedBy='ai-assisted-systematic-review'`，113 条标注由 AI 辅助系统化审校产出（要点句子级抽取、禁止项按归一化标签查表、poor 锚点为「答得很少且含糊」）。需人工抽检 ≥20 条确认要点与禁止项与题意强相关 | **抽检完成前，任何评测数字不得对外引用**（`实施计划_细化版.md` 附录 B 禁用表述） | 1~2h | **P0** |
-| B-25 | **README 数字同步**（受保护文件）：README 仍写着旧的测试数/lint 状态，需写回「lint 0 error / 1 warning」「22 文件 / 515 用例」「覆盖率 statements 30.59 / branches 22.70 / functions 20.25 / lines 31.15」与阈值 77（`usable=false`，见 §13 B-24） | 收口期按交接红线未改 README（`实施计划_细化版.md` §9.5 R8）；数字真源见该文档 §0.1 | 30min | P1 |
+| B-25 | **README 数字同步**（受保护文件）：README 仍写着旧的测试数/lint 状态，需写回「lint 0 error / 1 warning」「22 文件 / 517 用例」「覆盖率 statements 30.63 / branches 22.76 / functions 20.25 / lines 31.17」与阈值 77（`usable=false`，见 §13 B-24） | 收口期按交接红线未改 README（`实施计划_细化版.md` §9.5 R8）；数字真源见该文档 §0.1 | 30min | P1 |
+| B-27 | **L2（模型层降级）计数接入评测产物**：`qualityFunnel` 已返回 `modelDegraded`，但只在 `console.warn` 与 `Tutor.tsx` 的运行期日志里可见，`eval-report.html` 与 `test-results/*.json` 都没有它，导致计划 §1.3「任何降级都要能在报告里看到」在 L2 上尚未闭环 | 想让 L2 降级率进入对外表述之前（当前报告已显式标注「L2 未接入」，不会误读为 0） | 2~3h | P2 |
+| B-28 | **`RETRIEVAL_FLOOR` 偏低，L3「无覆盖降级」实测不触发**：当前固化 0.12，实测连无关查询都能过线（`"zzz qqq www"` topScore ≈ 0.1965、`"今天天气不错适合出门散步"` ≈ 0.2388，见 `tests/eval/rag-eval.test.ts` 的「无覆盖统计对 floor 敏感」用例），因此 `rag-metrics.json` 的 `noHitQueries = 0` 是「floor 没挡住」而不是「知识库覆盖完美」。需按 paraphrase/overview 的分数分布重标定 floor（与 `SEMANTIC_PASS_SCORE` 一样走「标定 → 人工 review → 固化」流程） | 想让 L3 降级真正生效、或要对外引用「覆盖率/无覆盖」数字之前 | 2h | P2 |
 | B-26 | `src/App.tsx:84` 的 `react-hooks/exhaustive-deps` warning 重构：当前显式收窄依赖数组以避免重复 `setState`（有意偏离），可改为把 `currentUser/isAdmin/profileForm` 的派生计算移出 effect | 想彻底清掉最后一个 lint warning 时；当前保留为可见提示 | 1h | P3 |
 
 ### §13.3 "话术红线"（防止夸大，被追问会崩）
@@ -1015,10 +1018,10 @@ git --no-pager log --stat -20
 | 新 Key 签发 | **未完成**（人工） | 仓库持有者本人 |
 | git 历史变更补录 | ✅ **已完成**（§12.2 台账 #1~#19 已补；#20~#37 为本轮新增） | — |
 | `learning-agent/` 整目录删除 | **不做**（只删其中 `.env.local`） | 无需决策，ADR-14 已定 |
-| 覆盖率真实基线 | ✅ **已取**（2026-10-08：statements 30.59 / branches 22.57 / functions 20.25 / lines 31.13，门槛 24/20/17/17） | — |
+| 覆盖率真实基线 | ✅ **已取**（2026-10-08：statements 30.63 / branches 22.76 / functions 20.25 / lines 31.17，门槛 24/20/17/17；与 `vitest.config.ts` 头注释同源） | — |
 | 原计划的 6 处修正（T-1~T-6）是否已回改 `plan.md` | **不适用**：`plan.md` 从未入库（`git log --all -- plan.md` 无记录），无法回改；其有效内容已并入 `实施计划_细化版.md`（附录 C 对应关系表） | 无需决策（§9.5 R11 已按「修订引用」处置） |
 | 基准集人工抽检（`reviewedBy='ai-assisted-systematic-review'`） | **未完成**（人工）—— 抽检前不得对外引用评测数字 | 仓库持有者本人（`HANDOVER.md` §13 B-24） |
-| README 数字同步（受保护文件，收口期未改） | **未完成**—— 需人工把 0 error / 1 warning、22 文件 / 515 用例、覆盖率 31.15 写回 README | 仓库持有者本人（§13 B-25） |
+| README 数字同步（受保护文件，收口期未改） | **未完成**—— 需人工把 0 error / 1 warning、22 文件 / 517 用例、覆盖率 31.17 写回 README | 仓库持有者本人（§13 B-25） |
 
 ---
 

@@ -112,7 +112,9 @@ function renderGolden(data: GoldenEval | null): string {
   if (!data) return '<p class="missing">未找到 golden-eval.json，请先运行 <code>npm run eval:golden</code></p>'
   const rows = [...data.rows].sort((a, b) => a.ruleScore - b.ruleScore).slice(0, 20)
   return `
-    <h2>基准集跑批（${escapeHtml(data.summary.mode)} 模式）</h2>
+    <h2>基准集跑批（${escapeHtml(data.summary.mode)} 模式 · 负样本轮：候选 = poor 锚点）</h2>
+    <p class="muted">本节的「通过率 / 平均分」是<strong>差锚点</strong>的得分，不是基准集上的模型成绩；
+      excellent 轮的对应数字会贴顶（≈100%），对本报告没有信息量，故只落盘负样本轮。</p>
     <div class="cards">
       ${card(String(data.summary.sampleSize), '样本量')}
       ${card(pct(data.summary.passRate), '规则层通过率', 'rate')}

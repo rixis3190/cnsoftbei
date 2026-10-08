@@ -199,6 +199,14 @@ describe('基准集跑批（零额度）', () => {
     }
   })
 
+  it('空白要点不得被判为已覆盖（includes(\'\') 恒真的残留形态）', () => {
+    // 与上一条同源：纯标号要点走的是「对原文做子串判定」，
+    // 若要点本身是空串/纯空白，`includes('')` 会对**任何**候选返回 true —— 又变回满分。
+    // 校验器会拦数据集里的空要点，但 textMatch 是公共工具，必须在函数内部自保。
+    expect(coverageRatio(['   '], '任意回答')).toBe(0)
+    expect(coverageRatio(['', '合格要点'], '完全无关的回答')).toBe(0)
+  })
+
   it('anchor 模式：报告含样本量与置信度标注', () => {
     const { summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor', false)
     expect(summary.sampleSize).toBe(83)

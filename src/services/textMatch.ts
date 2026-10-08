@@ -54,7 +54,7 @@ export function tokenize(text: string): string[] {
  *
  * **注意 `candidateRaw`**：归一化会把纯标号要点（`>>`、`//`、`{}`、`==`…）清成空串，
  * 此时若返回 1（"空要点视为已覆盖"），任何回答——包括空回答——都能白拿满分
- * （实测 `scoreAnswer('', 单符号题).total === 100`，见 tests/unit/answerScorer.test.ts）。
+ * （实测 `scoreAnswer('', 单符号题).total === 100`；回归守卫见 `tests/eval/runGoldenEval.test.ts` 的「空回答不得白拿分数」用例）。
  * 因此这类要点改为对**原文**做子串判定：包含才算覆盖，不含则为 0。
  */
 export function pointCoverage(
@@ -67,7 +67,10 @@ export function pointCoverage(
   if (tokens.length === 0) {
     const key = normalizeForMatch(point)
     if (!key) {
-      // 纯标号要点：标号本身在归一化后消失，只能对原文比对
+      // 纯标号要点：标号本身在归一化后消失，只能对原文比对。
+      // 空白要点必须前置拦掉 —— 否则 `includes('')` 恒为 true，
+      // 等于又退化成「空要点视为已覆盖」（校验器会拦数据集，但本函数是公共工具）。
+      if (!point.trim()) return 0
       return candidateRaw.includes(point.trim()) ? 1 : 0
     }
     return candidateNormalized.includes(key) ? 1 : 0

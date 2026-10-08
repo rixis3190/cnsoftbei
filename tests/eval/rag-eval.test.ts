@@ -386,7 +386,30 @@ describe('产出 rag-metrics.json', () => {
     const saved = JSON.parse(readFileSync(path.join(outDir, 'rag-metrics.json'), 'utf8'))
     expect(saved.retrieval.stem.count).toBe(83)
     expect(saved.note).toContain('天然虚高')
-    expect(typeof saved.degradation.noHitQueries).toBe('number')
+    expect(saved.degradation.retrievalFloor).toBe(RETRIEVAL_FLOOR)
+  })
+
+  it('无覆盖统计对 floor 敏感（防止退回 floor=0 的口径）', async () => {
+    // 背景：旧实现用 retrieve(q, { floor: 0 }) 统计「无覆盖」，
+    // 而混合召回里余弦与 2-gram Jaccard 都非负 ⇒ 该数字恒为 0，
+    // 却对外声称是「L3 生产语义」。本用例把「统计随 floor 变化」这件事钉住。
+    //
+    // 同时**如实记录一个已测量的既有缺陷**（不是本用例要修的东西）：
+    // 当前固化 RETRIEVAL_FLOOR = 0.12 偏低，实测连无关查询都能过线
+    // （"zzz qqq www" 的 topScore ≈ 0.1965，"晚饭吃什么好呢" ≈ 0.2008），
+    // 因此生产口径下的 noHitQueries = 0 是「floor 没挡住」而不是「知识库覆盖完美」。
+    // 阈值重标定已登记 HANDOVER §13 B-28；在那之前不要把 0 读成高质量信号。
+    const irrelevant = 'zzz qqq www 今天天气不错'
+    expect(retrieve(irrelevant, { topK: 3, floor: 0 }).length).toBeGreaterThan(0)
+    // floor 必须真的参与过滤：抬高到 0.3 后同一条查询应被挡掉
+    expect(retrieve(irrelevant, { topK: 3, floor: 0.3 }).length).toBe(0)
+    // 低 floor 下（含当前生产值）这条查询仍会命中 —— 这正是上面记录的缺陷
+    expect(retrieveForQuestion(irrelevant, { enabled: true, topK: 3 }).chunks.length).toBeGreaterThan(0)
+
+    const { readFileSync } = await import('node:fs')
+    const saved = JSON.parse(readFileSync(path.resolve(process.cwd(), 'test-results', 'rag-metrics.json'), 'utf8'))
+    expect(saved.degradation.totalQueries).toBe(queries.length)
+    expect(saved.degradation.retrievalFloor).toBe(RETRIEVAL_FLOOR)
   })
 })
 
