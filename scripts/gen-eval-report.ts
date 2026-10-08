@@ -111,10 +111,18 @@ function card(num: string, label: string, tone = ''): string {
 function renderGolden(data: GoldenEval | null): string {
   if (!data) return '<p class="missing">未找到 golden-eval.json，请先运行 <code>npm run eval:golden</code></p>'
   const rows = [...data.rows].sort((a, b) => a.ruleScore - b.ruleScore).slice(0, 20)
+  // 「负样本轮」的标注由产物自己声明，而不是无条件写死：
+  // 一旦将来有 llm 轮或探路调用以默认参数（persist=true）落盘，
+  // 无条件标题会把它的成绩标成「差锚点得分」—— 正是 §1.3 要防的静默误读。
+  const isNegativeRound = data.summary.note.includes('负样本轮')
+  const roundTag = isNegativeRound ? ' · 负样本轮：候选 = poor 锚点' : ''
+  const roundNote = isNegativeRound
+    ? `<p class="muted">本节的「通过率 / 平均分」是<strong>差锚点</strong>的得分，不是基准集上的模型成绩；
+      excellent 轮的对应数字会贴顶（≈100%），对本报告没有信息量，故只落盘负样本轮。</p>`
+    : `<p class="muted">本节数字来自非负样本轮（候选不是 poor 锚点），请勿当作「拒答能力」读。</p>`
   return `
-    <h2>基准集跑批（${escapeHtml(data.summary.mode)} 模式 · 负样本轮：候选 = poor 锚点）</h2>
-    <p class="muted">本节的「通过率 / 平均分」是<strong>差锚点</strong>的得分，不是基准集上的模型成绩；
-      excellent 轮的对应数字会贴顶（≈100%），对本报告没有信息量，故只落盘负样本轮。</p>
+    <h2>基准集跑批（${escapeHtml(data.summary.mode)} 模式${roundTag}）</h2>
+    ${roundNote}
     <div class="cards">
       ${card(String(data.summary.sampleSize), '样本量')}
       ${card(pct(data.summary.passRate), '规则层通过率', 'rate')}

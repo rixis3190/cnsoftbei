@@ -395,21 +395,41 @@ describe('产出 rag-metrics.json', () => {
     // 却对外声称是「L3 生产语义」。本用例把「统计随 floor 变化」这件事钉住。
     //
     // 同时**如实记录一个已测量的既有缺陷**（不是本用例要修的东西）：
-    // 当前固化 RETRIEVAL_FLOOR = 0.12 偏低，实测连无关查询都能过线
-    // （"zzz qqq www" 的 topScore ≈ 0.1965，"晚饭吃什么好呢" ≈ 0.2008），
+    // 当前固化 RETRIEVAL_FLOOR = 0.12 偏低，实测连无关查询都能过线，
     // 因此生产口径下的 noHitQueries = 0 是「floor 没挡住」而不是「知识库覆盖完美」。
     // 阈值重标定已登记 HANDOVER §13 B-28；在那之前不要把 0 读成高质量信号。
+    //
+    // 下面的断言把该缺陷的数值**钉在本用例里**（而不是写在小数注释里），
+    // 使台账引用的数字可由测试自身复现。
+    // ⚠️ 修 B-28（抬高 RETRIEVAL_FLOOR）时，最后一行 toBeGreaterThan(0) 需同步改为 0。
     const irrelevant = 'zzz qqq www 今天天气不错'
-    expect(retrieve(irrelevant, { topK: 3, floor: 0 }).length).toBeGreaterThan(0)
+    const hitsAtZeroFloor = retrieve(irrelevant, { topK: 3, floor: 0 })
+    expect(hitsAtZeroFloor.length).toBeGreaterThan(0)
+    const topAtZeroFloor = hitsAtZeroFloor[0]?.score ?? 0
+    // 生产 floor 挡不住它：分数高于固化 floor，却低于一个「真能挡住」的量级
+    expect(topAtZeroFloor).toBeGreaterThan(RETRIEVAL_FLOOR)
+    expect(topAtZeroFloor).toBeLessThan(0.3)
     // floor 必须真的参与过滤：抬高到 0.3 后同一条查询应被挡掉
     expect(retrieve(irrelevant, { topK: 3, floor: 0.3 }).length).toBe(0)
     // 低 floor 下（含当前生产值）这条查询仍会命中 —— 这正是上面记录的缺陷
     expect(retrieveForQuestion(irrelevant, { enabled: true, topK: 3 }).chunks.length).toBeGreaterThan(0)
 
-    const { readFileSync } = await import('node:fs')
-    const saved = JSON.parse(readFileSync(path.resolve(process.cwd(), 'test-results', 'rag-metrics.json'), 'utf8'))
+    // 产物由同文件前一条用例写出（单跑本用例会缺文件）：失败时给出可诊断提示
+    const { existsSync, readFileSync } = await import('node:fs')
+    const reportPath = path.resolve(process.cwd(), 'test-results', 'rag-metrics.json')
+    expect(
+      existsSync(reportPath),
+      'rag-metrics.json 缺失：请先运行「产出 rag-metrics.json」用例，或直接跑 npm run eval:rag',
+    ).toBe(true)
+    const saved = JSON.parse(readFileSync(reportPath, 'utf8'))
     expect(saved.degradation.totalQueries).toBe(queries.length)
     expect(saved.degradation.retrievalFloor).toBe(RETRIEVAL_FLOOR)
+    // 口径守卫：报告里的计数必须等于「按生产 floor 现算」的条数。
+    // 若哪天退回 floor=0 的统计口径，等 floor 真正起作用后这里会立刻不一致。
+    const recount = queries.filter(
+      q => retrieveForQuestion(q.query, { enabled: true, topK: 3 }).chunks.length === 0,
+    ).length
+    expect(saved.degradation.noHitQueries).toBe(recount)
   })
 })
 
