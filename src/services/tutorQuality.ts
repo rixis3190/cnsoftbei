@@ -50,7 +50,11 @@ export function validateAnswerRules(answer: string, questionText: string): Valid
 // ==================== 关键词匹配 ====================
 
 /** 中文停用词 */
-const STOP_WORDS = new Set([
+/**
+ * 停用词表（导出供向量检索与关键词通道复用）。
+ * 导出属零行为变更的重构：内部仍在同一处过滤，findBestMatchByKeywords 行为不变。
+ */
+export const STOP_WORDS = new Set([
   '的', '了', '是', '在', '我', '有', '和', '就', '不', '人', '都', '一',
   '一个', '上', '也', '很', '到', '说', '要', '去', '你', '会', '着',
   '没有', '看', '好', '自己', '这', '那', '什么', '怎么', '如何', '为什么',

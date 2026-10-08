@@ -49,17 +49,27 @@ const SLUG_TO_CHINESE: Record<string, string> = {
 
 /**
  * 归一化单个标签。
- * 未知标签按「小写 + 非字母数字转连字符」处理，保证结果仍是合法 ASCII slug。
+ * 已知标签走映射表；**未映射的中文标签**用 FNV-1a 哈希生成稳定 ascii slug
+ * （如 `tag-1a2b3c4d`）—— 既不丢数据，也不让原始中文标签泄漏进语料与向量产物。
  */
 export function normalizeTag(bank: QuestionBank, tag: string): string {
   const raw = tag.trim()
   if (!raw) return ''
   const slug = bank === 'database' ? (DATABASE_TAG_SLUG[raw] ?? raw) : raw
-  const ascii = slug
+  let ascii = slug
     .replace(/[^A-Za-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .toLowerCase()
-  return ascii ? `${BANK_PREFIX[bank]}-${ascii}` : ''
+  if (!ascii) {
+    // 非 ASCII 且未映射 → 稳定哈希 slug
+    let hash = 0x811c9dc5
+    for (let i = 0; i < raw.length; i++) {
+      hash ^= raw.charCodeAt(i)
+      hash = (hash + ((hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24))) >>> 0
+    }
+    ascii = `tag-${hash.toString(16)}`
+  }
+  return `${BANK_PREFIX[bank]}-${ascii}`
 }
 
 /** 归一化标签数组：去空、去重、保持原有顺序 */
