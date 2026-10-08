@@ -38,12 +38,6 @@ interface SideMenuProps {
   isTeacher?: boolean;
 }
 
-// 管理菜单项
-const adminMenuItems = [
-  { key: 'admin/students', iconName: 'TeamOutlined', label: '学生总览', minRole: 'teacher' as const },
-  { key: 'admin/users', iconName: 'SettingOutlined', label: '用户管理', minRole: 'admin' as const },
-];
-
 // 管理员不显示的学习菜单 key
 const ADMIN_HIDDEN_KEYS = ['profile', 'resources', 'path', 'practice', 'tutor', 'assessment'];
 

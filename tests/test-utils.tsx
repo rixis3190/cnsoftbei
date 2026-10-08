@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, react-refresh/only-export-components */
+/* eslint-disable react-refresh/only-export-components */
 /**
  * test-utils.tsx
  *

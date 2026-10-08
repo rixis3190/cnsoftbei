@@ -34,12 +34,12 @@ import { gradeByAI } from '../../src/services/practiceGrader'
 import {
   buildTutorSystemPrompt,
   buildFollowUpSystemPrompt,
+  buildFollowUpUserPrompt,
   buildRegenerateSystemPrompt,
   buildProfileAnalysisPrompt,
   buildQuizAnalysisPrompt,
   buildGradeByAIMessages,
   buildRelevanceCheckPrompt,
-  loadProfile,
 } from '../../src/services/promptBuilder'
 import type { StudentProfile, PracticeQuestion, QAItem } from '../../src/types'
 
@@ -125,8 +125,12 @@ describe('L2b: 角色边界 — 发给 AI 的 messages 验证', () => {
         helpful: true,
         createdAt: '',
       }
-      const prompt = buildFollowUpSystemPrompt(null)
-      expect(prompt).toContain('追问')
+      // 原实现误调 buildFollowUpSystemPrompt(null)，标题说测 user prompt 却测了 system prompt，
+      // 断言仅 toContain('追问') 恒真 → 假通过。改为真正校验 buildFollowUpUserPrompt 的输出。
+      const prompt = buildFollowUpUserPrompt(qa, '那装饰器怎么用？')
+      expect(prompt).toContain('什么是装饰器？')
+      expect(prompt).toContain('装饰器是 Python 的语法糖...')
+      expect(prompt).toContain('那装饰器怎么用？')
     })
   })
 

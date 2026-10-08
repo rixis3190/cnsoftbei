@@ -23,7 +23,6 @@ Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock })
 Object.defineProperty(globalThis, 'sessionStorage', { value: sessionStorageMock })
 
 // ==================== window.dispatchEvent Mock ====================
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const listeners: Record<string, ((...args: any[]) => void)[]> = {}
 const originalAddEventListener = window.addEventListener.bind(window)
 const originalRemoveEventListener = window.removeEventListener.bind(window)

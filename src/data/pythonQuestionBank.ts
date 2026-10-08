@@ -381,7 +381,7 @@ export function getWrongAnswerQuestions(practiceState: PracticeState | null): Pr
   if (!practiceState || !practiceState.results.length) return [];
 
   const wrongIds = practiceState.results
-    .filter(r => r.isSubmitted && (r.isCorrect === false || (r.aiScore ?? 100) < 60))
+    .filter(r => (r.isCorrect !== null || r.aiScore !== undefined) && (r.isCorrect === false || (r.aiScore ?? 100) < 60))
     .map(r => r.questionId);
 
   return questions.filter(q => wrongIds.includes(q.id));

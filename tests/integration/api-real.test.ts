@@ -1,17 +1,26 @@
 /**
- * MiniMax API 真实接口测试
+ * DeepSeek API 真实接口测试
  *
- * 直接调用 MiniMax API（不经过 Vite 代理），验证连通性和响应格式。
+ * 直接调用 DeepSeek API（不经过 Vite 代理），验证连通性和响应格式。
  * 运行方式：npx vitest run tests/integration/api-real.test.ts
+ *
+ * 前置条件：在 .env.local 中配置 VITE_DEEPSEEK_API_KEY（参考 .env.example）。
+ * 未配置时本文件全部用例自动跳过，不会因 401 失败。
  *
  * 注意：会消耗 API 额度，每次运行约 200-500 tokens。
  */
 
 import { describe, it, expect } from 'vitest'
 
-const API_KEY = 'sk-cp-M-_jNzReYVMIzZg6a8AL1hdZWgP_-GHPRIHE-8lHMaGo14qzZH301EfQ81J8-yVxD0SDTQpqiCKwdEtTRIJ1jX5QoPD-EtYJhC9imCA3PTl1FBkNHQUQeRg'
-const BASE_URL = 'https://api.minimaxi.com/anthropic'
+const API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY || ''
+const BASE_URL = 'https://api.deepseek.com/v1'
+const MODEL = import.meta.env.VITE_DEEPSEEK_MODEL || 'deepseek-flash'
 const API_TIMEOUT = 60000
+// max_tokens 取 1024：deepseek-flash 可能把 token 消耗在 reasoning_content 上，
+// max_tokens 过小（如 256）会导致 content 为空字符串、评分类断言假失败
+
+// 未配置 Key 时跳过整个文件，避免默认 npm test 出现必然失败的用例
+const describeWithKey = API_KEY ? describe : describe.skip
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant'
@@ -25,31 +34,23 @@ async function callStream(messages: ChatMessage[]): Promise<{
   chunks: string[]
   thinkingChunks: string[]
 }> {
-  const anthropicMessages = messages
-    .filter(m => m.role !== 'system')
-    .map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }))
-
-  const systemMessage = messages.find(m => m.role === 'system')
-
-  const response = await fetch(`${BASE_URL}/v1/messages`, {
+  const response = await fetch(`${BASE_URL}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
       Authorization: `Bearer ${API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'MiniMax-M2.7',
-      max_tokens: 256,
-      system: systemMessage?.content,
-      messages: anthropicMessages,
+      model: MODEL,
+      max_tokens: 1024,
+      messages: messages.map(m => ({ role: m.role, content: m.content })),
       stream: true,
     }),
   })
 
   if (!response.ok) {
-    throw new Error(`API Error ${response.status}: ${response.statusText}`)
+    const err = await response.json().catch(() => ({}))
+    throw new Error(`API Error ${response.status}: ${err?.error?.message || response.statusText}`)
   }
 
   const reader = response.body?.getReader()
@@ -71,16 +72,16 @@ async function callStream(messages: ChatMessage[]): Promise<{
 
     for (const line of lines) {
       if (line.trim() && line.startsWith('data:')) {
+        const payload = line.trim().slice('data:'.length).trim()
+        if (!payload || payload === '[DONE]') continue
         try {
-          const data = JSON.parse(line.replace('data:', ''))
-
-          if (data.type === 'content_block_delta') {
-            if (data.delta?.type === 'thinking_delta' && data.delta?.thinking) {
-              thinkingChunks.push(data.delta.thinking)
-            } else if (data.delta?.type === 'text_delta' && data.delta?.text) {
-              chunks.push(data.delta.text)
-              fullContent += data.delta.text
-            }
+          const data = JSON.parse(payload)
+          const delta = data?.choices?.[0]?.delta
+          if (delta?.reasoning_content) {
+            thinkingChunks.push(delta.reasoning_content)
+          } else if (delta?.content) {
+            chunks.push(delta.content)
+            fullContent += delta.content
           }
         } catch {
           // 忽略解析错误
@@ -95,49 +96,34 @@ async function callStream(messages: ChatMessage[]): Promise<{
 // ==================== 非流式调用工具函数 ====================
 
 async function callNonStream(messages: ChatMessage[]): Promise<string> {
-  const anthropicMessages = messages
-    .filter(m => m.role !== 'system')
-    .map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }))
-
-  const systemMessage = messages.find(m => m.role === 'system')
-
-  const response = await fetch(`${BASE_URL}/v1/messages`, {
+  const response = await fetch(`${BASE_URL}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
       Authorization: `Bearer ${API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'MiniMax-M2.7',
-      max_tokens: 256,
-      system: systemMessage?.content,
-      messages: anthropicMessages,
+      model: MODEL,
+      max_tokens: 1024,
+      messages: messages.map(m => ({ role: m.role, content: m.content })),
       stream: false,
     }),
   })
 
   if (!response.ok) {
-    throw new Error(`API Error ${response.status}: ${response.statusText}`)
+    const err = await response.json().catch(() => ({}))
+    throw new Error(`API Error ${response.status}: ${err?.error?.message || response.statusText}`)
   }
 
   const result = await response.json()
-
-  if (result.content && Array.isArray(result.content)) {
-    const textParts = result.content
-      .filter((b: any) => b.type === 'text' && b.text)
-      .map((b: any) => b.text)
-    return textParts.join('\n\n') || '[无内容返回]'
-  }
-
-  if (result.response) return result.response
+  const content = result?.choices?.[0]?.message?.content
+  if (content) return content
   throw new Error(`Invalid response: ${JSON.stringify(result).substring(0, 200)}`)
 }
 
 // ==================== 流式接口测试 ====================
 
-describe('MiniMax API 流式接口', () => {
+describeWithKey('DeepSeek API 流式接口', () => {
   it(
     '基本连通性 — 返回非空文本',
     async () => {
@@ -201,7 +187,7 @@ describe('MiniMax API 流式接口', () => {
 
 // ==================== 非流式接口测试 ====================
 
-describe('MiniMax API 非流式接口', () => {
+describeWithKey('DeepSeek API 非流式接口', () => {
   it(
     '基本连通性 — 返回非空文本',
     async () => {
@@ -253,7 +239,7 @@ describe('MiniMax API 非流式接口', () => {
 
 // ==================== 响应格式验证 ====================
 
-describe('API 响应格式验证', () => {
+describeWithKey('API 响应格式验证', () => {
   it(
     '流式响应 — text 块存在',
     async () => {
@@ -279,20 +265,21 @@ describe('API 响应格式验证', () => {
 
 // ==================== 错误处理 ====================
 
-describe('API 错误处理', () => {
+// 这组用例同样直连真实接口，因此也必须受 Key 守卫：
+// 未配置 VITE_DEEPSEEK_API_KEY 时若照常运行，会因连接/鉴权失败而报错，
+// 造成"没配 Key 就一定是红"的误导。
+describeWithKey('API 错误处理', () => {
   it(
     '无效 API Key — 返回 401',
     async () => {
-      const response = await fetch(`${BASE_URL}/v1/messages`, {
+      const response = await fetch(`${BASE_URL}/chat/completions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'invalid-key',
-          'anthropic-version': '2023-06-01',
           Authorization: 'Bearer invalid-key',
         },
         body: JSON.stringify({
-          model: 'MiniMax-M2.7',
+          model: MODEL,
           max_tokens: 64,
           messages: [{ role: 'user', content: 'hi' }],
           stream: false,
@@ -306,22 +293,46 @@ describe('API 错误处理', () => {
   )
 
   it(
+    '无效模型名 — 返回 400',
+    async () => {
+      const response = await fetch(`${BASE_URL}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'no-such-model',
+          max_tokens: 64,
+          messages: [{ role: 'user', content: 'hi' }],
+          stream: false,
+        }),
+      })
+
+      expect(response.ok).toBe(false)
+      expect(response.status).toBe(400)
+      const err = await response.json()
+      expect(err?.error?.message).toBeTruthy()
+    },
+    API_TIMEOUT,
+  )
+
+  it(
     '请求取消 — AbortError',
     async () => {
       const controller = new AbortController()
       controller.abort()
 
       await expect(
-        fetch(`${BASE_URL}/v1/messages`, {
+        fetch(`${BASE_URL}/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-api-key': API_KEY,
-            'anthropic-version': '2023-06-01',
+            Authorization: `Bearer ${API_KEY}`,
           },
           body: JSON.stringify({
-            model: 'MiniMax-M2.7',
-            max_tokens: 256,
+            model: MODEL,
+            max_tokens: 1024,
             messages: [{ role: 'user', content: 'hi' }],
             stream: true,
           }),

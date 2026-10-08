@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons';
 import { mockLearningPath, mockResources, smartRecommendations } from '../data/mockData';
 import { streamChatCompletion } from '../services/api';
-import { saveCurrentPathStage, inferKnowledgePoints, loadCurrentPathStage } from '../services/learningOrchestrator';
+import { saveCurrentPathStage, inferKnowledgePoints } from '../services/learningOrchestrator';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { usePageCache } from '../context/PageCacheContext';
 import type { LearningPath, LearningNode, StudentProfile } from '../types';
@@ -228,7 +228,9 @@ ${profileCtx ? '\n请务必根据以上学生画像调整学习路径的难度�
           }
         }
       }
-    } catch {}
+    } catch {
+      // 路径数据损坏时按 0% 进度兜底，不阻断节点状态更新
+    }
 
     const updatedNodes = pathData.nodes.map(node => {
       if (node.id === nodeId) {

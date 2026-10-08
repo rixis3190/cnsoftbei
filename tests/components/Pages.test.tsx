@@ -19,52 +19,57 @@ vi.mock('../../src/services/api', () => ({
   chatCompletion: vi.fn(async () => '模拟回答'),
 }))
 
+// 页面组件 import 链路很长（antd + recharts + 各种 context），
+// 开 coverage 插桩或机器负载高时会超过默认 5s / 15s 阈值导致 flaky。
+// 这里统一放宽到 30s：只放宽超时上限，不改变任何断言逻辑。
+const IMPORT_TIMEOUT = 60000
+
 // ==================== 页面模块导入测试 ====================
 
 describe('页面模块导入', () => {
-  it('Home 模块可正常导入', { timeout: 15000 }, async () => {
+  it('Home 模块可正常导入', { timeout: IMPORT_TIMEOUT }, async () => {
     const mod = await import('../../src/pages/Home')
     expect(mod.default).toBeDefined()
     expect(typeof mod.default).toBe('function')
   })
 
-  it('Practice 模块可正常导入', async () => {
+  it('Practice 模块可正常导入', { timeout: IMPORT_TIMEOUT }, async () => {
     const mod = await import('../../src/pages/Practice')
     expect(mod.default).toBeDefined()
     expect(typeof mod.default).toBe('function')
   })
 
-  it('Tutor 模块可正常导入', { timeout: 15000 }, async () => {
+  it('Tutor 模块可正常导入', { timeout: IMPORT_TIMEOUT }, async () => {
     const mod = await import('../../src/pages/Tutor')
     expect(mod.default).toBeDefined()
     expect(typeof mod.default).toBe('function')
   })
 
-  it('Profile 模块可正常导入', async () => {
+  it('Profile 模块可正常导入', { timeout: IMPORT_TIMEOUT }, async () => {
     const mod = await import('../../src/pages/Profile')
     expect(mod.default).toBeDefined()
     expect(typeof mod.default).toBe('function')
   })
 
-  it('Resources 模块可正常导入', async () => {
+  it('Resources 模块可正常导入', { timeout: IMPORT_TIMEOUT }, async () => {
     const mod = await import('../../src/pages/Resources')
     expect(mod.default).toBeDefined()
     expect(typeof mod.default).toBe('function')
   })
 
-  it('Path 模块可正常导入', async () => {
+  it('Path 模块可正常导入', { timeout: IMPORT_TIMEOUT }, async () => {
     const mod = await import('../../src/pages/Path')
     expect(mod.default).toBeDefined()
     expect(typeof mod.default).toBe('function')
   })
 
-  it('Assessment 模块可正常导入', async () => {
+  it('Assessment 模块可正常导入', { timeout: IMPORT_TIMEOUT }, async () => {
     const mod = await import('../../src/pages/Assessment')
     expect(mod.default).toBeDefined()
     expect(typeof mod.default).toBe('function')
   })
 
-  it('Login 模块可正常导入', async () => {
+  it('Login 模块可正常导入', { timeout: IMPORT_TIMEOUT }, async () => {
     const mod = await import('../../src/pages/Login')
     expect(mod.default).toBeDefined()
     expect(typeof mod.default).toBe('function')

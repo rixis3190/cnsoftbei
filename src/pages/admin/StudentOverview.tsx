@@ -6,9 +6,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { Card, Table, Tag, Button, Modal, Descriptions, Typography, Space, Progress, Row, Col, Statistic, Empty } from 'antd'
-import { EyeOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons'
+import { EyeOutlined, TeamOutlined } from '@ant-design/icons'
 import { useAuth, type User } from '../../context/AuthContext'
-import { userKey } from '../../services/storage'
 import type { StudentProfile, PracticeState, LearningPathPlan } from '../../types'
 
 const { Title, Text } = Typography

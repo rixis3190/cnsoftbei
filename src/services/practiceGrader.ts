@@ -446,7 +446,7 @@ export function submitAnswer(
         stageName: moduleMeta.name,
         stageGoal: moduleMeta.description,
         coreKnowledgePoints: [...moduleMeta.tags],
-        estimatedHours: Math.max(4, moduleMeta.questionCount),
+        estimatedHours: Math.max(4, questions.filter(q => q.moduleId === moduleMeta.id).length),
         unlockCondition: {
           previousStageMasteryRate: 70,
         },

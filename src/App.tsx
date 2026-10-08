@@ -1,18 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Layout, Button, Dropdown, Avatar, Space, Tag, Typography, message, Modal, Form, Input, Select } from 'antd';
-import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined, LogoutOutlined, TeamOutlined, SettingOutlined, MessageOutlined, BugOutlined, BulbOutlined, CommentOutlined } from '@ant-design/icons';
+import { useState, useEffect, lazy, Suspense } from 'react';
+import { Layout, Button, Dropdown, Avatar, Space, Tag, Typography, message, Modal, Form, Input, Select, Spin } from 'antd';
+import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined, LogoutOutlined, MessageOutlined, BugOutlined, BulbOutlined, CommentOutlined } from '@ant-design/icons';
 import SideMenu from './components/SideMenu';
-import Home from './pages/Home';
-import Profile from './pages/Profile';
-import Resources from './pages/Resources';
-import Path from './pages/Path';
-import Tutor from './pages/Tutor';
-import Assessment from './pages/Assessment';
-import Practice from './pages/Practice';
 import Login from './pages/Login';
-import UserManage from './pages/admin/UserManage';
-import StudentOverview from './pages/admin/StudentOverview';
-import FeedbackManage from './pages/admin/FeedbackManage';
 import { PageCacheProvider } from './context/PageCacheContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { submitFeedback } from './services/feedback';
@@ -21,9 +11,35 @@ import { initialProfile } from './data/mockData';
 import type { StudentProfile } from './types';
 import './App.css';
 
+// ==================== 页面级代码分割 ====================
+// 11 个页面 + recharts + react-syntax-highlighter 全部静态引入时，
+// 首屏 chunk 达2.1MB（gzip 709KB）。改为按需加载：
+//   - 登录页保持静态引入：它是未登录用户的第一屏，多一次请求体验很差；
+//   - 其余页面一律 lazy，切换菜单时才下载对应 chunk。
+// 注意：新增页面时务必用 lazy 引入，否则会重新把包体打大。
+const Home = lazy(() => import('./pages/Home'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Resources = lazy(() => import('./pages/Resources'));
+const Path = lazy(() => import('./pages/Path'));
+const Tutor = lazy(() => import('./pages/Tutor'));
+const Assessment = lazy(() => import('./pages/Assessment'));
+const Practice = lazy(() => import('./pages/Practice'));
+const UserManage = lazy(() => import('./pages/admin/UserManage'));
+const StudentOverview = lazy(() => import('./pages/admin/StudentOverview'));
+const FeedbackManage = lazy(() => import('./pages/admin/FeedbackManage'));
+
 const { Header, Content } = Layout;
 const { TextArea } = Input;
 const { Text } = Typography;
+
+/** 页面 chunk 加载中的占位（antd Spin 已在主 chunk，不额外增加体积） */
+function PageLoading() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+      <Spin size="large" />
+    </div>
+  );
+}
 
 const ROLE_LABELS: Record<string, { text: string; color: string }> = {
   admin: { text: '管理员', color: 'red' },
@@ -218,7 +234,9 @@ function AppLayout() {
         </Header>
         <Content style={{ margin: 0, background: '#f0f2f5' }}>
           <PageCacheProvider>
-            {renderPage()}
+            <Suspense fallback={<PageLoading />}>
+              {renderPage()}
+            </Suspense>
           </PageCacheProvider>
         </Content>
       </Layout>

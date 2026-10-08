@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Card, Typography, Tag, Space, Button, Row, Col, Progress, Radio,
-  Input, Spin, message, Avatar, Divider, Collapse, Tabs, Drawer, Empty, Badge,
+  Input, Spin, message, Divider, Collapse, Drawer, Empty, Badge,
 } from 'antd';
 import {
   CheckCircleOutlined,
@@ -12,7 +12,6 @@ import {
   TrophyOutlined,
   BookOutlined,
   WarningOutlined,
-  StarOutlined,
   CrownOutlined,
   ExperimentOutlined,
 } from '@ant-design/icons';
@@ -32,7 +31,6 @@ import {
   searchQuestions,
   getWrongAnswerQuestions,
   categorizeWrongByModule,
-  categorizeWrongByTag,
   getCategoryCounts,
   sortByProgress,
   tagIndex,
@@ -98,7 +96,6 @@ const Practice: React.FC = () => {
 
   // ----- 进度计算 -----
   const categoryCounts = getCategoryCounts();
-  const allResults = Object.values(results);
 
   const coreQuestions = allQuestions.filter(q => q.category === 'core');
   const extensionQuestions = allQuestions.filter(q => q.category === 'extension');
@@ -134,21 +131,9 @@ const Practice: React.FC = () => {
   const currentBatchHasAnswer = currentBatchQuestions.some(q => !getQuestionResult(q.id)?.isSubmitted && !!answers[q.id]?.trim());
 
   // ----- 错题数据 -----
+  // 抽屉渲染时按 wrongSearchText / wrongActiveModule 现场过滤，此处只提供按模块分组数据
   const wrongQuestions = useMemo(() => getWrongAnswerQuestions(practiceState), [practiceState]);
   const wrongByModule = useMemo(() => categorizeWrongByModule(wrongQuestions), [wrongQuestions]);
-  const wrongByTag = useMemo(() => categorizeWrongByTag(wrongQuestions), [wrongQuestions]);
-
-  const filteredWrongQuestions = useMemo(() => {
-    let qs = wrongQuestions;
-    if (wrongSearchText) {
-      const q = wrongSearchText.toLowerCase();
-      qs = qs.filter(item => item.question.toLowerCase().includes(q) || item.tags.some(t => t.toLowerCase().includes(q)));
-    }
-    if (wrongActiveModule !== 'all') {
-      qs = qs.filter(item => item.moduleId === wrongActiveModule);
-    }
-    return qs;
-  }, [wrongQuestions, wrongSearchText, wrongActiveModule]);
 
   // 搜索
   const handleSearch = (value: string) => {
@@ -355,6 +340,29 @@ const Practice: React.FC = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* 各模块进度（客观题 50% + 简答题 50% 加权） */}
+      {moduleProgress.length > 0 && (
+        <Card size="small" style={{ marginTop: 16 }}>
+          <Row gutter={[16, 12]}>
+            {moduleProgress.map(m => (
+              <Col span={6} key={m.moduleId}>
+                <div style={{ fontSize: 13, marginBottom: 4 }}>
+                  <Text strong>{m.moduleName}</Text>
+                  <Text type="secondary" style={{ marginLeft: 6, fontSize: 12 }}>
+                    {m.completedQuestions}/{m.totalQuestions} 题
+                  </Text>
+                </div>
+                <Progress
+                  percent={m.totalQuestions > 0 ? Math.round((m.completedQuestions / m.totalQuestions) * 100) : 0}
+                  size="small"
+                  format={() => `${m.score} 分`}
+                />
+              </Col>
+            ))}
+          </Row>
+        </Card>
+      )}
 
       {/* 当前阶段信息 + 快捷操作 */}
       {currentStage && (

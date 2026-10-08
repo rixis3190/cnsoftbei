@@ -26,3 +26,23 @@ dist-ssr
 # 测试报告
 test-results/
 coverage/
+
+# 环境变量：上面的 *.local 只覆盖 .env.local，这里补齐其余形式
+# 目的：防止有人新建 .env / .env.production 时把密钥提交进仓库
+.env
+.env.*
+!.env.example
+
+# 一次性/调试临时产物（文档转换、批量处理脚本及其中间文件）
+scripts/tmp/
+temp_*.json
+temp_*.cjs
+temp_*.js
+temp_*.txt
+
+# 课程报告成品（个人提交物，不入库）
+课程报告_*.doc
+课程报告_*.docx
+
+# AI 工具的本地机器配置（含本机绝对路径与个人授权）
+.claude/settings.local.json

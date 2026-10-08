@@ -6,10 +6,13 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/anthropic': {
-        target: 'https://api.minimaxi.com/anthropic',
+      // DeepSeek 官方文档建议 baseURL 不带 /v1 后缀：
+      // 客户端请求 /deepseek/v1/chat/completions，这里剥掉 /deepseek 前缀转发
+      '/deepseek': {
+        target: 'https://api.deepseek.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/anthropic/, ''),
+        secure: true,
+        rewrite: (path) => path.replace(/^\/deepseek/, ''),
       },
     },
   },

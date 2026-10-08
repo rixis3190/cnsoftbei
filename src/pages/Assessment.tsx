@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Card, Typography, Tag, Space, Row, Col, Progress,
   List, Avatar, Statistic, Timeline, Button, Alert
@@ -14,25 +14,63 @@ import {
   CheckCircleOutlined,
   RocketOutlined,
 } from '@ant-design/icons';
-import { mockAssessments, mockLearningPath, learningStats, assessmentSuggestions } from '../data/mockData';
+import { mockLearningPath, learningStats, assessmentSuggestions } from '../data/mockData';
 import { loadPracticeState, learningPlan } from '../services/practiceGrader';
-import { tagToChinese, questions } from '../data/pythonQuestionBank';
+import { questions } from '../data/pythonQuestionBank';
 import { SYSTEM_EVENTS } from '../services/learningOrchestrator';
-import type { PracticeState } from '../types';
+import { userKey } from '../services/storage';
+import type { PracticeState, StudentProfile } from '../types';
+import RadarChart, { type RadarDataItem } from '../components/RadarChart';
 
 const { Title, Text } = Typography;
 
+/* ------------------------------------------------------------------ */
+/*  Tag → 6 维画像映射（与 practiceGrader 保持一致）                     */
+/* ------------------------------------------------------------------ */
+
+const TAG_TO_DIMENSION: Record<string, string> = {
+  syntax: 'knowledgeBase', 'data-types': 'knowledgeBase', operators: 'knowledgeBase',
+  'control-flow': 'knowledgeBase', functions: 'knowledgeBase', modules: 'knowledgeBase',
+  scope: 'knowledgeBase', OOP: 'knowledgeBase', classes: 'knowledgeBase',
+  inheritance: 'knowledgeBase', polymorphism: 'knowledgeBase', exceptions: 'knowledgeBase',
+  files: 'knowledgeBase', decorators: 'knowledgeBase', comprehensions: 'knowledgeBase',
+  errorProne: 'errorProne',
+  studyHabit: 'studyHabit',
+};
+
+const DIMENSION_META: { key: string; label: string; color: string }[] = [
+  { key: 'knowledgeBase',    label: '知识基础',   color: '#5B6AF0' },
+  { key: 'cognitiveStyle',   label: '认知风格',   color: '#52c41a' },
+  { key: 'errorProne',       label: '易错点',     color: '#f97316' },
+  { key: 'learningPace',     label: '学习节奏',   color: '#a855f7' },
+  { key: 'interestDirection',label: '兴趣方向',   color: '#ec4899' },
+  { key: 'studyHabit',       label: '学习习惯',   color: '#06b6d4' },
+];
+
+/** 根据画像 level 映射到估算分数 */
+function levelToScore(level: string): number {
+  if (level === '高') return 80;
+  if (level === '中') return 50;
+  if (level === '低') return 25;
+  return 0;
+}
+
+interface DimensionItem {
+  dimension: string;
+  score: number;
+  trend: 'up' | 'down' | 'stable';
+  feedback: string;
+  color: string;
+  key: string;
+}
+
+/* ------------------------------------------------------------------ */
+/*  组件                                                               */
+/* ------------------------------------------------------------------ */
+
 const Assessment: React.FC = () => {
-  interface AssessmentDisplay {
-    dimension: string;
-    score: number;
-    trend: 'up' | 'down' | 'stable';
-    feedback: string;
-    color: string;
-  }
   const [practiceState, setPracticeState] = useState<PracticeState | null>(null);
 
-  // 加载练习数据
   const loadData = () => {
     const state = loadPracticeState();
     setPracticeState(state);
@@ -51,6 +89,68 @@ const Assessment: React.FC = () => {
     };
   }, []);
 
+  /* ---- 统计 ---- */
+  const completedQuestions = practiceState?.results.length ?? 0;
+  const totalQuestions = learningPlan.modules.reduce(
+    (sum, m) => sum + questions.filter(q => q.moduleId === m.id).length, 0,
+  );
+  const correctCount = practiceState?.results.filter(r => r.isCorrect).length ?? 0;
+  const accuracy = completedQuestions > 0 ? Math.round((correctCount / completedQuestions) * 100) : 0;
+  const completedModules = practiceState?.moduleProgress.filter(m => m.completedQuestions === m.totalQuestions).length ?? 0;
+  const totalModules = learningPlan.modules.length;
+
+  /* ---- 6 维雷达数据 ---- */
+  const dimensionItems: DimensionItem[] = useMemo(() => {
+    // 读取画像作为兜底
+    let profile: StudentProfile | null = null;
+    try {
+      const raw = localStorage.getItem(userKey('studentProfile'));
+      if (raw) profile = JSON.parse(raw);
+    } catch { /* ignore */ }
+
+    // 把 tagScores 聚合到画像维度
+    const dimScores: Record<string, { total: number; count: number }> = {};
+    if (practiceState) {
+      for (const ts of practiceState.tagScores) {
+        const dimKey = TAG_TO_DIMENSION[ts.tag];
+        if (!dimKey) continue;
+        if (!dimScores[dimKey]) dimScores[dimKey] = { total: 0, count: 0 };
+        if (ts.totalAnswered > 0) {
+          dimScores[dimKey].total += ts.score;
+          dimScores[dimKey].count++;
+        }
+      }
+    }
+
+    return DIMENSION_META.map(dm => {
+      const entry = dimScores[dm.key];
+      let score: number;
+      let feedback: string;
+      let trend: 'up' | 'down' | 'stable' = 'stable';
+
+      if (entry && entry.count > 0) {
+        score = Math.round(entry.total / entry.count);
+        feedback = `${entry.count} 个知识点，综合正确率 ${score}%`;
+        trend = score >= 70 ? 'up' : score >= 45 ? 'stable' : 'down';
+      } else {
+        // 练习题没有覆盖到的维度，从画像取值
+        const dim = profile?.dimensions?.find(d => d.key === dm.key);
+        score = levelToScore(dim?.level ?? '');
+        feedback = dim?.value?.slice(0, 30) || '暂未评估，去练习中心做题吧';
+      }
+
+      return { dimension: dm.label, score, trend, feedback, color: dm.color, key: dm.key };
+    });
+  }, [practiceState]);
+
+  const radarData: RadarDataItem[] = useMemo(
+    () => dimensionItems.map(d => ({ dimension: d.dimension, score: d.score, color: d.color })),
+    [dimensionItems],
+  );
+
+  const overallScore = dimensionItems.reduce((sum, d) => sum + d.score, 0) / dimensionItems.length;
+
+  /* ---- 工具 ---- */
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case 'up': return <RiseOutlined style={{ color: '#52c41a' }} />;
@@ -58,7 +158,6 @@ const Assessment: React.FC = () => {
       default: return <MinusOutlined style={{ color: '#d9d9d9' }} />;
     }
   };
-
   const getTrendColor = (trend: string) => {
     switch (trend) {
       case 'up': return 'success';
@@ -66,36 +165,6 @@ const Assessment: React.FC = () => {
       default: return 'default';
     }
   };
-
-  // 从练习数据计算统计
-  const completedQuestions = practiceState?.results.length ?? 0;
-  const totalQuestions = learningPlan.modules.reduce((sum, m) => sum + questions.filter(q => q.moduleId === m.id).length, 0);
-  const correctCount = practiceState?.results.filter(r => r.isCorrect).length ?? 0;
-  const accuracy = completedQuestions > 0 ? Math.round((correctCount / completedQuestions) * 100) : 0;
-  const completedModules = practiceState?.moduleProgress.filter(m => m.completedQuestions === m.totalQuestions).length ?? 0;
-  const totalModules = learningPlan.modules.length;
-
-  // 真实评估数据
-  const assessmentItems: AssessmentDisplay[] = practiceState
-    ? practiceState.tagScores.map((ts, idx) => {
-        const colors = ['#1890ff', '#52c41a', '#faad14', '#722ed1', '#eb2f96', '#13c2c2'];
-        return {
-          dimension: tagToChinese(ts.tag),
-          score: ts.score,
-          trend: idx === 0 ? 'up' : 'stable' as 'up' | 'down' | 'stable',
-          feedback: ts.totalAnswered > 0
-            ? `已完成 ${ts.totalAnswered} 题，正确率 ${ts.score}%`
-            : '暂无练习数据',
-          color: colors[idx % colors.length],
-        };
-      })
-    : mockAssessments.map((item, idx) => {
-        const colors = ['#1890ff', '#52c41a', '#faad14', '#722ed1', '#eb2f96', '#13c2c2'];
-        return { ...item, color: colors[idx % colors.length] } as AssessmentDisplay;
-      });
-
-  // 计算总体评分
-  const overallScore = assessmentItems.reduce((sum, a) => sum + a.score, 0) / (assessmentItems.length || 1);
 
   return (
     <div style={{ padding: 24 }}>
@@ -211,31 +280,41 @@ const Assessment: React.FC = () => {
       </Row>
 
       <Row gutter={24} style={{ marginTop: 24 }}>
-        {/* 能力雷达图 */}
+        {/* 能力雷达图 —— 固定 6 维六边形 */}
         <Col span={12}>
           <Card title="能力雷达图">
-            {/* TODO: 使用 Recharts RadarChart 替换 */}
-            <div style={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d9d9d9' }}>
-              {practiceState && practiceState.results.length > 0
-                ? '雷达图组件待接入'
-                : '开始练习后可查看能力雷达图'}
-            </div>
+            {practiceState && practiceState.results.length > 0 ? (
+              <RadarChart data={radarData} height={420} />
+            ) : (
+              <div
+                style={{
+                  height: 280,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#bfbfbf',
+                  fontSize: 14,
+                }}
+              >
+                开始练习后可查看能力雷达图
+              </div>
+            )}
           </Card>
         </Col>
 
-        {/* 评估详情 */}
+        {/* 6 维评估详情 */}
         <Col span={12}>
           <Card title="多维度评估详情">
             <List
-              dataSource={assessmentItems}
+              dataSource={dimensionItems}
               renderItem={(item) => (
-                <List.Item>
+                <List.Item style={{ padding: '4px 0' }}>
                   <Card
                     size="small"
                     style={{ width: '100%', borderLeft: `3px solid ${item.color}` }}
                   >
-                    <Row gutter={16} align="middle">
-                      <Col span={12}>
+                    <Row gutter={12} align="middle">
+                      <Col span={11}>
                         <Space>
                           <Text strong>{item.dimension}</Text>
                           <Tag icon={getTrendIcon(item.trend)} color={getTrendColor(item.trend)}>
@@ -245,16 +324,16 @@ const Assessment: React.FC = () => {
                         <br />
                         <Text type="secondary" style={{ fontSize: 12 }}>{item.feedback}</Text>
                       </Col>
-                      <Col span={8}>
+                      <Col span={9}>
                         <Progress
                           percent={item.score}
                           size="small"
-                          strokeColor={item.score >= 80 ? '#52c41a' : item.score >= 60 ? '#faad14' : '#f5222d'}
+                          strokeColor={item.score >= 80 ? '#52c41a' : item.score >= 50 ? '#faad14' : '#f5222d'}
                         />
                       </Col>
                       <Col span={4} style={{ textAlign: 'right' }}>
-                        <Text strong style={{ fontSize: 24 }}>{item.score}</Text>
-                        <Text type="secondary">分</Text>
+                        <Text strong style={{ fontSize: 22 }}>{item.score}</Text>
+                        <Text type="secondary" style={{ fontSize: 12 }}>分</Text>
                       </Col>
                     </Row>
                   </Card>
@@ -306,7 +385,7 @@ const Assessment: React.FC = () => {
         </Card>
       )}
 
-      {/* 学习路径完成情况（备用） */}
+      {/* 学习路径完成情况（无练习数据时） */}
       {(!practiceState || practiceState.results.length === 0) && (
         <Card title="学习路径完成情况" style={{ marginTop: 24 }}>
           <Row gutter={16}>

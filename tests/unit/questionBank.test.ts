@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
 import { questions, learningPlan } from '../../src/data/pythonQuestionBank'
-import type { PracticeQuestion } from '../../src/types'
 
 // ==================== 题库数据完整性测试 ====================
 

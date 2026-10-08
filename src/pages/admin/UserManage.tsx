@@ -38,7 +38,7 @@ const UserManage: React.FC = () => {
   }
 
   const [roleSubmitting, handleRoleSubmit] = useDebounce(() => {
-    const { role } = roleForm.getFieldsValue()
+    const { role } = roleForm.getFieldsValue() as { role: UserRole }
     if (editingUser) {
       updateUserRole(editingUser.id, role)
       message.success(`已将 ${editingUser.name} 的角色改为 ${ROLE_CONFIG[role].label}`)

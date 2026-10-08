@@ -1,42 +1,70 @@
 import axios from 'axios';
 
-// Minimax API 配置 - Anthropic API 兼容格式
-const API_KEY = 'sk-cp-M-_jNzReYVMIzZg6a8AL1hdZWgP_-GHPRIHE-8lHMaGo14qzZH301EfQ81J8-yVxD0SDTQpqiCKwdEtTRIJ1jX5QoPD-EtYJhC9imCA3PTl1FBkNHQUQeRg';
-// 使用相对路径，通过 Vite 代理转发
-const BASE_URL = '/anthropic';
+// DeepSeek API 配置 - OpenAI 兼容格式
+// API Key 从环境变量读取：复制 .env.example 为 .env.local 并填入真实 Key
+// （.env.local 匹配 .gitignore 的 *.local，不会被提交）
+const API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY || '';
+const BASE_URL = '/deepseek/v1';
+const MODEL = import.meta.env.VITE_DEEPSEEK_MODEL || 'deepseek-flash';
+
+if (!API_KEY && import.meta.env.DEV) {
+  console.warn(
+    '[api] 未配置 VITE_DEEPSEEK_API_KEY，请在 .env.local 中填入 DeepSeek API Key（参考 .env.example）。',
+  );
+}
 
 // 创建 axios 实例（非流式请求用）
 const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    'x-api-key': API_KEY,
-    'anthropic-version': '2023-06-01',
-    'Authorization': `Bearer ${API_KEY}`,
+    Authorization: `Bearer ${API_KEY}`,
   },
   timeout: 180000, // 3分钟
 });
 
-// 消息类型 - Anthropic 格式
+// 消息类型 - OpenAI 兼容格式
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
 }
 
-// Anthropic API 请求格式
-interface AnthropicRequest {
+// 请求体格式
+interface ChatRequest {
   model: string;
   max_tokens: number;
-  system?: string;
   messages: { role: string; content: string }[];
   stream?: boolean;
 }
 
-// 流式回调类型
+// 流式回调类型：isThinking 为 true 时表示内容来自深度思考
 export type StreamingCallback = (chunk: string, isThinking: boolean) => void;
+
+/** 把 ChatMessage[] 转为 OpenAI 格式：system 消息保留在 messages 数组中 */
+function toOpenAIMessages(messages: ChatMessage[]): { role: string; content: string }[] {
+  return messages.map(m => ({ role: m.role, content: m.content }));
+}
+
+/** 解析错误响应体，取出可读的错误信息 */
+async function extractErrorMessage(response: Response): Promise<string> {
+  const errorData = await response.json().catch(() => ({}));
+  const message =
+    errorData?.error?.message ||
+    errorData?.base_resp?.status_msg ||
+    errorData?.message ||
+    response.statusText;
+  return message || '未知错误';
+}
+
+// ==================== 流式调用 ====================
 
 /**
  * 流式调用大模型 - 基于 Fetch API 实现真正的流式响应
+ *
+ * DeepSeek 的 SSE 事件格式（OpenAI 兼容）：
+ * - 正文增量：choices[0].delta.content
+ * - 深度思考增量：choices[0].delta.reasoning_content
+ * - 结束标记：data: [DONE]
  */
 export async function streamChatCompletion(
   messages: ChatMessage[],
@@ -44,39 +72,27 @@ export async function streamChatCompletion(
   onThinking?: (thinking: string) => void,
   signal?: AbortSignal
 ): Promise<string> {
-  const anthropicMessages = messages
-    .filter(m => m.role !== 'system')
-    .map(m => ({
-      role: m.role as 'user' | 'assistant',
-      content: m.content,
-    }));
-
-  const systemMessage = messages.find(m => m.role === 'system');
-
-  const requestData: AnthropicRequest = {
-    model: 'MiniMax-M2.7',
+  const requestData: ChatRequest = {
+    model: MODEL,
     max_tokens: 8192,
-    system: systemMessage?.content,
-    messages: anthropicMessages,
+    messages: toOpenAIMessages(messages),
     stream: true,
   };
 
   try {
-    const response = await fetch(`${BASE_URL}/v1/messages`, {
+    const response = await fetch(`${BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01',
-        'Authorization': `Bearer ${API_KEY}`,
+        Authorization: `Bearer ${API_KEY}`,
       },
       body: JSON.stringify(requestData),
       signal,
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(`API Error ${response.status}: ${errorData.base_resp?.status_msg || response.statusText}`);
+      const message = await extractErrorMessage(response);
+      throw new Error(`API Error ${response.status}: ${message}`);
     }
 
     const reader = response.body?.getReader();
@@ -87,6 +103,7 @@ export async function streamChatCompletion(
     const decoder = new TextDecoder();
     let buffer = '';
     let fullContent = '';
+    let thinkingStarted = false;
 
     while (true) {
       const { done, value } = await reader.read();
@@ -96,45 +113,49 @@ export async function streamChatCompletion(
       const lines = buffer.split('\n');
       buffer = lines.pop() || '';
 
-      for (const line of lines) {
-        if (line.trim() && line.startsWith('data:')) {
-          try {
-            const data = JSON.parse(line.replace('data:', ''));
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line || !line.startsWith('data:')) continue;
 
-            // 处理 content_block_start
-            if (data.type === 'content_block_start') {
-              if (data.content_block?.type === 'thinking') {
-                onChunk?.('[思考中...]', true);
-              }
+        const payload = line.slice('data:'.length).trim();
+        if (!payload) continue;
+        // 结束标记
+        if (payload === '[DONE]') break;
+
+        try {
+          const data = JSON.parse(payload);
+          const delta = data?.choices?.[0]?.delta;
+          if (!delta) continue;
+
+          // 深度思考内容
+          if (delta.reasoning_content) {
+            if (!thinkingStarted) {
+              thinkingStarted = true;
+              onChunk?.('[思考中...]', true);
             }
-            // 处理 delta
-            else if (data.type === 'content_block_delta') {
-              if (data.delta?.type === 'thinking_delta' && data.delta?.thinking) {
-                onThinking?.(data.delta.thinking);
-                onChunk?.(data.delta.thinking, true);
-              } else if (data.delta?.type === 'text_delta' && data.delta?.text) {
-                onChunk?.(data.delta.text, false);
-                fullContent += data.delta.text;
-              }
-            }
-            // 处理 message delta (结束)
-            else if (data.type === 'message_delta' && data.delta?.stop_sequence) {
-              break;
-            }
-          } catch (e) {
-            // 忽略解析错误，继续处理下一行
+            onThinking?.(delta.reasoning_content);
+            onChunk?.(delta.reasoning_content, true);
           }
+          // 正文内容
+          else if (delta.content) {
+            onChunk?.(delta.content, false);
+            fullContent += delta.content;
+          }
+        } catch {
+          // 忽略解析错误，继续处理下一行
         }
       }
     }
 
     return fullContent || '[无内容返回]';
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Stream API call failed:', error);
     throw error;
   }
 }
+
+// ==================== 非流式调用 ====================
 
 /**
  * 调用大模型进行对话（非流式，兼容旧代码）
@@ -142,73 +163,50 @@ export async function streamChatCompletion(
 export async function chatCompletion(
   messages: ChatMessage[]
 ): Promise<string> {
-  let lastError: any = null;
+  let lastError: unknown = null;
 
   // 最多重试3次
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const anthropicMessages = messages
-        .filter(m => m.role !== 'system')
-        .map(m => ({
-          role: m.role as 'user' | 'assistant',
-          content: m.content,
-        }));
-
-      const systemMessage = messages.find(m => m.role === 'system');
-
-      const requestData: AnthropicRequest = {
-        model: 'MiniMax-M2.7',
+      const requestData: ChatRequest = {
+        model: MODEL,
         max_tokens: 8192,
-        system: systemMessage?.content,
-        messages: anthropicMessages,
+        messages: toOpenAIMessages(messages),
         stream: false,
       };
 
       console.log(`[API Attempt ${attempt}] Sending request...`);
-      const response = await apiClient.post('/v1/messages', requestData);
+      const response = await apiClient.post('/chat/completions', requestData);
 
       console.log('[API Response Raw]:', JSON.stringify(response.data, null, 2).substring(0, 500));
 
       const result = response.data;
 
-      // 检查错误响应
+      // 检查错误响应（OpenAI 兼容格式）
       if (result.error) {
-        throw new Error(`API Error: ${result.error.type} - ${result.error.message}`);
+        throw new Error(`API Error: ${result.error.type || 'unknown'} - ${result.error.message}`);
       }
 
-      // 检查 base_resp 错误
-      if (result.base_resp && result.base_resp.status_code !== 0) {
-        throw new Error(`API Error ${result.base_resp.status_code}: ${result.base_resp.status_msg}`);
-      }
-
-      // Anthropic API 响应格式 - 处理 content 数组
-      if (result.content && Array.isArray(result.content)) {
-        const textParts: string[] = [];
-
-        for (const block of result.content) {
-          if (block.type === 'text' && block.text) {
-            textParts.push(block.text);
-          } else if (block.type === 'thinking' && block.thinking) {
-            console.log('[Thinking]:', block.thinking.substring(0, 100) + '...');
-          }
+      // 解析 OpenAI 格式的响应
+      const message = result.choices?.[0]?.message;
+      if (message) {
+        if (message.reasoning_content) {
+          console.log('[Reasoning]:', String(message.reasoning_content).substring(0, 100) + '...');
         }
-
-        if (textParts.length > 0) {
-          return textParts.join('\n\n');
+        if (message.content) {
+          return message.content;
         }
+        throw new Error('Invalid response format, message.content is empty');
       }
 
-      if (result.response) {
-        return result.response;
-      }
+      throw new Error(`Invalid response format, no choices found: ${JSON.stringify(result).substring(0, 200)}`);
 
-      throw new Error(`Invalid response format, no content found: ${JSON.stringify(result).substring(0, 200)}`);
-
-    } catch (error: any) {
-      console.error(`[API Attempt ${attempt} Failed]:`, error.message);
+    } catch (error: unknown) {
+      const err = error as { code?: string; message?: string };
+      console.error(`[API Attempt ${attempt} Failed]:`, err.message ?? err);
       lastError = error;
 
-      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
         continue;
       }

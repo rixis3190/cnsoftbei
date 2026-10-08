@@ -1,20 +1,19 @@
 /**
  * handlers.ts
  *
- * msw 请求处理器 — 拦截 API 调用并返回 mock 响应
+ * msw 请求处理器 — 拦截 DeepSeek API 调用并返回 mock 响应（OpenAI 兼容格式）
  */
 import { http, HttpResponse, delay } from 'msw'
 
-const BASE_URL = '/anthropic'
+const BASE_URL = '/deepseek/v1'
 
-// 构建 SSE 流式响应
+// 构建 SSE 流式响应（OpenAI 兼容：choices[].delta.content，结束标记 data: [DONE]）
 function createSSEResponse(text: string) {
   const encoder = new TextEncoder()
   const stream = new ReadableStream({
     async start(controller) {
-      // content_block_start
       controller.enqueue(
-        encoder.encode(`data: ${JSON.stringify({ type: 'content_block_start', index: 0, content_block: { type: 'text', text: '' } })}\n\n`)
+        encoder.encode(`data: ${JSON.stringify({ choices: [{ delta: { role: 'assistant' } }] })}\n\n`)
       )
 
       // 分块发送文本
@@ -22,14 +21,11 @@ function createSSEResponse(text: string) {
       for (const chunk of chunks) {
         await delay(10)
         controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({ type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text: chunk } })}\n\n`)
+          encoder.encode(`data: ${JSON.stringify({ choices: [{ delta: { content: chunk } }] })}\n\n`)
         )
       }
 
-      // message_stop
-      controller.enqueue(
-        encoder.encode(`data: ${JSON.stringify({ type: 'message_delta', delta: { stop_reason: 'end_turn' } })}\n\n`)
-      )
+      controller.enqueue(encoder.encode('data: [DONE]\n\n'))
       controller.close()
     },
   })
@@ -39,14 +35,20 @@ function createSSEResponse(text: string) {
   })
 }
 
-// 构建非流式响应
+// 构建非流式响应（OpenAI 兼容格式）
 function createSyncResponse(text: string) {
   return HttpResponse.json({
     id: 'mock-msg-001',
-    type: 'message',
-    role: 'assistant',
-    content: [{ type: 'text', text }],
-    stop_reason: 'end_turn',
+    object: 'chat.completion',
+    created: Date.now(),
+    model: 'deepseek-flash',
+    choices: [
+      {
+        index: 0,
+        message: { role: 'assistant', content: text },
+        finish_reason: 'stop',
+      },
+    ],
   })
 }
 
@@ -83,8 +85,8 @@ interface Message { role: string; content: string }
 interface RequestBody { messages?: Message[]; stream?: boolean }
 
 export const handlers = [
-  // 流式请求
-  http.post(`${BASE_URL}/v1/messages`, async ({ request }) => {
+  // 流式 / 非流式统一入口
+  http.post(`${BASE_URL}/chat/completions`, async ({ request }) => {
     const body = (await request.json()) as RequestBody
     const systemMsg = body.messages?.find((m: Message) => m.role === 'system')
     const systemPrompt = systemMsg?.content || ''

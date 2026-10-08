@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { server } from '../mocks/server'
 
@@ -46,10 +45,10 @@ describe('streamChatCompletion', () => {
 
   it('正常流式响应 — 返回完整文本', async () => {
     const events = [
-      JSON.stringify({ type: 'content_block_start', content_block: { type: 'text' } }),
-      JSON.stringify({ type: 'content_block_delta', delta: { type: 'text_delta', text: 'Hello' } }),
-      JSON.stringify({ type: 'content_block_delta', delta: { type: 'text_delta', text: ' World' } }),
-      JSON.stringify({ type: 'message_delta', delta: { stop_sequence: 'end_turn' } }),
+      JSON.stringify({ choices: [{ delta: { role: 'assistant' } }] }),
+      JSON.stringify({ choices: [{ delta: { content: 'Hello' } }] }),
+      JSON.stringify({ choices: [{ delta: { content: ' World' } }] }),
+      '[DONE]',
     ]
     mockFetch.mockResolvedValue(createMockResponse(events))
 
@@ -61,7 +60,7 @@ describe('streamChatCompletion', () => {
 
   it('onChunk 回调被调用', async () => {
     const events = [
-      JSON.stringify({ type: 'content_block_delta', delta: { type: 'text_delta', text: 'Hi' } }),
+      JSON.stringify({ choices: [{ delta: { content: 'Hi' } }] }),
     ]
     mockFetch.mockResolvedValue(createMockResponse(events))
 
@@ -70,19 +69,21 @@ describe('streamChatCompletion', () => {
     expect(onChunk).toHaveBeenCalledWith('Hi', false)
   })
 
-  it('thinking 块 — onThinking 被调用', async () => {
+  it('reasoning_content — onThinking 被调用并先提示思考中', async () => {
     const events = [
-      JSON.stringify({ type: 'content_block_start', content_block: { type: 'thinking' } }),
-      JSON.stringify({ type: 'content_block_delta', delta: { type: 'thinking_delta', thinking: 'Let me think...' } }),
+      JSON.stringify({ choices: [{ delta: { reasoning_content: 'Let me think...' } }] }),
+      JSON.stringify({ choices: [{ delta: { content: '答案' } }] }),
     ]
     mockFetch.mockResolvedValue(createMockResponse(events))
 
     const onThinking = vi.fn()
     const onChunk = vi.fn()
-    await streamChatCompletion([{ role: 'user', content: 'test' }], onChunk, onThinking)
+    const result = await streamChatCompletion([{ role: 'user', content: 'test' }], onChunk, onThinking)
     expect(onThinking).toHaveBeenCalledWith('Let me think...')
     expect(onChunk).toHaveBeenCalledWith('[思考中...]', true)
     expect(onChunk).toHaveBeenCalledWith('Let me think...', true)
+    // 思考内容不计入正文
+    expect(result).toBe('答案')
   })
 
   it('空响应 — 返回兜底文本', async () => {
@@ -104,12 +105,12 @@ describe('streamChatCompletion', () => {
     ).rejects.toThrow('API Error 500')
   })
 
-  it('HTTP 错误带 base_resp — 提取错误信息', async () => {
+  it('HTTP 错误带 error.message — 提取错误信息', async () => {
     mockFetch.mockResolvedValue({
       ok: false,
       status: 400,
       statusText: 'Bad Request',
-      json: vi.fn().mockResolvedValue({ base_resp: { status_msg: 'Invalid request' } }),
+      json: vi.fn().mockResolvedValue({ error: { type: 'invalid_request_error', message: 'Invalid request' } }),
     })
 
     await expect(
@@ -132,7 +133,7 @@ describe('streamChatCompletion', () => {
   it('JSON 解析错误 — 跳过该行不崩溃', async () => {
     const events = [
       'not-json{{{',
-      JSON.stringify({ type: 'content_block_delta', delta: { type: 'text_delta', text: 'OK' } }),
+      JSON.stringify({ choices: [{ delta: { content: 'OK' } }] }),
     ]
     mockFetch.mockResolvedValue(createMockResponse(events))
 
@@ -140,10 +141,18 @@ describe('streamChatCompletion', () => {
     expect(result).toBe('OK')
   })
 
-  it('system 消息被单独提取', async () => {
-    const events = [
-      JSON.stringify({ type: 'content_block_delta', delta: { type: 'text_delta', text: 'reply' } }),
-    ]
+  it('请求地址为 DeepSeek 端点', async () => {
+    const events = [JSON.stringify({ choices: [{ delta: { content: 'ok' } }] })]
+    mockFetch.mockResolvedValue(createMockResponse(events))
+
+    await streamChatCompletion([{ role: 'user', content: 'hi' }])
+
+    const url = mockFetch.mock.calls[0][0]
+    expect(url).toBe('/deepseek/v1/chat/completions')
+  })
+
+  it('system 消息保留在 messages 首位（OpenAI 格式）', async () => {
+    const events = [JSON.stringify({ choices: [{ delta: { content: 'reply' } }] })]
     mockFetch.mockResolvedValue(createMockResponse(events))
 
     await streamChatCompletion([
@@ -153,23 +162,32 @@ describe('streamChatCompletion', () => {
 
     const fetchCall = mockFetch.mock.calls[0]
     const body = JSON.parse(fetchCall[1].body)
-    expect(body.system).toBe('You are a teacher')
-    expect(body.messages).toHaveLength(1)
-    expect(body.messages[0].role).toBe('user')
+    expect(body.messages[0].role).toBe('system')
+    expect(body.messages[0].content).toBe('You are a teacher')
+    expect(body.messages[1].role).toBe('user')
   })
 
-  it('body 不包含 system 角色消息', async () => {
+  it('请求体包含 model / max_tokens / stream', async () => {
     const events = []
     mockFetch.mockResolvedValue(createMockResponse(events))
 
-    await streamChatCompletion([
-      { role: 'system', content: 'system prompt' },
-      { role: 'user', content: 'hello' },
-      { role: 'assistant', content: 'hi' },
-    ])
+    await streamChatCompletion([{ role: 'user', content: 'hello' }])
 
     const body = JSON.parse(mockFetch.mock.calls[0][1].body)
-    expect(body.messages.every((m: any) => m.role !== 'system')).toBe(true)
+    expect(body.stream).toBe(true)
+    expect(body.max_tokens).toBe(8192)
+    expect(typeof body.model).toBe('string')
+    expect(body.model.length).toBeGreaterThan(0)
+  })
+
+  it('鉴权使用 Authorization: Bearer', async () => {
+    const events = []
+    mockFetch.mockResolvedValue(createMockResponse(events))
+
+    await streamChatCompletion([{ role: 'user', content: 'hello' }])
+
+    const headers = mockFetch.mock.calls[0][1].headers
+    expect(headers.Authorization).toMatch(/^Bearer /)
   })
 })
 

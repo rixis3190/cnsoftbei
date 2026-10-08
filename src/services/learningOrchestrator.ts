@@ -1,4 +1,4 @@
-import { questions, learningPlan } from '../data/pythonQuestionBank';
+import { questions } from '../data/pythonQuestionBank';
 import type {
   CognitiveStyleLabel,
   DifficultyBand,
@@ -571,12 +571,16 @@ export function getSystemSnapshot(): SystemSnapshot {
   try {
     const raw = localStorage.getItem(userKey('studentProfile'));
     if (raw) profile = JSON.parse(raw);
-  } catch {}
+  } catch {
+    // localStorage 数据损坏时按「无画像」处理，不阻断快照生成
+  }
 
   try {
     const raw = localStorage.getItem(userKey('practiceState'));
     if (raw) practiceState = JSON.parse(raw);
-  } catch {}
+  } catch {
+    // localStorage 数据损坏时按「无练习记录」处理
+  }
 
   const report = practiceState?.lastEvaluationReport ?? null;
   const pathPlan = loadPathPlan();

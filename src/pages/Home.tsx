@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Card, Row, Col, Statistic, Progress, Typography, Tag, Space, Avatar, List, Table, Badge, Empty } from 'antd';
+import { Card, Row, Col, Statistic, Progress, Typography, Tag, Space, Avatar, List, Badge, Empty } from 'antd';
 import {
   FileTextOutlined,
   FireOutlined,
@@ -8,13 +8,12 @@ import {
   TeamOutlined,
   UserOutlined,
   MessageOutlined,
-  CheckCircleOutlined,
   RocketOutlined,
 } from '@ant-design/icons';
 import { initialProfile, homeStats, agentStatusList } from '../data/mockData';
 import type { StudentProfile, PracticeState } from '../types';
 import { userKey } from '../services/storage';
-import { loadPracticeState, learningPlan as practiceLearningPlan } from '../services/practiceGrader';
+import { loadPracticeState, learningPlan as practiceLearningPlan, questions as practiceQuestions } from '../services/practiceGrader';
 import { useAuth } from '../context/AuthContext';
 import { getAllFeedbacks, type Feedback } from '../services/feedback';
 
@@ -35,7 +34,14 @@ function tagToChinese(tag: string): string {
 
 // ==================== 学生仪表盘 ====================
 function StudentDashboard({ profile, practiceState }: { profile: StudentProfile; practiceState: PracticeState | null }) {
-  const totalQuestions = practiceLearningPlan.modules.reduce((s, m) => s + m.questionCount, 0);
+  // 各模块真实题量（由题库实时统计，避免与题库数据不同步）
+  const moduleQuestionCount = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const q of practiceQuestions) map.set(q.moduleId, (map.get(q.moduleId) ?? 0) + 1);
+    return map;
+  }, []);
+
+  const totalQuestions = practiceLearningPlan.modules.reduce((s, m) => s + (moduleQuestionCount.get(m.id) ?? 0), 0);
   const completedQuestions = practiceState?.results.length ?? 0;
   const correctCount = practiceState
     ? practiceState.results.filter(r => r.isCorrect === true || (r.aiScore !== undefined && r.aiScore >= 50)).length
@@ -52,8 +58,9 @@ function StudentDashboard({ profile, practiceState }: { profile: StudentProfile;
     return practiceLearningPlan.modules.find(m => m.id === best) || null;
   }, [practiceState]);
 
-  const topModulePercent = topModule && practiceState
-    ? Math.round((practiceState.results.filter(r => r.moduleId === topModule!.id).length / topModule!.questionCount) * 100)
+  const topModuleTotal = topModule ? moduleQuestionCount.get(topModule.id) ?? 0 : 0;
+  const topModulePercent = topModule && topModuleTotal > 0 && practiceState
+    ? Math.round((practiceState.results.filter(r => r.moduleId === topModule!.id).length / topModuleTotal) * 100)
     : 0;
 
   const topTagScores = useMemo(() => {

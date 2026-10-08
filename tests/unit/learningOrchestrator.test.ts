@@ -36,7 +36,6 @@ import {
   getSystemSnapshot,
   saveProfileAndNotify,
   loadProfileFromStorage,
-  broadcastEvent,
 } from '../../src/services/learningOrchestrator'
 import type { StudentProfile, TagScore, PracticeState, LearningProfileSnapshot } from '../../src/types'
 
