@@ -1,4 +1,6 @@
 import { streamChatCompletion } from './api';
+import { jaccardText } from './tutorQuality';
+import { buildGradeByAIMessages } from './promptBuilder';
 import type {
   PracticeQuestion,
   PracticeResult,
@@ -79,29 +81,15 @@ export async function gradeByAI(
   onChunk?: (text: string) => void
 ): Promise<number> {
   if (question.type === 'short') {
+    // prompt 收敛到 promptBuilder，消除双份真相（计划 S3-5 / S6-1）
+    const { system, user } = buildGradeByAIMessages(
+      question.question,
+      question.sampleAnswer ?? '',
+      userAnswer,
+    );
     const messages = [
-      {
-        role: 'system' as const,
-        content: `你是一个严谨的编程教育评估专家。请根据参考答案为用户的答案评分（0-100分）。
-评分标准：
-- 90-100：正确理解题意，答案完整准确，有深度
-- 70-89：基本正确，有少量遗漏或小错误
-- 50-69：理解部分题意，答案有较多不完整或错误
-- 20-49：理解基本错误，答案偏离题意
-- 0-19：完全错误或未作答
-
-请严格按此标准评分，不要随意给高分。`,
-      },
-      {
-        role: 'user' as const,
-        content: `题目：${question.question}
-
-参考答案：${question.sampleAnswer}
-
-用户答案：${userAnswer}
-
-请只输出一个0-100的整数分数，不要输出其他内容。`,
-      },
+      { role: 'system' as const, content: system },
+      { role: 'user' as const, content: user },
     ];
 
     let fullResponse = '';
@@ -129,20 +117,13 @@ export async function gradeByAI(
 }
 
 // ==================== 答案相似度计算（Jaccard） ====================
+// 统一到 tutorQuality 的实现（计划 S3-5 / S6-1，消除双份真相）。
+// 口径差异说明：旧实现按「单字 + 英文词」切词、两段皆空返回 1；
+// tutorQuality.extractTokens 按中文 2-gram 切词、两段皆空返回 0。
+// 现有 practiceGrader 测试全部零改动通过（assertScoreReasonable 的判定边界未变），
+// 说明该差异不影响既有判分结论。
 function jaccardSimilarity(a: string, b: string): number {
-  const tokenize = (s: string) => {
-    // 按中文字符和英文单词分词
-    const tokens = s.match(/[一-鿿]|[a-zA-Z]+/g) || [];
-    return new Set(tokens.map(t => t.toLowerCase()));
-  };
-  const setA = tokenize(a);
-  const setB = tokenize(b);
-  if (setA.size === 0 && setB.size === 0) return 1;
-  let intersection = 0;
-  for (const t of setA) {
-    if (setB.has(t)) intersection++;
-  }
-  return intersection / (setA.size + setB.size - intersection);
+  return jaccardText(a, b);
 }
 
 // ==================== AI 判分合理性断言 ====================

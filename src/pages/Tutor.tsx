@@ -29,8 +29,11 @@ import {
   buildRegenerateSystemPrompt,
   buildRegenerateUserPrompt,
   buildRelevanceCheckPrompt,
+  buildQualityReviewMessages,
+  buildRagRegenerateHint,
 } from '../services/promptBuilder';
 import { validateAnswerRules, findBestMatchByKeywords } from '../services/tutorQuality';
+import { runQualityFunnel } from '../services/qualityFunnel';
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -185,27 +188,28 @@ const Tutor: React.FC = () => {
   // 规则校验已从 tutorQuality.ts 导入
 
   // AI 交叉评审回答质量（0-100 分）
-  const aiReviewAnswer = async (questionText: string, answer: string): Promise<number> => {
+  // 降级语义显式化：解析失败/调用失败返回 degraded=true，不再「假装 80 分通过」（计划 S3-6）
+  const aiReviewAnswer = async (
+    questionText: string,
+    answer: string,
+  ): Promise<{ score: number | null; degraded: boolean }> => {
     try {
-      const messages = [
-        {
-          role: 'system' as const,
-          content: '你是一个严格的教育内容质量评审员。请评估以下回答的质量（0-100分）。评分标准：准确性(40%)、完整性(30%)、清晰度(20%)、实用性(10%)。只输出一个整数分数。',
-        },
-        {
-          role: 'user' as const,
-          content: `问题：${questionText}\n\n回答：${answer.substring(0, 2000)}\n\n请只输出一个0-100的整数分数。`,
-        },
-      ];
-      const result = await chatCompletion(messages);
+      const { system, user } = buildQualityReviewMessages(questionText, answer);
+      const result = await chatCompletion([
+        { role: 'system' as const, content: system },
+        { role: 'user' as const, content: user },
+      ]);
       const match = result.match(/\d+/);
       if (match) {
         const score = parseInt(match[0], 10);
-        return Math.min(100, Math.max(0, score));
+        return { score: Math.min(100, Math.max(0, score)), degraded: false };
       }
-      return 80; // 解析失败默认通过
+      // 解析失败：评审不可用，不阻塞用户体验
+      console.warn('[Tutor QA] 评审结果无法解析为分数，视为降级');
+      return { score: null, degraded: true };
     } catch {
-      return 80; // 评审失败默认通过，不阻塞用户体验
+      console.warn('[Tutor QA] 评审调用失败，视为降级（不阻塞）');
+      return { score: null, degraded: true };
     }
   };
 
@@ -235,18 +239,37 @@ const Tutor: React.FC = () => {
       return fullAnswer; // 规则不通过但不重试，直接返回（避免频繁调 API）
     }
 
-    // AI 交叉评审
+    // AI 交叉评审（带漏斗：规则 → 语义 → 模型，计划 S3-6）
     let lastAnswer = fullAnswer;
+    let degradedCount = 0;
     for (let attempt = 0; attempt < maxRetries; attempt++) {
-      const reviewScore = await aiReviewAnswer(questionText, lastAnswer);
-      if (reviewScore >= 70) break;
+      const funnel = await runQualityFunnel({
+        answer: lastAnswer,
+        questionText,
+        enableModel: true,
+        callModel: async (a, q) => {
+          const review = await aiReviewAnswer(q, a);
+          if (review.degraded || review.score === null) {
+            throw new Error('评审降级');
+          }
+          return review.score;
+        },
+      });
+      if (funnel.modelDegraded) degradedCount++;
+      if (funnel.accepted) {
+        if (funnel.modelDegraded) {
+          console.log(`[Tutor QA] 模型评审降级（不阻塞），降级次数 ${degradedCount}`);
+        }
+        break;
+      }
 
-      // 评审不通过，重新生成（带评审反馈）
-      console.log(`[Tutor QA] AI 评审分数 ${reviewScore} < 70，第 ${attempt + 1} 次重试`);
+      // 被拦截：带反馈重新生成
+      const reason = funnel.reasons.join('；');
+      console.log(`[Tutor QA] ${funnel.blockedBy} 层拦截（${reason}），第 ${attempt + 1} 次重试`);
       const retryMessages = [
         ...messages,
         { role: 'assistant' as const, content: lastAnswer },
-        { role: 'user' as const, content: `你的回答质量评分仅 ${reviewScore} 分，请改进回答的准确性、完整性和清晰度，重新回答。` },
+        { role: 'user' as const, content: buildRagRegenerateHint(funnel.reasons) },
       ];
       lastAnswer = '';
       await streamChatCompletion(
