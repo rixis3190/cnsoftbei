@@ -55,8 +55,10 @@ export interface GoldenItem {
 export interface GoldenMeta {
   version: number
   generatedBy: string
-  /** template=脚本派生初稿；human=全部人工审校 */
-  anchorSource: 'template' | 'human'
+  /** template=脚本派生初稿；curated=脚本派生 + 定向修订（含 AI 辅助审校）；human=全部人工审校 */
+  anchorSource: 'template' | 'curated' | 'human'
+  /** 审校方式说明（如实记录，未经人工确认不得声称人工逐条审校） */
+  reviewedBy?: string
   reviewedCount: number
   goldCount: number
   smokeCount: number

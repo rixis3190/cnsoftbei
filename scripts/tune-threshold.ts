@@ -152,16 +152,26 @@ function build() {
   // 负样本多样性：模板派生时所有 poor 锚点是同一句话，负样本不含真实区分信息
   const negativeDiversity = new Set(negatives.map(s => s.toFixed(4))).size
   const jOk = plateau.youdenJ >= MIN_USABLE_YOUDEN_J
-  const reasons: string[] = []
-  if (!jOk) reasons.push(`Youden J=${plateau.youdenJ} < ${MIN_USABLE_YOUDEN_J}`)
-  if (overlapping) reasons.push('正负样本中位数重叠')
+  // 最危险的负样本必须落在阈值下方：J=1.00 也可能是「负样本同质」造成的假象，
+  // 逐条看最差正样本/最好负样本才是真正决定阈值能否拦截的依据（评审要求）。
+  const strongestNegative = Math.max(...negatives)
+  const weakestPositive = Math.min(...positives)
+  const reason: string[] = []
+  if (!jOk) reason.push(`Youden J=${plateau.youdenJ} < ${MIN_USABLE_YOUDEN_J}`)
+  if (overlapping) reason.push('正负样本中位数重叠')
   if (negativeDiversity < Math.max(5, Math.floor(negatives.length / 10))) {
-    reasons.push(`负样本只有 ${negativeDiversity} 种不同得分，区分信息不足`)
+    reason.push(`负样本只有 ${negativeDiversity} 种不同得分，区分信息不足`)
+  }
+  if (strongestNegative >= plateau.threshold) {
+    reason.push(`最强负样本得分 ${strongestNegative.toFixed(2)} ≥ 阈值 ${plateau.threshold}`)
+  }
+  if (weakestPositive < plateau.threshold) {
+    reason.push(`最弱正样本得分 ${weakestPositive.toFixed(2)} < 阈值 ${plateau.threshold}`)
   }
   if (!THRESHOLD_PROVENANCE.humanReviewed) {
-    reasons.push('锚点未人工审校（anchorSource=template），结论只能验证流程')
+    reason.push(`锚点未复核（anchorSource=${THRESHOLD_PROVENANCE.anchorSource}），结论只能验证流程`)
   }
-  const usable = reasons.length === 0
+  const usable = reason.length === 0
 
   return {
     meta: {
@@ -170,8 +180,8 @@ function build() {
       humanReviewed: THRESHOLD_PROVENANCE.humanReviewed,
       sampleSize: { positive: positives.length, negative: negatives.length },
       note:
-        '锚点为脚本派生初稿时，本报告只能验证标定流程，' +
-        '不能作为「该阈值可用于线上拦截」的依据（计划 T3-1 / S1-4）。',
+        'usable=true 仅代表「基准集自洽且阈值落在可分区间」；' +
+        '是否解除语义层影子模式，还需要人工抽检基准集与样本量扩充（计划 §9.5 R5）。',
     },
     result: {
       optimalThreshold: plateau.threshold,
@@ -185,13 +195,16 @@ function build() {
       tprFprAtNearestPoint: Number(nearestPoint(points, plateau.threshold).threshold.toFixed(1)),
       positiveMedian: Number(posMedian.toFixed(2)),
       negativeMedian: Number(negMedian.toFixed(2)),
+      /** 最强负样本 / 最弱正样本：决定阈值能否真正分开两类（比中位数更严格） */
+      strongestNegative: Number(strongestNegative.toFixed(2)),
+      weakestPositive: Number(weakestPositive.toFixed(2)),
       scoreRange: { min: Math.min(...positives, ...negatives), max: Math.max(...positives, ...negatives) },
       mediansOverlap: overlapping,
       negativeDiversity,
       usable,
       usableReason: usable
-        ? 'Youden J 达标、正负中位数可分、负样本有多样性且锚点已人工审校'
-        : `${reasons.join('；')} → 建议保持影子模式（只记录不拦截）`,
+        ? 'Youden J 达标、正负中位数可分、负样本有多样性、最强负样本 < 阈值 ≤ 最弱正样本且锚点已复核'
+        : `${reason.join('；')} → 建议保持影子模式（只记录不拦截）`,
     },
     loo: {
       folds: loo.length,

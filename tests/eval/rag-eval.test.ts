@@ -238,10 +238,12 @@ describe('withRag / withoutRag 对照（模拟对照，非真实模型输出）'
     expect(avgWith).toBeGreaterThan(avgWithout)
   })
 
-  it('通过率指标在当前阈值下饱和（两组都 100%）——这正是影子模式的理由', () => {
-    // 实测结论：阈值 61 对「excellent / fair」两档都判通过，
-    // 因此**阈值化指标无法区分**这两档，只有连续分数能区分。
-    // 这条断言把这个事实钉住：若将来有人调低阈值/换数据集，它会失败并提醒复核。
+  it('通过率指标在 excellent 档饱和、在 fair 档不饱和——阈值确有区分度（2026-10-08 复核口径）', () => {
+    // 旧口径（阈值 61 + 模板锚点）：excellent 与 fair **都** 100% 通过，
+    // 说明当时阈值对「好 / 中等」两档完全无区分度，这正是保持影子模式的理由。
+    // 复核后（阈值 84 + curated 锚点）：excellent 仍贴顶（满分回答必然通过），
+    // 但 fair 只有约 3/4 通过 —— 阈值现在能区分「完整回答」与「只答出一部分」。
+    // 若将来有人改动阈值或数据集，这条断言会失败并提醒重新复核（不要静默漂移）。
     const sample = golden.slice(0, 40)
     const provider = getIndex()!.provider
     const passWith =
@@ -251,7 +253,8 @@ describe('withRag / withoutRag 对照（模拟对照，非真实模型输出）'
       sample.filter(i => scoreAnswer(i.anchors.fair, i, { scorer: provider }).total >= SEMANTIC_PASS_SCORE)
         .length / sample.length
     expect(passWith).toBe(1)
-    expect(passWithout).toBe(1)
+    expect(passWithout).toBeGreaterThan(0.5)
+    expect(passWithout).toBeLessThan(passWith)
   })
 })
 

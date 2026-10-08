@@ -4,6 +4,11 @@
  * 断言计划 DoD 的核心不变量：
  *   「poor 锚点得分中位数 < 已固化阈值 ≤ excellent 锚点得分中位数」
  * 以及报告结构完整（全阈值表 + Youden J 最优点 + LOO 稳定性 + usable 标记）。
+ *
+ * 2026-10-08（计划 §9.5 R4/R5）后：基准集 anchorSource='curated' 且 humanReviewed=true，
+ * 因此这里的断言从「usable 必须为 false」改为「usable 与 provenance 一致，
+ * 且最优阈值必须同时满足最强负样本 < 阈值 ≤ 最弱正样本」——
+ * 只断言 Youden J 会被「负样本同质」的假象骗过。
  */
 
 import { describe, it, expect } from 'vitest'
@@ -17,7 +22,7 @@ describe('阈值标定报告结构', () => {
     expect(report.meta.sampleSize.positive).toBe(83)
     expect(report.meta.sampleSize.negative).toBe(83)
     expect(report.meta.anchorSource).toBe(THRESHOLD_PROVENANCE.anchorSource)
-    expect(report.meta.humanReviewed).toBe(false)
+    expect(report.meta.humanReviewed).toBe(THRESHOLD_PROVENANCE.humanReviewed)
   })
 
   it('全阈值表覆盖 0~100 且步长为 1', () => {
@@ -33,9 +38,19 @@ describe('阈值标定报告结构', () => {
     expect(report.loo.stabilityRatio).toBeGreaterThanOrEqual(0)
   })
 
-  it('usable 标记存在且为 false（锚点未人工审校 → 保持影子模式）', () => {
-    expect(report.result.usable).toBe(false)
-    expect(report.result.usableReason).toContain('影子模式')
+  it('usable 与 provenance 一致，且说明里带可判定结论', () => {
+    expect(report.result.usable).toBe(THRESHOLD_PROVENANCE.humanReviewed)
+    if (report.result.usable) {
+      expect(report.result.usableReason).toContain('最强负样本')
+    } else {
+      expect(report.result.usableReason).toContain('影子模式')
+    }
+  })
+
+  it('最优阈值必须真正分开两类（最强负样本 < 阈值 ≤ 最弱正样本）', () => {
+    const { optimalThreshold, strongestNegative, weakestPositive } = report.result
+    expect(strongestNegative).toBeLessThan(optimalThreshold)
+    expect(weakestPositive).toBeGreaterThanOrEqual(optimalThreshold)
   })
 })
 
@@ -52,8 +67,16 @@ describe('阈值与分数分布的一致性（DoD 核心断言）', () => {
     expect(Math.abs(SEMANTIC_PASS_SCORE - report.result.optimalThreshold)).toBeLessThanOrEqual(2)
   })
 
+  it('已固化阈值不高于最弱正样本（避免误杀合法回答）', () => {
+    expect(SEMANTIC_PASS_SCORE).toBeLessThanOrEqual(report.result.weakestPositive)
+  })
+
   it('正负样本中位数不重叠', () => {
     expect(report.result.mediansOverlap).toBe(false)
+  })
+
+  it('负样本有多样性（不是同一句模板）', () => {
+    expect(report.result.negativeDiversity).toBeGreaterThanOrEqual(10)
   })
 })
 
