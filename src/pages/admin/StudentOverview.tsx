@@ -4,7 +4,7 @@
  * 功能：查看所有学生的画像、练习进度、学习路径
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Card, Table, Tag, Button, Modal, Descriptions, Typography, Space, Progress, Row, Col, Statistic, Empty } from 'antd'
 import { EyeOutlined, TeamOutlined } from '@ant-design/icons'
 import { useAuth, type User } from '../../context/AuthContext'
@@ -38,15 +38,12 @@ function loadStudentData(user: User): StudentData {
 
 const StudentOverview: React.FC = () => {
   const { getAllUsers } = useAuth()
-  const [students, setStudents] = useState<StudentData[]>([])
+  // 初始列表在首帧同步读取（与原先 mount 后同步加载的结果一致）
+  const [students] = useState<StudentData[]>(() =>
+    getAllUsers().filter(u => u.role === 'student').map(loadStudentData)
+  )
   const [detailOpen, setDetailOpen] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<StudentData | null>(null)
-
-  useEffect(() => {
-    const allUsers = getAllUsers()
-    const studentUsers = allUsers.filter(u => u.role === 'student')
-    setStudents(studentUsers.map(loadStudentData))
-  }, [])
 
   const handleViewDetail = (student: StudentData) => {
     setSelectedStudent(student)

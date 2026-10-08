@@ -112,6 +112,25 @@ function seedUsers(): User[] {
   return users
 }
 
+/**
+ * 首帧登录态恢复结果。
+ * `staleUser` 非空表示 localStorage 里的登录用户已不存在，需要清理（由 effect 完成写操作）。
+ */
+interface InitialAuthState {
+  user: User | null
+  staleUser: boolean
+}
+
+/** 初始化：seed 预置账号 + 恢复登录态。纯计算，可在首帧同步完成 */
+function initAuthState(): InitialAuthState {
+  seedUsers()
+  const saved = loadCurrentUser()
+  if (!saved) return { user: null, staleUser: false }
+  // 验证用户仍然存在
+  const exists = loadUsers().find(u => u.id === saved.id)
+  return exists ? { user: exists, staleUser: false } : { user: null, staleUser: true }
+}
+
 // ==================== Context ====================
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -119,25 +138,16 @@ const AuthContext = createContext<AuthContextType | null>(null)
 // ==================== Provider ====================
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [ready, setReady] = useState(false)
+  // 登录态在首帧同步恢复，避免「先渲染未登录态再纠正」的闪烁与级联渲染
+  const [initial] = useState<InitialAuthState>(initAuthState)
+  const [currentUser, setCurrentUser] = useState<User | null>(initial.user)
 
-  // 初始化：seed 预置账号 + 恢复登录状态
+  // 失效登录态的清理只涉及 localStorage 写入，不需要触发渲染
   useEffect(() => {
-    seedUsers()
-    const saved = loadCurrentUser()
-    if (saved) {
-      // 验证用户仍然存在
-      const users = loadUsers()
-      const exists = users.find(u => u.id === saved.id)
-      if (exists) {
-        setCurrentUser(exists)
-      } else {
-        saveCurrentUser(null)
-      }
+    if (initial.staleUser) {
+      saveCurrentUser(null)
     }
-    setReady(true)
-  }, [])
+  }, [initial.staleUser])
 
   const login = useCallback((username: string, password: string): boolean => {
     const users = loadUsers()
@@ -238,9 +248,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateUserRole,
     resetPassword,
   }
-
-  // 等待初始化完成
-  if (!ready) return null
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

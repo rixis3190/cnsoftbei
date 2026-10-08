@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, Row, Col, Statistic, Progress, Typography, Tag, Space, Avatar, List, Badge, Empty } from 'antd';
 import {
   FileTextOutlined,
@@ -15,9 +15,20 @@ import type { StudentProfile, PracticeState } from '../types';
 import { userKey } from '../services/storage';
 import { loadPracticeState, learningPlan as practiceLearningPlan, questions as practiceQuestions } from '../services/practiceGrader';
 import { useAuth } from '../context/AuthContext';
-import { getAllFeedbacks, type Feedback } from '../services/feedback';
+import { getAllFeedbacks } from '../services/feedback';
 
 const { Title, Text } = Typography;
+
+// ==================== 本地存储读取 ====================
+/** 从 localStorage 读取学生画像，解析失败按无画像处理 */
+function loadInitialProfile(): StudentProfile | null {
+  try {
+    const saved = localStorage.getItem(userKey('studentProfile'));
+    return saved ? JSON.parse(saved) : null;
+  } catch {
+    return null;
+  }
+}
 
 // ==================== Tag 中文映射 ====================
 function tagToChinese(tag: string): string {
@@ -158,15 +169,10 @@ function StudentDashboard({ profile, practiceState }: { profile: StudentProfile;
 // ==================== 老师仪表盘 ====================
 function TeacherDashboard({ profile, practiceState }: { profile: StudentProfile; practiceState: PracticeState | null }) {
   const { getAllUsers } = useAuth();
-  const [studentCount, setStudentCount] = useState(0);
-  const [studentStats, setStudentStats] = useState<{ name: string; questions: number; hasProfile: boolean }[]>([]);
-
-  useEffect(() => {
-    const users = getAllUsers();
-    const students = users.filter(u => u.role === 'student');
-    setStudentCount(students.length);
-
-    const stats = students.map(s => {
+  // 学生概况完全由用户列表 + localStorage 派生，渲染期计算即可（原先在 mount 后 setState）
+  const studentStats = useMemo(() => {
+    const students = getAllUsers().filter(u => u.role === 'student');
+    return students.map(s => {
       try {
         const prRaw = localStorage.getItem(`${s.id}_practiceState`);
         const pr: PracticeState | null = prRaw ? JSON.parse(prRaw) : null;
@@ -180,8 +186,8 @@ function TeacherDashboard({ profile, practiceState }: { profile: StudentProfile;
         return { name: s.name, questions: 0, hasProfile: false };
       }
     });
-    setStudentStats(stats);
-  }, []);
+  }, [getAllUsers]);
+  const studentCount = studentStats.length;
 
   // 老师自己的学习数据
   const myTotal = practiceState?.results.length ?? 0;
@@ -269,28 +275,21 @@ function TeacherDashboard({ profile, practiceState }: { profile: StudentProfile;
 // ==================== 管理员仪表盘 ====================
 function AdminDashboard() {
   const { getAllUsers } = useAuth();
-  const [userCount, setUserCount] = useState(0);
-  const [roleCounts, setRoleCounts] = useState({ student: 0, teacher: 0, admin: 0 });
-  const [feedbackStats, setFeedbackStats] = useState({ total: 0, pending: 0, resolved: 0 });
-  const [recentFeedbacks, setRecentFeedbacks] = useState<Feedback[]>([]);
-
-  useEffect(() => {
-    const users = getAllUsers();
-    setUserCount(users.length);
-    setRoleCounts({
-      student: users.filter(u => u.role === 'student').length,
-      teacher: users.filter(u => u.role === 'teacher').length,
-      admin: users.filter(u => u.role === 'admin').length,
-    });
-
-    const fbs = getAllFeedbacks();
-    setFeedbackStats({
-      total: fbs.length,
-      pending: fbs.filter(f => f.status === 'pending').length,
-      resolved: fbs.filter(f => f.status === 'resolved').length,
-    });
-    setRecentFeedbacks(fbs.slice(0, 5));
-  }, []);
+  // 管理面板数据全部为派生值，渲染期计算即可（原先在 mount 后 setState）
+  const users = useMemo(() => getAllUsers(), [getAllUsers]);
+  const feedbacks = useMemo(() => getAllFeedbacks(), []);
+  const userCount = users.length;
+  const roleCounts = useMemo(() => ({
+    student: users.filter(u => u.role === 'student').length,
+    teacher: users.filter(u => u.role === 'teacher').length,
+    admin: users.filter(u => u.role === 'admin').length,
+  }), [users]);
+  const feedbackStats = useMemo(() => ({
+    total: feedbacks.length,
+    pending: feedbacks.filter(f => f.status === 'pending').length,
+    resolved: feedbacks.filter(f => f.status === 'resolved').length,
+  }), [feedbacks]);
+  const recentFeedbacks = useMemo(() => feedbacks.slice(0, 5), [feedbacks]);
 
   const TYPE_MAP: Record<string, { label: string; color: string }> = {
     bug: { label: 'Bug', color: 'red' },
@@ -396,17 +395,9 @@ function AdminDashboard() {
 // ==================== 主组件 ====================
 const Home: React.FC = () => {
   const { currentUser, isAdmin, isTeacher } = useAuth();
-  const [profile, setProfile] = useState<StudentProfile | null>(null);
-  const [practiceState, setPracticeState] = useState<PracticeState | null>(null);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(userKey('studentProfile'));
-      if (saved) setProfile(JSON.parse(saved));
-    } catch { /* ignore */ }
-    const ps = loadPracticeState();
-    if (ps) setPracticeState(ps);
-  }, []);
+  // 画像与练习进度在首帧同步读取（原先在 mount 后 setState，会多一次级联渲染）
+  const [profile] = useState<StudentProfile | null>(() => loadInitialProfile());
+  const [practiceState] = useState<PracticeState | null>(() => loadPracticeState());
 
   // 没有画像时，用当前登录用户的信息兜底（不再用 mock 的"张三"）
   const fallbackProfile: StudentProfile = {

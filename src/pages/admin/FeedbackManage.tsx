@@ -2,7 +2,7 @@
  * FeedbackManage — 管理员反馈管理页面
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Card, Table, Tag, Button, message, Space, Typography, Popconfirm, Descriptions, Modal, Badge } from 'antd'
 import { CheckCircleOutlined, DeleteOutlined, EyeOutlined, MessageOutlined } from '@ant-design/icons'
 import { getAllFeedbacks, resolveFeedback, deleteFeedback, type Feedback } from '../../services/feedback'
@@ -16,13 +16,12 @@ const TYPE_MAP: Record<string, { label: string; color: string }> = {
 }
 
 const FeedbackManage: React.FC = () => {
-  const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
+  // 初始列表在首帧同步读取，后续操作后由 refresh 重新拉取
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>(() => getAllFeedbacks())
   const [detailOpen, setDetailOpen] = useState(false)
   const [selected, setSelected] = useState<Feedback | null>(null)
 
   const refresh = () => setFeedbacks(getAllFeedbacks())
-
-  useEffect(() => { refresh() }, [])
 
   const handleResolve = (fb: Feedback) => {
     resolveFeedback(fb.id)
