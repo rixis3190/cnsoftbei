@@ -253,8 +253,14 @@ export function main(): void {
       )
     }
     if (!report.result.usable) {
-      console.warn(`[threshold:check] ⚠ 告警：${report.result.usableReason}`)
+      // 注意：**不要**因为这个告警退出非 0。
+      // 「锚点尚未人工审校」在人工审校前一直为真；若让它决定退出码，
+      // CI 的 eval job 会永久变黄，真实的漂移与损坏就被淹没了。
+      console.warn(`[threshold:check] ⚠ 告警（不阻断）：${report.result.usableReason}`)
     }
+    // 退出码约定：--check 模式**始终退出 0**（漂移与 provenance 都只是告警，
+    // 符合计划 T3-R2「只比对、超出则告警不阻断」）；
+    // 非 0 退出只保留给硬错误（如 RAG 索引不可用 → build() 抛异常）。
     return
   }
 

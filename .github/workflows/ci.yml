@@ -101,6 +101,8 @@ jobs:
         continue-on-error: true
         run: npm run vectors:build -- --check
 
+      # --check 自身始终退出 0（漂移只告警，见计划 T3-R2）；
+      # continue-on-error 是为了兜住「脚本硬错误」（如索引不可用）时的观察期语义
       - name: 阈值仍接近最优
         continue-on-error: true
         run: npm run threshold:tune -- --check

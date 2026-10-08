@@ -340,13 +340,9 @@ describe('产出 rag-metrics.json', () => {
           ndcgAt3: paraphraseMetrics.ndcg,
           noHintRecallAt3: paraphraseNoHint.recall,
         },
-        // 与生产一致（不传 tagHint）的真实检索质量
-        paraphraseNoHint: {
-          count: paraphraseNoHint.validCount,
-          recallAt3: paraphraseNoHint.recall,
-          /** 报告侧把它并到 paraphrase 一行展示，避免读者把「标签路由上限」当质量 */
-          noHintRecallAt3: paraphraseNoHint.recall,
-        },
+        // 注：不额外挂一个顶层 paraphraseNoHint 条目 —— 报告的表格是按
+        // 「每个 key 都是一种检索类型」渲染的，混入不同结构的对象会让渲染崩掉。
+        // 无 tagHint 的数值统一放在各类型的 noHintRecallAt3 字段里。
         overview: {
           count: overviewMetrics.validCount,
           recallAt3: overviewMetrics.recall,

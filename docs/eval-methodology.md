@@ -16,8 +16,10 @@
 | Recall@3 / MRR / NDCG@3 | 检索质量 | 确定性（检索是纯计算） | 有门禁（stem 类 ≥0.9） |
 | 忠实度 | 被支撑断言句 / 总断言句 | **观测指标，不进门禁** | 只记录 |
 
-**降级可观测性**：`runQualityFunnel` 返回 `layersRun`（跑了哪些层）与 `layersSkipped`（没跑哪些层）。
-报告与日志必须同时看这两个字段 —— 只看 `accepted` 无法区分「语义层通过」与「语义层没跑」。
+**降级可观测性**：`runQualityFunnel` 返回 `layersRun`（跑了哪些层）与 `layersSkipped`（没跑哪些层），
+并保证不变量 `layersRun ∪ layersSkipped = {rule, semantic, model}` 且两者不相交（有单测钉住）。
+**当前只有 console 日志消费它们，`eval-report.html` 侧尚未接线降级卡片** ——
+看降级要去日志，不要以为报告里有。
 
 ## 1. 怎么跑
 
@@ -91,8 +93,19 @@ CI 对应 job：
     因此 `Recall@3` 的上限是 `min(1, 3/金标块数)`；
   - `overview`（43 条）：概览型提问，目标是 `tag-overview` 块。
 
-实测（2026-10-08 口径修正后）：stem 0.976 / paraphrase 0.333 / overview 0.372（Recall@3）；
-MRR 分别为 0.924 / 0.210 / 0.264。
+实测（2026-10-08 口径修正后）：stem 0.976 / paraphrase 0.333 / overview 0.349（Recall@3）；
+MRR 分别为 0.924 / 0.210 / 0.271。
+
+**其中 paraphrase 分两栏，不可混读**：
+
+| 口径 | Recall@3 | 含义 |
+|---|---|---|
+| 带 `tagHint`（标签路由） | 0.333 | 候选集被限定在该标签内 → 接近结构性上限，**不携带排序信息** |
+| **不带 `tagHint`（= 生产路径）** | **0.130** | 真实的检索质量。Tutor 调 `retrieveForQuestion(q, { topK: 3 })` 不传 hint |
+
+生产路径只有 0.130 是**已知弱点**，不能靠带 hint 的 0.333 掩盖。
+下一步的改进方向（尚未实施）：在 UI 已有「当前知识点」上下文时把 tag 作为 hint 传下去，
+把 0.130 拉向 0.333 —— 这才是 tag 过滤真正的价值场景。
 
 > **口径变更记录**：paraphrase 的金标集合原先按 `chunk.tags[0]` 过滤，
 > 而检索侧的 tag 过滤是 `chunk.tags.some(...)`（任一标签命中）。两者不一致会导致
