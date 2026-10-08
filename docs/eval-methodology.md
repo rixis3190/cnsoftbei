@@ -18,8 +18,12 @@
 
 **降级可观测性**：`runQualityFunnel` 返回 `layersRun`（跑了哪些层）与 `layersSkipped`（没跑哪些层），
 并保证不变量 `layersRun ∪ layersSkipped = {rule, semantic, model}` 且两者不相交（有单测钉住）。
-**当前只有 console 日志消费它们，`eval-report.html` 侧尚未接线降级卡片** ——
-看降级要去日志，不要以为报告里有。
+
+2026-10-08 起 **`eval-report.html` 已有「降级可观测（§1.3）」卡片**，含三项：
+规则层否决数（禁止项命中）、覆盖率不达标数（< 60%）、检索无覆盖查询数（不注入上下文的 L3 降级）。
+数据来源：`test-results/golden-eval.json` 的 `summary.degradation` 与 `test-results/rag-metrics.json` 的 `degradation`。
+两条守卫断言钉住「负样本不能靠否决取胜」：excellent 锚点被否决数必须为 0，
+poor 锚点被否决数必须为 0（否则阈值标定失去意义）。
 
 ## 1. 怎么跑
 
@@ -56,16 +60,24 @@ CI 对应 job：
 
 ### 2.1 标注现状（必须知道的事实）
 
-`meta.anchorSource = 'template'`、`reviewedCount = 0`：要点/禁止项/锚点目前是
-**脚本派生初稿**（`scripts/gen-golden-dataset.ts`），**尚未人工审校**。
+2026-10-08 复核后：`meta.anchorSource = 'curated'`、`reviewedCount = 113`、
+`meta.reviewedBy = 'ai-assisted-systematic-review'`。
 
-- 要点：从「参考答案 + 题库解析」按中文标点切分，单条 ≤20 字；
-- 禁止项：按 (题库, 标签) 取人工整理的常见误区表（见脚本内 `MISCONCEPTIONS`）；
-- 锚点：`excellent = 参考答案 + 解析`，`fair = 前两个要点`，`poor = 固定一句「记不太清，抱歉。」`。
+- 要点：从「参考答案 + 题库解析」按**句子**抽取（先保护括号与列表序号，避免 `a=[1,2]`、
+  `不可变对象(int` 这类碎片），超长句子在子句达标时才切分，单条 ≤20 字；
+- 禁止项：按**归一化后的标签**（`normalizeTags`）取人工整理的常见误区表，再按与参考答案的
+  词面重合度排序并剔除自相矛盾项。**注意 database 题库的原始标签是中文**（「SQL基础」等），
+  不做归一化会命中 0 条候选、退化成占位项（2026-10-08 实测的 15 条占位项即由此产生）；
+- 锚点：`excellent = 参考答案 + 解析`（长度不足时补说明句以维持单调性）、
+  `fair = excellent 的较长前缀`、`poor = 参考答案短前缀 + 固定含糊表述（「细节记不清了」）`。
 
-因为负样本锚点是**同一句话**，负样本不含真实区分信息，所以
-`threshold:tune` 会输出 `usable = false` 并建议保持影子模式。
-**人工审校完成（计划 S1-4）之前，本目录任何数字都不能写进简历。**
+**为什么 poor 不用禁止项里的错误说法**：禁止项是硬否决（命中即 0 分），
+若负样本自身就是禁止项，83 条负样本得分会恒为 0 —— 那只能证明否决规则能触发，
+**不能检验语义阈值**，`negativeDiversity` 会退化为 1 且 `usable` 永远不通过。
+所以负样本刻意不含错误说法原文，靠「覆盖不足 + 表述含糊」拿低分。
+
+**当前仍未完成的**：人工抽检（`reviewedBy` 记录的是 AI 辅助系统化审校）。
+在人工抽检确认前，本目录的数字可用于**流程验证**，对外引用需先确认这一点。
 
 ## 3. 阈值是怎么来的
 
@@ -75,12 +87,24 @@ CI 对应 job：
 2. 逐阈值 0~100（步长 1）算 TPR / FPR / 精确率 / 召回 / F1 / Youden J；
 3. 取 Youden J **平坦区中心**（J ≥ maxJ − 0.02 的区间中心），避免选到尖峰（G-12）；
 4. LOO 交叉验证（留一条）输出折间稳定性；
-5. 输出 `usable` 判定：Youden J < 0.3、正负中位数重叠、负样本多样性不足、锚点未人工审校 —— 任一命中即 `usable=false`。
+5. 输出 `usable` 判定：Youden J < 0.3、正负中位数重叠、负样本多样性不足、
+   **最强负样本 ≥ 阈值**、**最弱正样本 < 阈值**、锚点未复核 —— 任一命中即 `usable=false`。
 
-实测（模板锚点，83+83）：最优阈值 **61**，J = 1.00，TPR = 1.00，FPR = 0.00，LOO 83 折准确率 1.00，
-但 `usable=false`（锚点未审校 + 负样本单一）。
+最后两条是 2026-10-08 复核时新加的：只看中位数可分是不够的（一条满分负样本就能推翻整个阈值），
+必须逐条确认「阈值确实把两类分开了」。
 
-**J = 1.00 本身是可疑信号**，不是成绩。
+实测（curated 锚点，83+83，2026-10-08）：最优阈值 **74**，J = 1.00，TPR = 1.00，FPR = 0.00，
+LOO 83 折准确率 1.00；**最强负样本 54.69 < 74 ≤ 最弱正样本 100**，负样本得分唯一值 74 种、
+无一条被硬否决。`usable = true`。
+
+**J = 1.00 仍然需要解释**，不能单独当成绩：
+修订前负样本是同一句「不知道。」，J=1.00 是负样本同质造成的假象（唯一值只有 1 种）；
+修订后负样本来自 83 个不同题目、得分覆盖面广，J=1.00 才有意义。
+**引用阈值时必须同时引用「最强负样本 < 阈值 ≤ 最弱正样本」这条**，而不是只引用 J。
+
+**仍未解除影子模式的原因**：正样本得分贴顶（余弦+覆盖率在「回答≈参考答案」时饱和），
+阈值取自平台区中心，对「要点覆盖不全但方向正确」的真实回答可能偏严；
+且样本 83 条与题库同源、尚未人工抽检。因此 `SEMANTIC_SHADOW_MODE` 保持 `true`。
 
 ## 4. 检索指标口径
 
@@ -134,9 +158,27 @@ MRR 分别为 0.924 / 0.210 / 0.271。
 
 开关全在 `src/config/evalConfig.ts`，回滚优先级最高（改 1 行配置，不动逻辑）。
 
-## 6. 常见坑
+## 6. 体积留痕（RAG 落地后，计划 §9.5 R9）
+
+`npm run build && npm run measure:size` 实测（2026-10-08）：
+
+| 口径 | 数值 | 说明 |
+|---|---|---|
+| 首屏合计 | 31 个 chunk，raw 825.8 KB / **gzip 280.0 KB** | 与 B-19 代码分割后的 280.1 KB 持平（RAG 未进首屏） |
+| RAG 向量 + 检索 chunk（`retriever-*.js`） | raw 350.18 kB / **gzip 90.68 kB** | **不在 index.html 的 modulepreload 里** = 动态 import 生效，首次提问才加载 |
+| 最大单文件 | `MarkdownRenderer-*.js` 763.0 KB | 与本次改造无关（既有依赖） |
+
+结论：RAG 产物以 90.68 kB gzip 的懒加载 chunk 交付，首屏体积零回归。
+
+## 7. 常见坑
 
 1. **不要在运行期重算 IDF**：必须用 `ragVectors.json` 里落盘的 `idf`，否则阈值口径失真。
 2. **不要绕过量化**：阈值脚本与线上跑批必须都走 `decodeVectors`，否则「标定通过率」与「线上通过率」会差好几个点。
 3. **改了题库就要 `golden:build` + `vectors:build`**，否则 `golden:check` / `vectors:check` 会红。
 4. **报告里的 `usable=false` 不是失败**，是「现在还不该拿这个数字去 gating」的诚实提示。
+5. **Windows + `core.autocrlf=true` 会让 `vectors:check` 假失败**：仓库里的产物 blob 是 LF，
+   checkout 后被展开成 CRLF，而脚本用 `readFileSync(file,'utf8')` 逐字符比对，必然不等。
+   已用 `.gitattributes` 对 4 个构建期产物声明 `-text` 锁定（`ragChunks/ragVectors/ragBuildReport/goldenSet`）；
+   `tests/golden/goldenSet.json` 同理（生成器写 LF）。
+6. **改阈值后要同步三处**：`src/config/qualityThresholds.ts`（常量 + provenance）、
+   本文档 §3、`HANDOVER.md` §9；`tuneThreshold.test.ts` 会断言常量与报告的一致性（±2）。

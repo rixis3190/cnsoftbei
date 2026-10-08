@@ -43,6 +43,13 @@ jobs:
         with:
           name: test-results
           path: test-results/
+      # 覆盖率报告此前未上传：ratchet 门槛失败时看不到是哪块代码掉下来了（计划 §9.5 R9）
+      - name: 上传覆盖率报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
 
   build:
     name: 生产构建
