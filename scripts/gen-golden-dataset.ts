@@ -14,10 +14,12 @@
  * 2. expectedPoints / mustExclude / anchors 是**脚本派生 + 定向修订**的结果，不是随机抽取：
  *    - 要点 = 参考答案与解析按**句子**切分，超长句子在保护括号与列表标记后按子句切分，
  *      仅在子句长度达标（≥ MIN_CLAUSE_LEN）时采用，否则整句截断到 ≤20 字（S1-R5 口径）；
- *    - 禁止项 = 按 (题库, 归一化标签) 取人工整理的常见误区表，先剔除与本题答案自相矛盾的条目；
- *    - 锚点 = 三档：excellent=参考答案+解析（合并重复标点）、fair=前两条要点、
- *      poor=“知道一点但含错误说法”的回答（取本题禁止项），**不再是全局同一句「不知道。」**
- *      —— 后者会让 Youden J 恒为 1.00，产出假结论（见 docs/eval-methodology.md）。
+ *    - 禁止项 = 按 (题库, **归一化标签**) 取人工整理的常见误区表，先剔除与本题答案自相矛盾的条目；
+ *    - 锚点 = 三档：excellent=参考答案+解析（合并重复标点）、fair=excellent 的较长前缀、
+ *      poor=参考答案短前缀 + 固定含糊表述「细节记不清了」，**刻意不含禁止项原文**
+ *      —— 若负样本自身命中硬否决，83 条负样本得分恒为 0，只能证明否决规则生效，
+ *      无法检验语义阈值（见 docs/eval-methodology.md §2.1）。
+ *      早先版本的 poor 是全局同一句「不知道。」，会让 J=1.00 变成无意义的假象，已弃用。
  * 3. **标签归一化必须先于查表**：database 题库的原始标签是中文（如「SQL基础」），
  *    直接用原始标签查英文 key 的误区表会命中 0 条候选，退化成占位禁止项
  *    （2026-10-08 实测的 15 条占位项即由此产生）。
@@ -186,6 +188,32 @@ function truncateAtTokenBoundary(text: string, maxLen: number): string {
   return head.slice(0, head.length - tail.length).trim() || head.trim()
 }
 
+/**
+ * 长候选 → 要点：优先在**子句边界**截断（保留完整的前几个子句），
+ * 只在无法成句时才退化为按 token 边界截断。
+ *
+ * 为什么不能直接 `truncateAtTokenBoundary`：那会产生
+ * 「不可变对象(int,str)函数内修改不」「示例：def func(lst):」这类半句，
+ * 要点覆盖率随之退化成「是否引用参考答案前 20 字」，直接支撑了虚高的阈值结论（评审 MINOR）。
+ */
+function shortenToPoint(text: string, maxLen: number): string {
+  if (text.length <= maxLen) return text
+  const clauses = splitClauses(text).map(c => collapsePunctuation(c)).filter(Boolean)
+  // 从右往左累加完整子句，直到再加下一个就超长
+  let acc = ''
+  for (const clause of clauses) {
+    const next = acc ? `${acc}；${clause}` : clause
+    if (next.length > maxLen) break
+    acc = next
+  }
+  if (acc && acc.length >= 8) return acc
+  const head = truncateAtTokenBoundary(text, maxLen)
+  // 截断结果若以半个词/半个括号结尾，宁可取到上一个逗号
+  const lastSep = Math.max(head.lastIndexOf('，'), head.lastIndexOf('、'), head.lastIndexOf('；'))
+  if (lastSep >= 8) return head.slice(0, lastSep)
+  return head
+}
+
 /** 句子 → 可长期作为要点的候选子句（保证括号配对、不以逗号结尾） */
 function splitClauses(sentence: string): string[] {
   if (sentence.length <= MAX_POINT_LENGTH) return [sentence]
@@ -242,8 +270,8 @@ function derivePoints(
     if (clauses.length > 0 && usable.length === clauses.length) {
       candidates.push(...usable)
     } else {
-      // 子句太碎 → 整句截断，保持语义完整
-      candidates.push(truncateAtTokenBoundary(sentence, MAX_POINT_LENGTH))
+      // 子句太碎 → 在子句边界截断（而非按字数硬切），避免半句成为要点
+      candidates.push(shortenToPoint(sentence, MAX_POINT_LENGTH))
     }
   }
 
@@ -253,7 +281,7 @@ function derivePoints(
     const cleaned = collapsePunctuation(candidate).replace(/^[（(]?答题要求[）)]?/, '').trim()
     if (!cleaned) continue
     const point = cleaned.length > MAX_POINT_LENGTH
-      ? truncateAtTokenBoundary(cleaned, MAX_POINT_LENGTH)
+      ? shortenToPoint(cleaned, MAX_POINT_LENGTH)
       : cleaned
     if (!point) continue
     const key = point.replace(/\s/g, '')
@@ -378,14 +406,14 @@ function hits(haystack: string, item: string): boolean {
  * 参考答案极短时（如 sampleAnswer='2'、'enum'、'JDK'）excellent 需要先补足长度，
  * 否则长度单调性会逼迫 poor 截断成不成句的碎片。
  */
-function buildAnchors(reference: string, explanation: string, mustExclude: string[]) {
+function buildAnchors(reference: string, explanation: string) {
   const cleanReference = collapsePunctuation(reference.replace(/`/g, ''))
   const cleanExplanation = collapsePunctuation(explanation.replace(/`/g, ''))
-  const misconception = collapsePunctuation(mustExclude[0] ?? '')
-  // 至少要给「fair + 错误说法」留出空间，否则长度单调性与错误说法完整性会互相打架
-  const minExcellentLength = Math.max(20, misconception.length + 12)
 
   let excellent = cleanExplanation ? `${cleanReference}。${cleanExplanation}` : cleanReference
+  // 上限 20 字只是为了让极短参考答案（'2'、'enum'、'JDK'）也有足够空间容纳
+  // 「fair 前缀 + 含糊后缀」，从而让长度单调性有解。
+  const minExcellentLength = 20
   for (const extra of ['这是本题的核心结论。', '需要结合题意理解其作用与适用场景。', '此外还要注意它与相邻概念的区别。']) {
     if (excellent.length >= minExcellentLength) break
     excellent += extra
@@ -397,12 +425,12 @@ function buildAnchors(reference: string, explanation: string, mustExclude: strin
    *
    * fair：excellent 的较长前缀（≈30%，且至少 12 字）——「答出了一部分」；
    * poor：cleanReference 的短前缀（≤8 字）+ 含糊表述——「只答了一点点又说不清」。
-   *       poor 不再使用 mustExclude 的错误说法原文（那会触发硬否决，负样本得分恒 0，
+   *       poor 刻意不用 mustExclude 的错误说法原文（那会触发硬否决，负样本得分恒 0，
    *       只能证明否决规则生效，无法检验语义阈值本身）。
    */
   const POOR_SUFFIX = '细节记不清了'
   const fairLength = Math.min(excellent.length - 1, Math.max(12, Math.round(excellent.length * 0.3)))
-  const fair = excellent.slice(0, fairLength).trim() || '（仅答出一部分）'
+  const fair = excellent.slice(0, fairLength).trim()
 
   const poorPrefixLength = Math.min(
     8,
@@ -414,10 +442,9 @@ function buildAnchors(reference: string, explanation: string, mustExclude: strin
   // 加上含糊后缀会让负样本在规则层拿满分（覆盖率 100%），
   // 那不是「答得差」而是「答对了」——此时只保留含糊表述。
   const prefixEchoesAnswer = poorPrefix.replace(/\s/g, '') === cleanReference.replace(/\s/g, '')
-  let poor = collapsePunctuation(
+  const poor = collapsePunctuation(
     poorPrefix.length >= 2 && !prefixEchoesAnswer ? `${poorPrefix}，${POOR_SUFFIX}` : POOR_SUFFIX,
   )
-  if (!poor || poor === fair) poor = poor ? `${poor}。` : '这一块我不太确定'
 
   return { excellent, fair, poor }
 }
@@ -465,12 +492,10 @@ function buildItem(bank: QuestionBank, q: PracticeQuestion, gold: boolean): Gold
   const rawPoints = derivePoints(reference, explanation, MAX_POINTS)
   const grounded = rawPoints.filter(p => overlaps(coverageTargets, p))
   const points = ensureMinPoints(grounded.length >= MIN_POINTS ? grounded : rawPoints, MIN_POINTS)
-  // 先用占位锚点选出禁止项，再用最终锚点复核一次：
-  // 禁止项不得与参考答案/优秀锚点自相矛盾（与校验器同口径）
-  const draftAnchors = buildAnchors(reference, explanation, [])
-  const mustExclude = pickMustExclude(bank, canonicalTags, q.question, reference, draftAnchors.excellent)
-  const anchors = buildAnchors(reference, explanation, mustExclude)
-  const finalExcludes = pickMustExclude(bank, canonicalTags, q.question, reference, anchors.excellent)
+  // 锚点与禁止项互相独立（poor 锚点已不再使用禁止项原文），因此只需各算一次。
+  // 禁止项按「不得与参考答案/优秀锚点自相矛盾」筛选，口径与校验器一致。
+  const anchors = buildAnchors(reference, explanation)
+  const mustExclude = pickMustExclude(bank, canonicalTags, q.question, reference, anchors.excellent)
 
   return {
     id: gold ? `golden-${bank}-${q.id}` : `smoke-${bank}-${q.id}`,
@@ -478,7 +503,7 @@ function buildItem(bank: QuestionBank, q: PracticeQuestion, gold: boolean): Gold
     referenceAnswer: reference,
     referenceSource: gold ? 'sampleAnswer' : 'synthesized',
     expectedPoints: points,
-    mustExclude: finalExcludes,
+    mustExclude,
     anchors,
     tags: canonicalTags,
     moduleId: q.moduleId,
@@ -553,10 +578,14 @@ function buildDataset() {
       smokeCount: smokeItems.length,
       reviewedBy: 'ai-assisted-systematic-review',
       note:
-        'expectedPoints 为句子级抽取（不再产生括号断裂碎片）；mustExclude 按归一化标签查误区表；' +
-        'poor 锚点改为「含本题错误说法的回答」，消除 J=1.00 假象。' +
-        '审校方式为 AI 辅助系统化审校，人工抽检结论见 HANDOVER §12；' +
-        '未经人工确认前，对外表述不得声称「人工逐条审校」。',
+        'expectedPoints 为句子级抽取（先保护括号与列表序号，避免 a=[1,2] 式碎片）；' +
+        'mustExclude 按**归一化后的**标签查人工误区表（database 题库原始标签是中文，' +
+        '不归一化会命中 0 条候选、退化成占位项），并剔除与参考答案自相矛盾者；' +
+        'poor 锚点 = 参考答案短前缀 + 固定含糊表述「细节记不清了」，' +
+        '**刻意不含 mustExclude 的错误说法原文** —— 禁止项是硬否决（命中即 0 分），' +
+        '若负样本自身就是禁止项，83 条负样本得分会恒为 0，只能证明否决规则生效、' +
+        '无法检验语义阈值本身。审校方式为 AI 辅助系统化审校；' +
+        '人工抽检完成前，对外表述不得声称「人工逐条审校」（HANDOVER §13 B-24）。',
     },
     items,
   }

@@ -28,9 +28,11 @@ export default defineConfig({
       ],
       // ratchet 门槛（只升不降，单次抬升不超过 5 点）
       // 2026-10-07 基线：lines 19.75 / statements 18.99 / functions 13.94 / branches 12.72
-      // 2026-10-08 实测（RAG + 漏斗落地后）：lines 29.99 / statements 21.88 / functions 19.80 / branches 30.46
+      // 2026-10-08 实测（RAG + 漏斗 + 基准集审校后，22 文件 / 515 用例）：
+      //   statements 30.59 / branches 22.70 / functions 20.25 / lines 31.15
+      //   —— 注意 vitest 列序是 Stmts → Branch → Funcs → Lines，别错配。
       // 本次按「单次 ≤ +5 点」抬到 24/20/17/17，留 2~3 点缓冲；
-      // 剩余空间（branches 实际 30.46）留给下一次抬升，不一次性抬到位。
+      // 剩余空间（statements 30.59、lines 31.15）留给下一次抬升，不一次性抬到位。
       thresholds: {
         lines: 24,
         statements: 20,

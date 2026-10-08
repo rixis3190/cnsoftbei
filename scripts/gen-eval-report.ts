@@ -70,7 +70,13 @@ interface RagMetrics {
     }
   >
   /** 降级计数：无覆盖查询（检索不到任何片段 → 不注入上下文） */
-  degradation?: { noHitQueries: number; totalQueries: number }
+  degradation?: {
+    noHitQueries: number
+    totalQueries: number
+    retrievalFloor?: number
+    /** 模型层降级（L2）未接入报告时为 true —— 卡片会显式标注，避免读者以为「降级率 0」 */
+    modelDegradationNotInstrumented?: boolean
+  }
   note: string
 }
 
@@ -175,22 +181,26 @@ function renderThreshold(data: ThresholdReport | null): string {
 function renderDegradation(golden: GoldenEval | null, rag: RagMetrics | null): string {
   const g = golden?.summary.degradation
   const r = rag?.degradation
-  const num = (value: number | undefined, suffix = '') =>
-    typeof value === 'number' ? `${value}${suffix}` : '—'
+  const total = golden?.summary.sampleSize ?? 0
+  const rate = (value: number | undefined, denom: number) =>
+    typeof value === 'number' && denom > 0 ? `${value} / ${denom}（${((value / denom) * 100).toFixed(1)}%）` : '—'
   return `
     <h2>降级可观测（§1.3）</h2>
     <div class="cards">
-      ${card(num(g?.vetoedByMustExclude), '规则层否决（禁止项命中）', (g?.vetoedByMustExclude ?? 0) > 0 ? 'skip' : 'pass')}
-      ${card(num(g?.belowCoverageThreshold), '覆盖率不达标（规则层）', 'skip')}
+      ${card(rate(g?.vetoedByMustExclude, total), '规则层否决（禁止项命中）', 'skip')}
+      ${card(rate(g?.belowCoverageThreshold, total), '覆盖率不达标（规则层）', 'skip')}
       ${card(
         r ? `${r.noHitQueries} / ${r.totalQueries}` : '—',
-        '检索无覆盖查询（不注入上下文）',
+        `检索无覆盖（floor=${r?.retrievalFloor ?? '—'}）`,
         'skip',
       )}
     </div>
     <p class="muted">口径：规则层否决 = 答案命中禁止项（硬否决，total=0）；覆盖率不达标 = 要点覆盖率 &lt; 60%；
-      检索无覆盖 = 该查询在混合召回下无任何片段超过 floor，生产路径按 L3 降级不注入上下文。
-      降级率长期为 0 且伴随低通过率时，应怀疑「降级分支根本没被走到」而不是「质量很好」。</p>`
+      检索无覆盖 = 该查询在生产 floor（${r?.retrievalFloor ?? '—'}）下无任何片段，生产路径按 L3 降级不注入上下文。
+      金标两格取自 <strong>golden-eval.json 的负样本轮</strong>（候选 = poor 锚点）——
+      excellent 轮的两项结构性恒为 0，不能用作降级观测。
+      降级率长期为 0 且伴随低通过率时，应怀疑「降级分支根本没被走到」而不是「质量很好」。
+      ${r?.modelDegradationNotInstrumented ? '⚠️ 模型层降级（L2）未接入本报告，只在运行期 console 日志中可见。' : ''}</p>`
 }
 
 function renderRag(data: RagMetrics | null): string {

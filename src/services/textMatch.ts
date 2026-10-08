@@ -51,16 +51,25 @@ export function tokenize(text: string): string[] {
  * 纯符号要点（如 sampleAnswer='//'、'{}'、'=='）切词后为空，
  * 此时退回「归一化后子串包含」判定 —— 这类要点的正确答案必然包含该符号，
  * 若按空词表算 0 分会把所有回答的覆盖率系统性压低。
+ *
+ * **注意 `candidateRaw`**：归一化会把纯标号要点（`>>`、`//`、`{}`、`==`…）清成空串，
+ * 此时若返回 1（"空要点视为已覆盖"），任何回答——包括空回答——都能白拿满分
+ * （实测 `scoreAnswer('', 单符号题).total === 100`，见 tests/unit/answerScorer.test.ts）。
+ * 因此这类要点改为对**原文**做子串判定：包含才算覆盖，不含则为 0。
  */
 export function pointCoverage(
   point: string,
   candidateTokens: ReadonlySet<string>,
   candidateNormalized = '',
+  candidateRaw = '',
 ): number {
   const tokens = tokenize(point)
   if (tokens.length === 0) {
     const key = normalizeForMatch(point)
-    if (!key) return 1
+    if (!key) {
+      // 纯标号要点：标号本身在归一化后消失，只能对原文比对
+      return candidateRaw.includes(point.trim()) ? 1 : 0
+    }
     return candidateNormalized.includes(key) ? 1 : 0
   }
   let hit = 0
@@ -86,7 +95,7 @@ export function coverageRatio(points: readonly string[], candidate: string): num
   const candidateNormalized = normalizeForMatch(candidate)
   let total = 0
   for (const point of scorable) {
-    total += pointCoverage(point, candidateTokens, candidateNormalized)
+    total += pointCoverage(point, candidateTokens, candidateNormalized, candidate)
   }
   return total / scorable.length
 }

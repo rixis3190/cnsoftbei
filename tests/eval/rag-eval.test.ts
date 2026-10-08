@@ -31,7 +31,7 @@ import { faithfulness, mrr, ndcgAtK, recallAtK, splitSentences, type RankedHit }
 import { getIndex } from '../../src/rag/buildIndex'
 import { scoreAnswer } from '../../src/services/answerScorer'
 import { getGoldSet, loadGoldenSet } from '../golden/goldenSet'
-import { SEMANTIC_PASS_SCORE } from '../../src/config/qualityThresholds'
+import { RETRIEVAL_FLOOR, SEMANTIC_PASS_SCORE } from '../../src/config/qualityThresholds'
 
 type QueryKind = 'stem' | 'paraphrase' | 'overview'
 interface QueryItem {
@@ -241,7 +241,7 @@ describe('withRag / withoutRag 对照（模拟对照，非真实模型输出）'
   it('通过率指标在 excellent 档饱和、在 fair 档不饱和——阈值确有区分度（2026-10-08 复核口径）', () => {
     // 旧口径（阈值 61 + 模板锚点）：excellent 与 fair **都** 100% 通过，
     // 说明当时阈值对「好 / 中等」两档完全无区分度，这正是保持影子模式的理由。
-    // 复核后（阈值 84 + curated 锚点）：excellent 仍贴顶（满分回答必然通过），
+    // 复核后（阈值 77 + curated 锚点）：excellent 仍贴顶（满分回答必然通过），
     // 但 fair 只有约 3/4 通过 —— 阈值现在能区分「完整回答」与「只答出一部分」。
     // 若将来有人改动阈值或数据集，这条断言会失败并提醒重新复核（不要静默漂移）。
     const sample = golden.slice(0, 40)
@@ -355,20 +355,29 @@ describe('产出 rag-metrics.json', () => {
       },
       /**
        * 降级可观测（计划 §1.3 硬性约束「任何降级都必须能在 eval-report 中看到」）：
-       * 「无覆盖」= 该查询在当前 floor 下检索不到任何片段 → 生产路径不注入上下文（L3 降级）。
-       * 这是 RAG 的边界而非缺陷，但必须显式统计，不能靠「平均分还行」掩盖。
+       * 「无覆盖」= 该查询在**生产 floor** 下检索不到任何片段 → 生产路径不注入上下文（L3 降级）。
+       *
+       * 注意口径（评审 MAJOR-2）：必须走 `retrieveForQuestion` + `RETRIEVAL_FLOOR`，
+       * 不能用 `retrieve(q, { floor: 0 })` —— 特征全为非负，floor=0 时任何非空查询必有命中，
+       * 该数字会恒为 0，与它声称的「L3 生产语义」不符。
        */
       degradation: {
-        noHitQueries: queries.filter(q => runRetrieval(q.query).length === 0).length,
+        noHitQueries: queries.filter(
+          q => retrieveForQuestion(q.query, { enabled: true, topK: 3 }).chunks.length === 0,
+        ).length,
         totalQueries: queries.length,
+        retrievalFloor: RETRIEVAL_FLOOR,
+        /** 模型层降级（L2）发生在运行期评审链路，本评测链路不经过它，故此处不统计 */
+        modelDegradationNotInstrumented: true,
       },
       note:
         'stem 类召回率天然虚高（查询=题干，与块文本高度重合），只作健康检查；' +
         'paraphrase 类为手写口语化查询，金标集合是「该标签下全部块」，' +
         '故 Recall@3 的上限是 min(1, 3/金标块数)，不可与 stem 类横向比较；' +
         'withRag/withoutRag 为模拟对照（excellent vs fair 锚点），不是真实模型输出；' +
-        '2026-10-08 复核后阈值 74 对 excellent 档饱和（100%）、对 fair 档不再饱和（约 70%），' +
-        '即阈值化指标已能区分「完整回答」与「只答出一部分」。',
+        '2026-10-08 复核后阈值 77 对 excellent 档饱和（100%）、对 fair 档不再饱和（约 70%），' +
+        '即阈值化指标已能区分「完整回答」与「只答出一部分」；' +
+        '检索降级（noHitQueries）按生产 floor 口径统计，模型层降级（L2）未接入本报告。',
     }
     const outDir = path.resolve(process.cwd(), 'test-results')
     mkdirSync(outDir, { recursive: true })

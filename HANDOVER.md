@@ -876,7 +876,7 @@ $env:LLM_E2E='1'; $env:MINIMAX_API_KEY='<新Key>'; npm test -- tests/integration
 | 33 | 2026-10-08 | 合并 | 把 `buddy/lint-zero-precondition`（14 个提交，HEAD `76a29f9`）合并进主线：`git merge --no-ff` 生成合并提交 `5c3ebb4`；无冲突，计划文档取 main 版（含 §0.1/§0.2/§9.5） | 76 个文件（+18550 / -311） | 用户要求先把两条线合起来再继续收口（§9.5 R3 的本地部分；推送与 PR 留给人工） | 合并后重跑基线：`npm run lint` 0 error / 1 warning、`npm test` 22 文件 510 用例、覆盖率 30.59/22.57/20.25/31.13（Stmts/Branch/Funcs/Lines）、`build` / `golden:check` / `threshold:tune -- --check` / `eval:*` 全绿 | CodeBuddy |
 | 34 | 2026-10-08 | 环境修复 | `npm run vectors:build -- --check` 在 Windows 上恒失败：仓库 blob 为 LF，`core.autocrlf=true` 使 checkout 展开为 CRLF，而 `--check` 用 `readFileSync(file,'utf8')` 逐字符比对。新增 `.gitattributes` 对这 4 个构建期产物声明 `-text`（不改动其它文件策略），并把工作区重置为 LF | `.gitattributes`（新增） | 该检查是 CI eval job 的门禁项，假失败会掩盖真实漂移（HANDOVER §3 坑 1 同源） | `npm run vectors:build -- --check` exit 0（448 块，hash=c290b1a5）；工作区字节检查 CRLF=0；`git status` 不再出现假修改 | CodeBuddy |
 | 35 | 2026-10-08 | 步骤 1（R4） | **基准集定向审校**（计划 §9.5 R4）：① 生成器查误区表前先做标签归一化（database 题库原始标签是中文，原实现命中 0 条候选 → 15 条题的禁止项退化为占位项）② 禁止项按与参考答案的词面重合排序并剔出自相矛盾项 ③ 要点改为句子级抽取（保护括号与列表序号，消除 `a=[1,2]`/`不可变对象(int` 式碎片）④ 锚点长度单调改由构造保证，poor 改为「答得很少且含糊」的低质量回答（原 113 条全为「不知道。」）⑤ `reviewed` 全量置 true，meta 增 `anchorSource='curated'` 与 `reviewedBy` | `scripts/gen-golden-dataset.ts`、`tests/golden/goldenSet.json`、`tests/golden/goldenSet.ts` | 计划 §9.5 R4 为最高优先级质量任务：`reviewed=0` 时任何评测数字都不可用（附录 B 禁写） | `npm run golden:check` exit 0（113 条 == 生成器）；`npm test` 513 用例全绿；产物 `tests/golden/goldenSet.json` 与生成器逐字段一致 | CodeBuddy |
-| 36 | 2026-10-08 | 步骤 3（R5） | **语义阈值重新固化**（计划 §9.5 R5）：`usable` 判定新增「最强负样本 < 阈值 ≤ 最弱正样本」两条硬条件（防止只有中位数可分时的假可用），复核后 `SEMANTIC_PASS_SCORE` 61 → **74**，`THRESHOLD_PROVENANCE.anchorSource='curated'`、`humanReviewed=true`、`reviewedAt` 登记 | `src/config/qualityThresholds.ts`、`scripts/tune-threshold.ts`、`tests/unit/tuneThreshold.test.ts` | 阈值入库是计划 S3-8 要求；旧值 61 建立在模板锚点上，锚点重构后必须重标 | `npm run threshold:tune` 实测：最优 74、J=1.00、TPR/FPR=1.00/0.00、最强负 54.69 < 74 ≤ 最弱正 100、负样本唯一值 74 种（原为 1）；`npm test` 全绿 | CodeBuddy |
+| 36 | 2026-10-08 | 步骤 3（R5） | **语义阈值重新标定**（计划 §9.5 R5）：`usable` 判定新增「最强负样本 < 阈值 ≤ 最弱正样本」两条硬条件（防止只有中位数可分时的假可用），复核后 `SEMANTIC_PASS_SCORE` 61 → **77**，`anchorSource='curated'`、新增 `structuralReview='ai-assisted-systematic-review'`；**`humanReviewed` 保持 false**（该字段是 `usable` 的实质闸门，人工抽检未完成前不得置真，见 §13 B-24） | `src/config/qualityThresholds.ts`、`scripts/tune-threshold.ts`、`tests/unit/tuneThreshold.test.ts` | 阈值入库是计划 S3-8 要求；旧值 61 建立在模板锚点上，锚点重构后必须重标 | `npm run threshold:tune` 实测：最优 77、J=1.00、TPR/FPR=1.00/0.00、最强负 60.54 < 77 ≤ 最弱正 100、负样本唯一值 68 种（原为 1）；`usable=false`（人工抽检未完成，刻意闸门）；`npm test` 全绿 | CodeBuddy |
 | 37 | 2026-10-08 | 评测口径 | 断言口径随 R4/R5 更新：`runGoldenEval` 的逐条有序断言限定在「参考答案 ≥4 字」的 54 条（单 token 填空题在规则层结构上不可区分，区分度由语义层承担）；`rag-eval` 的饱和度断言改为「excellent 饱和 / fair 不饱和」 | `tests/eval/runGoldenEval.test.ts`、`tests/eval/rag-eval.test.ts` | 旧断言基于阈值 61 + 模板锚点，锚点重构后其表述已与事实不符；改成钉住**当前真实行为**，漂移时会失败 | `npm test` 22 文件 / 513 用例全绿 | CodeBuddy |
 
 > **注（台账 #5 的更正）**：`api.ts` 的硬编码 Key、模型名硬编码、以及 `api-real.test.ts` 的直连问题，已于 2026-10-07 21:36~21:40 由**并行修改**解决（转为 DeepSeek / OpenAI 兼容格式 + Key 走 env + 真实 API 测试隔离）。因此原计划"步骤 0：Key 止损"的主体任务**已由他人完成**，本轮只补了漏掉的守卫（#9）与配置修复（#7、#8）。行号索引（§4.2）随之部分失效，见 P-16。
@@ -933,7 +933,7 @@ git --no-pager log --stat -20
 | B-22 | 弹窗 lazy 化（可选优化）：`App.tsx` 静态引用的两个 `Modal`（信息登记 / 意见反馈）连同`Form`/`Select`/`Input` 约占首屏 137 kB raw / 45 kB gzip。抽成 lazy 子组件可移出首屏 | 首屏 gzip 若要继续压到 200 KB 以下；注意学生首次登录会立刻弹「信息登记」，收益会被部分抵消 | 1~2h | P3 |
 | B-23 | ~~补 `.env` 忽略规则 + 加 `tsx` 到 devDependencies~~ | **已完成**（台账 #19） | — | **已完成** |
 | B-24 | **基准集人工抽检**：`tests/golden/goldenSet.json` 的 `meta.reviewedBy='ai-assisted-systematic-review'`，113 条标注由 AI 辅助系统化审校产出（要点句子级抽取、禁止项按归一化标签查表、poor 锚点为「答得很少且含糊」）。需人工抽检 ≥20 条确认要点与禁止项与题意强相关 | **抽检完成前，任何评测数字不得对外引用**（`实施计划_细化版.md` 附录 B 禁用表述） | 1~2h | **P0** |
-| B-25 | **README 数字同步**（受保护文件）：README 仍写着旧的测试数/lint 状态，需写回「lint 0 error / 1 warning」「22 文件 / 515 用例」「覆盖率 statements 30.59 / branches 22.57 / functions 20.25 / lines 31.13」与阈值 74 | 收口期按交接红线未改 README（`实施计划_细化版.md` §9.5 R8）；数字真源见该文档 §0.1 | 30min | P1 |
+| B-25 | **README 数字同步**（受保护文件）：README 仍写着旧的测试数/lint 状态，需写回「lint 0 error / 1 warning」「22 文件 / 515 用例」「覆盖率 statements 30.59 / branches 22.70 / functions 20.25 / lines 31.15」与阈值 77（`usable=false`，见 §13 B-24） | 收口期按交接红线未改 README（`实施计划_细化版.md` §9.5 R8）；数字真源见该文档 §0.1 | 30min | P1 |
 | B-26 | `src/App.tsx:84` 的 `react-hooks/exhaustive-deps` warning 重构：当前显式收窄依赖数组以避免重复 `setState`（有意偏离），可改为把 `currentUser/isAdmin/profileForm` 的派生计算移出 effect | 想彻底清掉最后一个 lint warning 时；当前保留为可见提示 | 1h | P3 |
 
 ### §13.3 "话术红线"（防止夸大，被追问会崩）
@@ -1017,8 +1017,8 @@ git --no-pager log --stat -20
 | `learning-agent/` 整目录删除 | **不做**（只删其中 `.env.local`） | 无需决策，ADR-14 已定 |
 | 覆盖率真实基线 | ✅ **已取**（2026-10-08：statements 30.59 / branches 22.57 / functions 20.25 / lines 31.13，门槛 24/20/17/17） | — |
 | 原计划的 6 处修正（T-1~T-6）是否已回改 `plan.md` | **不适用**：`plan.md` 从未入库（`git log --all -- plan.md` 无记录），无法回改；其有效内容已并入 `实施计划_细化版.md`（附录 C 对应关系表） | 无需决策（§9.5 R11 已按「修订引用」处置） |
-| 基准集人工抽检（`reviewedBy='ai-assisted-systematic-review'`） | **未完成**（人工）—— 抽检前不得对外引用评测数字 | 仓库持有者本人（`HANDOVER.md` §13 B-22） |
-| README 数字同步（受保护文件，收口期未改） | **未完成**—— 需人工把 0 error / 1 warning、22 文件 / 515 用例、覆盖率 31.13 写回 README | 仓库持有者本人（§13 B-23） |
+| 基准集人工抽检（`reviewedBy='ai-assisted-systematic-review'`） | **未完成**（人工）—— 抽检前不得对外引用评测数字 | 仓库持有者本人（`HANDOVER.md` §13 B-24） |
+| README 数字同步（受保护文件，收口期未改） | **未完成**—— 需人工把 0 error / 1 warning、22 文件 / 515 用例、覆盖率 31.15 写回 README | 仓库持有者本人（§13 B-25） |
 
 ---
 

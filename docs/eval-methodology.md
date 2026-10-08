@@ -20,16 +20,22 @@
 并保证不变量 `layersRun ∪ layersSkipped = {rule, semantic, model}` 且两者不相交（有单测钉住）。
 
 2026-10-08 起 **`eval-report.html` 已有「降级可观测（§1.3）」卡片**，含三项：
-规则层否决数（禁止项命中）、覆盖率不达标数（< 60%）、检索无覆盖查询数（不注入上下文的 L3 降级）。
-数据来源：`test-results/golden-eval.json` 的 `summary.degradation` 与 `test-results/rag-metrics.json` 的 `degradation`。
-两条守卫断言钉住「负样本不能靠否决取胜」：excellent 锚点被否决数必须为 0，
-poor 锚点被否决数必须为 0（否则阈值标定失去意义）。
+规则层否决率（禁止项命中）、覆盖率不达标率（< 60%）、检索无覆盖查询数（按生产 `RETRIEVAL_FLOOR` 判定 = L3 降级）。
+数据来源：`test-results/golden-eval.json` 的 `summary.degradation`（**取自负样本轮**，见下）与
+`test-results/rag-metrics.json` 的 `degradation`。
+
+> ⚠️ 两个必须知道的口径细节：
+> 1. **金标两格取自「负样本轮」**：`runGoldenEval` 对每个候选轮都会写同一个 `golden-eval.json`，
+>    而 excellent 轮的两个计数**结构性恒为 0**（否决为 0 是构造保证、覆盖率不达标为 0 是校验器保证）。
+>    因此只有负样本轮（候选 = poor 锚点）能反映真实拒答能力；其余探路调用一律 `persist=false`。
+> 2. **模型层降级（L2）未接入本报告**：它发生在运行期评审链路，只在 `console.warn` 里可见。
+>    报告里不会出现 L2 计数，不要误读为「L2 降级率为 0」。
 
 ## 1. 怎么跑
 
 ```powershell
 npm run golden:build        # 由题库重新生成基准集
-npm run golden:check        # 只校验：题库漂移 / 未审校条目被改 → 退出码 1
+npm run golden:check        # 只校验：与生成器/题库不一致 → 退出码 1
 npm run vectors:build       # 重新生成 ragChunks.json + ragVectors.json
 npm run vectors:build -- --check   # 只校验产物与题库一致
 npm run rag:queries         # 重新生成 RAG 查询集
@@ -42,7 +48,7 @@ npm run eval:report         # 生成 test-results/eval-report.html
 
 CI 对应 job：
 
-- `test` job 跑 `npm run test:coverage`（含 `tests/eval/**`，零额度）；
+- `test` job 跑 `npm run test:coverage`（含 `tests/eval/**`，零额度），并上传 `test-results/` 与 `coverage/`；
 - `eval` job 依次跑 `golden:check` → `vectors:build --check` → `threshold:tune --check` →
   **`eval:golden` → `eval:rag`** → `eval:report`，并上传 `test-results/`。
   注意最后三步是必需的：`golden-eval.json` 与 `rag-metrics.json` 是**测试的副作用产物**，
@@ -77,7 +83,20 @@ CI 对应 job：
 所以负样本刻意不含错误说法原文，靠「覆盖不足 + 表述含糊」拿低分。
 
 **当前仍未完成的**：人工抽检（`reviewedBy` 记录的是 AI 辅助系统化审校）。
-在人工抽检确认前，本目录的数字可用于**流程验证**，对外引用需先确认这一点。
+在人工抽检确认前（`HANDOVER.md` §13 B-24 为 P0），本目录的数字可用于**流程验证**，
+**不得对外引用**，`usable` 也会保持 `false` —— 这不是缺陷，是刻意的闸门。
+
+### 2.2 覆盖率口径的一个历史缺陷（已修，必须知道）
+
+`textMatch.pointCoverage` 对「归一化后变成空串的纯标号要点」（`>>`、`//`、`{}`、`==`…）
+曾**无条件返回 1**（"空要点视为已覆盖"），导致：
+
+- 单符号题上任何回答——**包括空回答**——覆盖率都是 100%，实测 `scoreAnswer('', '>>' 题).total === 100`；
+- 规则层对这类题目空转，评测报告出现「完美的」分档。
+
+修法：这类要点改为对**候选原文**做子串判定（包含才算覆盖）。修后实测：
+空回答在全部 83 条金标上的最高分为 **0.00**，规则层逐条有序违例从 1 条降为 **0 条**。
+回归守卫见 `tests/eval/runGoldenEval.test.ts` 的「空回答不得白拿分数」用例。
 
 ## 3. 阈值是怎么来的
 
@@ -88,23 +107,26 @@ CI 对应 job：
 3. 取 Youden J **平坦区中心**（J ≥ maxJ − 0.02 的区间中心），避免选到尖峰（G-12）；
 4. LOO 交叉验证（留一条）输出折间稳定性；
 5. 输出 `usable` 判定：Youden J < 0.3、正负中位数重叠、负样本多样性不足、
-   **最强负样本 ≥ 阈值**、**最弱正样本 < 阈值**、锚点未复核 —— 任一命中即 `usable=false`。
+   **最强负样本 ≥ 阈值**、**最弱正样本 < 阈值**、锚点未人工复核 —— 任一命中即 `usable=false`。
 
-最后两条是 2026-10-08 复核时新加的：只看中位数可分是不够的（一条满分负样本就能推翻整个阈值），
-必须逐条确认「阈值确实把两类分开了」。
+最后三条是复核时新加的：只看中位数可分是不够的（一条满分负样本就能推翻整个阈值），
+必须逐条确认「阈值确实把两类分开了」；而 `humanReviewed` 是**实质性闸门**，
+不能因为「数据看起来变好了」就翻成 true。
 
-实测（curated 锚点，83+83，2026-10-08）：最优阈值 **74**，J = 1.00，TPR = 1.00，FPR = 0.00，
-LOO 83 折准确率 1.00；**最强负样本 54.69 < 74 ≤ 最弱正样本 100**，负样本得分唯一值 74 种、
-无一条被硬否决。`usable = true`。
+实测（curated 锚点，83+83，2026-10-08）：最优阈值 **77**，J = 1.00，TPR = 1.00，FPR = 0.00，
+平台区宽度 44，LOO 83 折准确率 1.00、**稳定折占比 97.6%**（2 折的阈值落在 ±0.02 外）；
+**最强负样本 60.54 < 77 ≤ 最弱正样本 100**，负样本得分唯一值 68 种、无一条被硬否决。
+`usable = false`（原因：**人工抽检未完成**）→ 语义层保持影子模式。
+
+> 关于「稳定折占比不是 100%」：`optimalThreshold` 取的是 J ≥ maxJ−0.02 的平台区**中心**，
+> 而中心位置由「第二强负样本」的位置决定 —— 留一条样本后中心可能平移几分。
+> 因此**不要用 ±2 这种硬容差去卡已固化阈值**，要断言「阈值仍落在平台区内」
+> （`tests/unit/tuneThreshold.test.ts` 已按此口径实现）。
 
 **J = 1.00 仍然需要解释**，不能单独当成绩：
 修订前负样本是同一句「不知道。」，J=1.00 是负样本同质造成的假象（唯一值只有 1 种）；
 修订后负样本来自 83 个不同题目、得分覆盖面广，J=1.00 才有意义。
 **引用阈值时必须同时引用「最强负样本 < 阈值 ≤ 最弱正样本」这条**，而不是只引用 J。
-
-**仍未解除影子模式的原因**：正样本得分贴顶（余弦+覆盖率在「回答≈参考答案」时饱和），
-阈值取自平台区中心，对「要点覆盖不全但方向正确」的真实回答可能偏严；
-且样本 83 条与题库同源、尚未人工抽检。因此 `SEMANTIC_SHADOW_MODE` 保持 `true`。
 
 ## 4. 检索指标口径
 
@@ -178,7 +200,10 @@ MRR 分别为 0.924 / 0.210 / 0.271。
 4. **报告里的 `usable=false` 不是失败**，是「现在还不该拿这个数字去 gating」的诚实提示。
 5. **Windows + `core.autocrlf=true` 会让 `vectors:check` 假失败**：仓库里的产物 blob 是 LF，
    checkout 后被展开成 CRLF，而脚本用 `readFileSync(file,'utf8')` 逐字符比对，必然不等。
-   已用 `.gitattributes` 对 4 个构建期产物声明 `-text` 锁定（`ragChunks/ragVectors/ragBuildReport/goldenSet`）；
-   `tests/golden/goldenSet.json` 同理（生成器写 LF）。
+   已用 `.gitattributes` 对 4 个构建期产物声明 `-text` 锁定（`ragChunks` / `ragVectors` /
+   `ragBuildReport` / `goldenSet`）。**代价**：这 4 个文件不再有换行符归一化，
+   因此**禁止用会写入 CRLF 的编辑器保存它们**（一旦存成 CRLF 并提交，`--check` 会在所有平台失败）。
 6. **改阈值后要同步三处**：`src/config/qualityThresholds.ts`（常量 + provenance）、
-   本文档 §3、`HANDOVER.md` §9；`tuneThreshold.test.ts` 会断言常量与报告的一致性（±2）。
+   本文档 §3、`HANDOVER.md` §9；`tuneThreshold.test.ts` 会断言「常量落在平台区内」。
+7. **`runGoldenEval` 的落盘是有副作用的**：它覆写 `golden-eval.json`，而报告降级卡片读该文件。
+   只有「负样本轮」才应 `persist=true`，其余探路调用必须 `persist=false`。

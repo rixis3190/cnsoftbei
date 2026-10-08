@@ -5,8 +5,8 @@
  *   「poor 锚点得分中位数 < 已固化阈值 ≤ excellent 锚点得分中位数」
  * 以及报告结构完整（全阈值表 + Youden J 最优点 + LOO 稳定性 + usable 标记）。
  *
- * 2026-10-08（计划 §9.5 R4/R5）后：基准集 anchorSource='curated' 且 humanReviewed=true，
- * 因此这里的断言从「usable 必须为 false」改为「usable 与 provenance 一致，
+ * 2026-10-08（计划 §9.5 R4/R5）后：基准集 anchorSource='curated'（AI 辅助审校），但 humanReviewed 仍为 false（人工抽检未完成），
+ * 因此这里的断言是「usable 必须与 provenance 一致，且当前为 false」，
  * 且最优阈值必须同时满足最强负样本 < 阈值 ≤ 最弱正样本」——
  * 只断言 Youden J 会被「负样本同质」的假象骗过。
  */
@@ -38,13 +38,14 @@ describe('阈值标定报告结构', () => {
     expect(report.loo.stabilityRatio).toBeGreaterThanOrEqual(0)
   })
 
-  it('usable 与 provenance 一致，且说明里带可判定结论', () => {
+  it('usable 与 provenance 一致；人工抽检未完成时必须为 false（评审 MAJOR-1 闸门）', () => {
     expect(report.result.usable).toBe(THRESHOLD_PROVENANCE.humanReviewed)
-    if (report.result.usable) {
-      expect(report.result.usableReason).toContain('最强负样本')
-    } else {
-      expect(report.result.usableReason).toContain('影子模式')
-    }
+    // 基准集只经 AI 辅助审校（meta.reviewedBy），人工抽检未做（HANDOVER §13 B-24），
+    // 因此 humanReviewed 必须保持 false、报告必须给出 usable=false —— 这是「未验收不写简历」的项目红线。
+    expect(THRESHOLD_PROVENANCE.humanReviewed).toBe(false)
+    expect(report.result.usable).toBe(false)
+    expect(report.result.usableReason).toContain('人工抽检未完成')
+    expect(report.result.usableReason).toContain('影子模式')
   })
 
   it('最优阈值必须真正分开两类（最强负样本 < 阈值 ≤ 最弱正样本）', () => {
@@ -63,8 +64,17 @@ describe('阈值与分数分布的一致性（DoD 核心断言）', () => {
     expect(SEMANTIC_PASS_SCORE).toBeLessThanOrEqual(report.result.positiveMedian)
   })
 
-  it('已固化阈值与标定最优值偏差在容差内（±2）', () => {
-    expect(Math.abs(SEMANTIC_PASS_SCORE - report.result.optimalThreshold)).toBeLessThanOrEqual(2)
+  it('已固化阈值落在「平台区」内（比 ±2 的硬容差更贴合标定语义）', () => {
+    // 评审 MINOR-3：optimalThreshold 是 J ≥ maxJ−0.02 的平台区**中心**，
+    // 中心位置随「第二强负样本」移动，一次合法的数据编辑就能把它推远 >2，
+    // 而 74 处 J 仍为 1.00 —— 那条 ±2 断言会给出假红并误导读者以为阈值有问题。
+    // 因此改为断言「74 落在平台区内」，同时保留一条宽松的漂移提示。
+    const { optimalThreshold, plateauWidth } = report.result
+    const half = plateauWidth / 2
+    expect(SEMANTIC_PASS_SCORE).toBeGreaterThanOrEqual(optimalThreshold - half - 0.5)
+    expect(SEMANTIC_PASS_SCORE).toBeLessThanOrEqual(optimalThreshold + half + 0.5)
+    // 次级提示：超出 ±10 说明平台区整体位移，届时应重新复核（不阻断）
+    expect(Math.abs(SEMANTIC_PASS_SCORE - optimalThreshold)).toBeLessThanOrEqual(10)
   })
 
   it('已固化阈值不高于最弱正样本（避免误杀合法回答）', () => {

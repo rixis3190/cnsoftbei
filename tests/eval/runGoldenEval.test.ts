@@ -95,6 +95,9 @@ export function runGoldenEval(
   items: readonly GoldenItem[],
   pick: (item: GoldenItem) => string,
   mode: 'anchor' | 'llm',
+  /** 是否落盘 golden-eval.json（默认 true）。前几次「探路」调用传 false，
+   *  避免后一次覆写把报告要读的降级计数冲成 0（评审 MAJOR-2）。 */
+  persist = true,
 ): { rows: GoldenEvalRow[]; summary: GoldenEvalSummary } {
   const rows = items.map(item => evalOne(item, pick(item)))
   const passed = rows.filter(r => r.rulePassed).length
@@ -134,17 +137,23 @@ export function runGoldenEval(
     degradation,
     note:
       '锚点已按 2026-10-08 复核口径重构（anchorSource=curated），本报告仍是**管线可用性**证据，' +
-      '不代表模型真实质量；对外引用前需完成人工抽检（见 HANDOVER §12）。' +
-      `其中 ${fillerOnlyItems} 条的要点全部为「答题要求」类填充项，其覆盖率不参与打分分母。`,
+      '不代表模型真实质量；对外引用前需完成人工抽检（见 HANDOVER §13 B-24）。' +
+      `其中 ${fillerOnlyItems} 条的要点全部为「答题要求」类填充项，其覆盖率不参与打分分母。` +
+      (mode === 'anchor'
+        ? '本次落盘的是**负样本轮**（候选= poor 锚点）：它才是能反映「降级/拒绝」的量，' +
+          'excellent 轮的否决数与覆盖率不达标数结构性恒为 0，不适合做降级观测。'
+        : ''),
   }
 
-  const outDir = path.resolve(process.cwd(), 'test-results')
-  mkdirSync(outDir, { recursive: true })
-  writeFileSync(
-    path.join(outDir, 'golden-eval.json'),
-    `${JSON.stringify({ summary, rows }, null, 2)}\n`,
-    'utf8',
-  )
+  if (persist) {
+    const outDir = path.resolve(process.cwd(), 'test-results')
+    mkdirSync(outDir, { recursive: true })
+    writeFileSync(
+      path.join(outDir, 'golden-eval.json'),
+      `${JSON.stringify({ summary, rows }, null, 2)}\n`,
+      'utf8',
+    )
+  }
   return { rows, summary }
 }
 
@@ -153,25 +162,25 @@ const gold = getGoldSet(dataset.items)
 const smoke = getSmokeSet(dataset.items)
 
 describe('基准集跑批（零额度）', () => {
+  // 说明（评审 MAJOR-2）：`runGoldenEval` 会把结果落盘到 test-results/golden-eval.json，
+  // 而报告里的降级卡片读的正是这份文件。因此**只有最后一条用例允许落盘**（用负样本轮），
+  // 其余探路调用一律 persist=false —— 否则后写的 excellent 轮会把
+  // 「规则层否决 / 覆盖率不达标」冲成结构性 0，让 §1.3 的降级观测形同虚设。
   it('anchor 模式：excellent 得分必须高于 poor（评分管线具备区分度）', () => {
-    const { rows, summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor')
+    const { rows, summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor', false)
     expect(rows.length).toBe(gold.length)
     expect(summary.separation).not.toBeNull()
     expect(summary.separation!).toBeGreaterThan(20)
 
-    // 逐条检查：优秀锚点与差锚点的得分必须严格有序。
+    // 逐条检查：优秀锚点与差锚点的得分必须严格有序（**全部 83 条，无豁免**）。
     //
-    // 例外：**单 token 参考答案**（sampleAnswer='>>' / 'JDK' / 'JRE' 这类填空题）在规则层
-    // 结构上无法区分——规则层只算「要点覆盖率 + 禁止项扣分」，不做余弦，
-    // 而这类题的 expectedPoints 本身就接近答案本身，任何含该 token 的回答覆盖率都是 100%。
-    // 这些条目的区分度由语义层（answerScorer 的余弦项）承担，
-    // 见 tests/unit/tuneThreshold.test.ts 的「每条金标 excellent > poor」断言。
-    // 这里只对「参考答案长度 ≥ 4」的条目要求严格有序，并把豁免数量固定下来防止扩大。
-    // 83 条金标里有 29 条是「参考答案 ≤3 字」的填空题（'>>'、'JDK'、'JRE'…），
-    // 其余 54 条要求严格有序；两个数字都固定下来，防止标注质量下滑被悄悄掩盖。
-    const discriminable = gold.filter(item => item.referenceAnswer.length >= 4)
-    expect(discriminable.length).toBe(54)
-    const notOrdered = discriminable.filter(item => {
+    // 早先这里对「单 token 参考答案」（'>>' / 'JDK'）留了 29 条豁免，理由是「规则层不区分」。
+    // 评审指出真正的原因是 textMatch.pointCoverage 的一个缺陷：纯标号要点在归一化后变成空串，
+    // 旧实现对此**无条件返回 1**（"空要点视为已覆盖"），于是任何回答——甚至空回答——
+    // 在这类题上都拿满分（实测 scoreAnswer('', 单符号题).total === 100）。
+    // 该缺陷已修（空 key 改为对原文做子串判定），修完后 83 条全部严格有序，豁免不再需要。
+    // 若这条断言再次失败，优先怀疑是标注或覆盖率口径出了问题，而不是去放宽豁免。
+    const notOrdered = gold.filter(item => {
       const excellent = scoreRule(item.anchors.excellent, item)
       const poor = scoreRule(item.anchors.poor, item)
       return !(excellent > poor)
@@ -179,44 +188,59 @@ describe('基准集跑批（零额度）', () => {
     expect(notOrdered.map(i => i.id)).toEqual([])
   })
 
+  it('空回答不得白拿分数（纯标号要点的覆盖率不能恒为 1）', () => {
+    // 回归守卫：单符号题的 expectedPoints 归一化后是空串，历史上会被判为「已覆盖」。
+    // 这里用「答案本身」和「空串」两个极端把口径钉住。
+    const symbolItems = gold.filter(item => item.referenceAnswer.length <= 3)
+    expect(symbolItems.length).toBeGreaterThan(0)
+    for (const item of symbolItems) {
+      expect(coverageRatio(item.expectedPoints, item.anchors.excellent)).toBeGreaterThan(0)
+      expect(coverageRatio(item.expectedPoints, '')).toBe(0)
+    }
+  })
+
   it('anchor 模式：报告含样本量与置信度标注', () => {
-    const { summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor')
+    const { summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor', false)
     expect(summary.sampleSize).toBe(83)
     expect(['low', 'medium', 'high']).toContain(summary.confidence)
     expect(summary.note).toContain('管线可用')
   })
 
-  it('降级可观测：excellent 锚点不应被禁止项否决（否则说明标注自相矛盾）', () => {
-    // 用户会踩的坑：把 mustExclude 的错误说法塞进 poor 锚点 → 负样本一条不剩地命中否决，
-    // 得分恒 0，看起来「完美可分」但实际什么都没测到。这里用 excellent 侧做守卫：
-    // 若优秀锚点被自己的禁止项否决，说明数据集自相矛盾（要么禁止项写错，要么锚点抄错）。
-    const { summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor')
-    expect(summary.degradation.vetoedByMustExclude).toBe(0)
-  })
-
-  it('降级可观测：负样本拒绝率由「语义分低」而非「规则层否决」主导', () => {
-    const { summary } = runGoldenEval(gold, item => item.anchors.poor, 'anchor')
-    // poor 锚点不写错误说法原文 → 不允许靠否决取胜，否则阈值标定会失去意义
-    expect(summary.degradation.vetoedByMustExclude).toBe(0)
-    expect(summary.degradation.belowCoverageThreshold).toBeGreaterThan(0)
+  it('降级可观测：正样本 0 否决；负样本靠「覆盖率低」取胜而不是靠硬否决', () => {
+    // 两条守卫：
+    // ① excellent 若被自己的禁止项否决 → 数据集自相矛盾（禁止项写错或锚点抄错）；
+    // ② poor 若是靠命中禁止项拿 0 分 → 负样本不含真实区分信息，
+    //    阈值标定会退化成「验证否决规则能触发」，`negativeDiversity` 也会塌成 1。
+    const excellentRun = runGoldenEval(gold, item => item.anchors.excellent, 'anchor', false)
+    expect(excellentRun.summary.degradation.vetoedByMustExclude).toBe(0)
+    expect(excellentRun.summary.degradation.belowCoverageThreshold).toBe(0)
+    const poorRun = runGoldenEval(gold, item => item.anchors.poor, 'anchor', false)
+    expect(poorRun.summary.degradation.vetoedByMustExclude).toBe(0)
+    expect(poorRun.summary.degradation.belowCoverageThreshold).toBeGreaterThan(0)
   })
 
   it('llm 模式：msw 固定响应下链路可跑通且不消耗额度', () => {
-    const { rows, summary } = runGoldenEval(smoke, () => MOCK_LLM_ANSWER, 'llm')
+    const { rows, summary } = runGoldenEval(smoke, () => MOCK_LLM_ANSWER, 'llm', false)
     expect(rows.length).toBe(smoke.length)
     expect(summary.mode).toBe('llm')
     // 固定 mock 回答与任何基准集都不相关，通过率应显著低于 anchor 模式
     expect(summary.passRate).toBeLessThan(0.5)
   })
 
-  it('产出 test-results/golden-eval.json', async () => {
+  it('落盘 golden-eval.json，且降级计数取自「负样本轮」（评审 MAJOR-2）', async () => {
+    // 只有这一条用例 persist=true：报告卡片读的就是这份文件。
+    // 若改成 excellent 轮，两个计数会**结构性恒为 0**（否决为 0 是构造保证、
+    // 覆盖率不达标为 0 是校验器保证）——等于把 §1.3 的降级观测变成空话。
+    runGoldenEval(gold, item => item.anchors.poor, 'anchor')
     const { readFileSync } = await import('node:fs')
-    runGoldenEval(gold, item => item.anchors.excellent, 'anchor')
     const report = JSON.parse(
       readFileSync(path.resolve(process.cwd(), 'test-results', 'golden-eval.json'), 'utf8'),
     )
     expect(report.rows.length).toBe(83)
     expect(report.summary.mode).toBe('anchor')
+    expect(report.summary.note).toContain('负样本轮')
+    expect(report.summary.degradation.belowCoverageThreshold).toBeGreaterThan(0)
+    expect(report.summary.degradation.vetoedByMustExclude).toBe(0)
   })
 
   it('禁止项命中会被扣分（负向验证）', () => {

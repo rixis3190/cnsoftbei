@@ -7,7 +7,7 @@
     "goldCount": 83,
     "smokeCount": 30,
     "reviewedBy": "ai-assisted-systematic-review",
-    "note": "expectedPoints 为句子级抽取（不再产生括号断裂碎片）；mustExclude 按归一化标签查误区表；poor 锚点改为「含本题错误说法的回答」，消除 J=1.00 假象。审校方式为 AI 辅助系统化审校，人工抽检结论见 HANDOVER §12；未经人工确认前，对外表述不得声称「人工逐条审校」。"
+    "note": "expectedPoints 为句子级抽取（先保护括号与列表序号，避免 a=[1,2] 式碎片）；mustExclude 按**归一化后的**标签查人工误区表（database 题库原始标签是中文，不归一化会命中 0 条候选、退化成占位项），并剔除与参考答案自相矛盾者；poor 锚点 = 参考答案短前缀 + 固定含糊表述「细节记不清了」，**刻意不含 mustExclude 的错误说法原文** —— 禁止项是硬否决（命中即 0 分），若负样本自身就是禁止项，83 条负样本得分会恒为 0，只能证明否决规则生效、无法检验语义阈值本身。审校方式为 AI 辅助系统化审校；人工抽检完成前，对外表述不得声称「人工逐条审校」（HANDOVER §13 B-24）。"
   },
   "items": [
     {
@@ -146,8 +146,8 @@
       "expectedPoints": [
         "__slots__ 声明实例允许的属性名",
         "适合大量实例场景（数据类、游戏对象）",
-        "优势：减少内存、防止动态添加属性、加速访",
-        "限制：子类需单独定义、不能动态添加属性"
+        "优势：减少内存；防止动态添加属性",
+        "限制：子类需单独定义；不能动态添加属性"
       ],
       "mustExclude": [
         "类属性与实例属性完全等价",
@@ -209,7 +209,7 @@
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
         "当需要精确表达业务逻辑错误时使用",
-        "命名以 Error 结尾，继承",
+        "命名以 Error 结尾",
         "示例：class"
       ],
       "mustExclude": [
@@ -345,7 +345,7 @@
         "标识符可以以数字开头"
       ],
       "anchors": {
-        "excellent": "JDK。JDK 包含 JRE 和开发工具这是本题的核心结论。",
+        "excellent": "JDK。JDK 包含 JRE 和开发工具",
         "fair": "JDK。JDK 包含 J",
         "poor": "细节记不清了"
       },
@@ -496,7 +496,7 @@
         "int 溢出后会自动提升为 long"
       ],
       "anchors": {
-        "excellent": "false。boolean 类型只有两个值这是本题的核心结论。",
+        "excellent": "false。boolean 类型只有两个值",
         "fair": "false。boolea",
         "poor": "fal，细节记不清了"
       },
@@ -556,7 +556,7 @@
         "基本类型与包装类完全相同"
       ],
       "anchors": {
-        "excellent": "字符串常量。相同内容的字符串字面量引用同一个对象这是本题的核心结论。",
+        "excellent": "字符串常量。相同内容的字符串字面量引用同一个对象",
         "fair": "字符串常量。相同内容的字",
         "poor": "字符串，细节记不清了"
       },
@@ -616,7 +616,7 @@
         "int 溢出后会自动提升为 long"
       ],
       "anchors": {
-        "excellent": "false。boolean 类型只有两个布尔值这是本题的核心结论。",
+        "excellent": "false。boolean 类型只有两个布尔值",
         "fair": "false。boolea",
         "poor": "fal，细节记不清了"
       },
@@ -646,7 +646,7 @@
         "数组下标越界会返回 null"
       ],
       "anchors": {
-        "excellent": "引用。String 不是基本类型，属于引用类型这是本题的核心结论。",
+        "excellent": "引用。String 不是基本类型，属于引用类型",
         "fair": "引用。String 不是",
         "poor": "细节记不清了"
       },
@@ -707,7 +707,7 @@
         "基本类型与包装类完全相同"
       ],
       "anchors": {
-        "excellent": "length。数组.length 得到数组长度这是本题的核心结论。",
+        "excellent": "length。数组.length 得到数组长度",
         "fair": "length。数组.le",
         "poor": "len，细节记不清了"
       },
@@ -798,7 +798,7 @@
         "&& 与 || 一定会对右侧求值"
       ],
       "anchors": {
-        "excellent": "||。如果左侧为 true，右侧不再计算这是本题的核心结论。",
+        "excellent": "||。如果左侧为 true，右侧不再计算",
         "fair": "||。如果左侧为 tru",
         "poor": "细节记不清了"
       },
@@ -828,7 +828,7 @@
         "&& 与 || 一定会对右侧求值"
       ],
       "anchors": {
-        "excellent": "类。或接口、数组类型这是本题的核心结论。需要结合题意理解其作用与适用场景。",
+        "excellent": "类。或接口、数组类型这是本题的核心结论。",
         "fair": "类。或接口、数组类型这是",
         "poor": "细节记不清了"
       },
@@ -888,7 +888,7 @@
         "&& 与 || 一定会对右侧求值"
       ],
       "anchors": {
-        "excellent": "&&。&& 左边为 false 则右边不执行这是本题的核心结论。",
+        "excellent": "&&。&& 左边为 false 则右边不执行",
         "fair": "&&。&& 左边为 fa",
         "poor": "细节记不清了"
       },
@@ -918,7 +918,7 @@
         "break 会跳出整个程序"
       ],
       "anchors": {
-        "excellent": "enum。枚举类型也可以作为 switch 的表达式这是本题的核心结论。",
+        "excellent": "enum。枚举类型也可以作为 switch 的表达式",
         "fair": "enum。枚举类型也可以",
         "poor": "enu，细节记不清了"
       },
@@ -947,9 +947,9 @@
         "break 会跳出整个程序"
       ],
       "anchors": {
-        "excellent": "do-while。do-while 先执行一次循环体，再判断条件这是本题的核心结论。",
-        "fair": "do-while。do-w",
-        "poor": "do-w，细节记不清了"
+        "excellent": "do-while。do-while 先执行一次循环体，再判断条件",
+        "fair": "do-while。do-",
+        "poor": "do-，细节记不清了"
       },
       "tags": [
         "java-control-flow"
@@ -1034,7 +1034,7 @@
         "switch 会贯穿所有 case 继续执行"
       ],
       "anchors": {
-        "excellent": "break。break 强制退出当前循环体这是本题的核心结论。",
+        "excellent": "break。break 强制退出当前循环体",
         "fair": "break。break",
         "poor": "br，细节记不清了"
       },
@@ -1063,7 +1063,7 @@
         "方法重载可以靠返回类型区分"
       ],
       "anchors": {
-        "excellent": "参数。返回类型不属于方法签名，仅用于重载区分这是本题的核心结论。",
+        "excellent": "参数。返回类型不属于方法签名，仅用于重载区分",
         "fair": "参数。返回类型不属于方法",
         "poor": "细节记不清了"
       },
@@ -1243,7 +1243,7 @@
         "构造方法可以被子类直接继承调用"
       ],
       "anchors": {
-        "excellent": "封装。隐藏内部状态，控制访问这是本题的核心结论。需要结合题意理解其作用与适用场景。",
+        "excellent": "封装。隐藏内部状态，控制访问这是本题的核心结论。",
         "fair": "封装。隐藏内部状态，控制",
         "poor": "细节记不清了"
       },
@@ -1304,7 +1304,7 @@
         "重写方法时必须先调用 super"
       ],
       "anchors": {
-        "excellent": "extends。子类 extends 父类这是本题的核心结论。",
+        "excellent": "extends。子类 extends 父类",
         "fair": "extends。子类 e",
         "poor": "ext，细节记不清了"
       },
@@ -1362,7 +1362,7 @@
         "Object 类没有任何方法"
       ],
       "anchors": {
-        "excellent": "final。final 方法保证行为不变这是本题的核心结论。",
+        "excellent": "final。final 方法保证行为不变",
         "fair": "final。final",
         "poor": "fi，细节记不清了"
       },
@@ -1449,7 +1449,7 @@
         "接口只能被继承而不能被实现"
       ],
       "anchors": {
-        "excellent": "implements。一个类可以实现多个接口这是本题的核心结论。",
+        "excellent": "implements。一个类可以实现多个接口",
         "fair": "implements。一",
         "poor": "imp，细节记不清了"
       },
@@ -1478,7 +1478,7 @@
         "catch 之后 finally 一定不会执行"
       ],
       "anchors": {
-        "excellent": "throw。throw new Exception();这是本题的核心结论。",
+        "excellent": "throw。throw new Exception();",
         "fair": "throw。throw",
         "poor": "th，细节记不清了"
       },
@@ -1507,9 +1507,9 @@
         "Throwable 只能由 Error 抛出"
       ],
       "anchors": {
-        "excellent": "finally。finally 总是执行这是本题的核心结论。需要结合题意理解其作用与适用场景。",
-        "fair": "finally。finall",
-        "poor": "final，细节记不清了"
+        "excellent": "finally。finally 总是执行",
+        "fair": "finally。fina",
+        "poor": "fin，细节记不清了"
       },
       "tags": [
         "java-exceptions"
@@ -1623,7 +1623,7 @@
         "BufferedReader 读完后不需要关闭"
       ],
       "anchors": {
-        "excellent": "nio。java.nio 提供非阻塞 IO 和选择器等这是本题的核心结论。",
+        "excellent": "nio。java.nio 提供非阻塞 IO 和选择器等",
         "fair": "nio。java.nio",
         "poor": "细节记不清了"
       },
@@ -1710,7 +1710,7 @@
         "用增强 for 循环删除元素不会抛异常"
       ],
       "anchors": {
-        "excellent": "Queue。Queue 通常由 LinkedList 实现这是本题的核心结论。",
+        "excellent": "Queue。Queue 通常由 LinkedList 实现",
         "fair": "Queue。Queue",
         "poor": "Qu，细节记不清了"
       },
@@ -1739,8 +1739,8 @@
         "HashMap 允许存放 null 键并自动扩容"
       ],
       "anchors": {
-        "excellent": "插入。List 是有序集合，允许重复这是本题的核心结论。需要结合题意理解其作用与适用场景。",
-        "fair": "插入。List 是有序集合，",
+        "excellent": "插入。List 是有序集合，允许重复这是本题的核心结论。",
+        "fair": "插入。List 是有序集",
         "poor": "细节记不清了"
       },
       "tags": [
@@ -1768,7 +1768,7 @@
         "List<Object> 可以直接赋值给 List<String>"
       ],
       "anchors": {
-        "excellent": "Element。E 用于集合元素，K 键，V 值这是本题的核心结论。",
+        "excellent": "Element。E 用于集合元素，K 键，V 值",
         "fair": "Element。E 用于",
         "poor": "Ele，细节记不清了"
       },
@@ -1797,7 +1797,7 @@
         "List<Object> 可以直接赋值给 List<String>"
       ],
       "anchors": {
-        "excellent": "?。例如 List<?> 表示未知类型的列表这是本题的核心结论。",
+        "excellent": "?。例如 List<?> 表示未知类型的列表",
         "fair": "?。例如 List<?>",
         "poor": "细节记不清了"
       },
@@ -1855,7 +1855,7 @@
         "volatile 可以保证复合操作的原子性"
       ],
       "anchors": {
-        "excellent": "join。t.join() 使当前线程阻塞直到 t 结束这是本题的核心结论。",
+        "excellent": "join。t.join() 使当前线程阻塞直到 t 结束",
         "fair": "join。t.join(",
         "poor": "joi，细节记不清了"
       },
@@ -1884,9 +1884,9 @@
         "start 与 run 的效果完全相同"
       ],
       "anchors": {
-        "excellent": "Java。任意对象都可作为内置锁这是本题的核心结论。需要结合题意理解其作用与适用场景。",
-        "fair": "Java。任意对象都可作为",
-        "poor": "细节记不清了"
+        "excellent": "Java。任意对象都可作为内置锁这是本题的核心结论。",
+        "fair": "Java。任意对象都可作",
+        "poor": "Jav，细节记不清了"
       },
       "tags": [
         "java-multithreading"
@@ -2000,8 +2000,8 @@
         "@Retention 只影响文档，不影响运行期行为"
       ],
       "anchors": {
-        "excellent": "弃用。提示开发者应避免使用该元素这是本题的核心结论。需要结合题意理解其作用与适用场景。",
-        "fair": "弃用。提示开发者应避免使用",
+        "excellent": "弃用。提示开发者应避免使用该元素这是本题的核心结论。",
+        "fair": "弃用。提示开发者应避免使",
         "poor": "细节记不清了"
       },
       "tags": [
@@ -2029,7 +2029,7 @@
         "@Retention 只影响文档，不影响运行期行为"
       ],
       "anchors": {
-        "excellent": "Java。例如 METHOD, FIELD, TYPE 等这是本题的核心结论。",
+        "excellent": "Java。例如 METHOD, FIELD, TYPE 等",
         "fair": "Java。例如 METH",
         "poor": "Jav，细节记不清了"
       },
@@ -2139,7 +2139,7 @@
       "referenceAnswer": "1.数据库（DB）：存储数据的容器，是结构化数据的集合；2.数据库管理系统（DBMS）：管理数据库的软件，提供增删改查、事务、索引等功能；3.数据库系统（DBS）：由数据库、DBMS、管理员、硬件、应用程序组成的完整系统，范围最广。",
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
-        "1.数据库（DB）：存储数据的容器，是结",
+        "1.数据库（DB）：存储数据的容器",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2197,7 +2197,7 @@
       "referenceAnswer": "优点：1.大幅提升数据查询效率；2.加速多表联表查询速度；3.通过唯一索引保证数据唯一性。缺点：1.占用额外存储空间；2.降低增、删、改数据的执行效率；3.增加数据库维护开销。",
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
-        "优点：1.大幅提升数据查询效率；2.加速",
+        "优点：1.大幅提升数据查询效率",
         "缺点：1.占用额外存储空间；2.降低增",
         "（答题要求）结论要与参考答案一致"
       ],
@@ -2226,9 +2226,9 @@
       "referenceAnswer": "1.数据量极少的数据表，索引开销大于查询收益；2.高频增删改的字段，索引会大幅降低写入效率；3.重复度极高的字段，索引无法有效筛选数据；4.频繁为空的字段，索引利用率极低；5.短时间临时使用的字段。",
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
-        "1.数据量极少",
-        "数据表，索引开销大于查询",
-        "（答题要求）结论要与参考答案一致"
+        "1.数据量极少的数据表",
+        "（答题要求）结论要与参考答案一致",
+        "（答题要求）需结合题目条件判断"
       ],
       "mustExclude": [
         "建索引后所有查询都会变快",
@@ -2313,7 +2313,7 @@
       "referenceAnswer": "1.读未提交：最低级别，允许读取未提交数据，存在脏读、不可重复读、幻读；2.读已提交：只能读取已提交数据，解决脏读，存在不可重复读、幻读；3.可重复读：同一事务多次读取结果一致，解决脏读、不可重复读，存在幻读（MySQL默认级别）；4.串行化：最高级别，事务串行执行，解决所有并发问题，性能最低。",
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
-        "1.读未提交：最低级别，允许读取未提交数",
+        "1.读未提交：最低级别",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2400,9 +2400,9 @@
       "referenceAnswer": "1.实体：现实中独立存在的事物，对应数据表，E-R图用矩形表示；2.属性：实体的特征和参数，对应表字段，E-R图用椭圆形表示；3.联系：不同实体之间的关联关系，分为一对一、一对多、多对多，E-R图用菱形表示。",
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
-        "1.实体：现实中独立存在",
-        "事物，对应数据",
-        "（答题要求）结论要与参考答案一致"
+        "1.实体：现实中独立存在的事物",
+        "（答题要求）结论要与参考答案一致",
+        "（答题要求）需结合题目条件判断"
       ],
       "mustExclude": [
         "一张表只能有一个主键约束",
@@ -2429,7 +2429,7 @@
       "referenceAnswer": "1.SQL优化：避免SELECT *、合理使用索引、优化JOIN和子查询；2.索引优化：为高频查询字段建索引、删除无效索引；3.表结构优化：遵循三大范式、合理拆分大表、优化字段数据类型；4.配置优化：调整数据库连接数、缓存参数；5.架构优化：主从分离、读写分离、分库分表。",
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
-        "1.SQL优化：避免SELECT *、合",
+        "1.SQL优化：避免SELECT *",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2459,8 +2459,8 @@
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
         "两类数据库互补，企业业务常组合使用",
-        "1.存储结构：关系型基于二维表存储，结构",
-        "非关系型基于键值、文档、图等结构，灵活松"
+        "1.存储结构：关系型基于二维表存储",
+        "非关系型基于键值；文档；图等结构"
       ],
       "mustExclude": [
         "关系型数据库不支持事务",
@@ -2938,7 +2938,7 @@
       "referenceAnswer": "正确答案：正确 return a,b,c 实际返回一个 tuple。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：正确 return a,b,",
+        "正确答案：正确 return a；b",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],

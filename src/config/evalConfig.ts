@@ -40,10 +40,13 @@ function envFlag(name: string, fallback: boolean): boolean {
 /**
  * 默认值刻意保守（计划 §1.2 + T3-1 兜底）：
  * - RAG 关：计划 S4-R1 判定「RAG 反而让回答变差」是最高概率风险，必须 A/B 对照后再开；
- * - **语义层默认关闭**：阈值来自脚本派生的模板锚点（reviewed=false），区分度未经人工审校。
- *   另外要注意：Tutor 的生产链路不注入 reference/scorer（自由提问没有标准答案），
- *   因此即使把本开关打开，语义层在生产里也不会执行 —— 它只在评测链路中被使用。
- *   这条事实同时写在 docs/eval-methodology.md，两处必须一致。
+ * - **语义层默认关闭**：`Tutor.tsx` 的生产链路不注入 `reference/scorer`（自由提问没有标准答案），
+ *   因此即使把本开关打开，语义层在生产里也不会执行 —— 它只在评测链路中使用。
+ *   这条事实同时写在 `docs/eval-methodology.md`，两处必须一致。
+ *   （2026-10-08 复核更新：阈值已从「模板锚点」升为 curated 锚点（`anchorSource='curated'`），
+ *   但**人工抽检未完成** → `THRESHOLD_PROVENANCE.humanReviewed` 仍为 `false`、`usable=false`，
+ *   所以这里的默认关闭与影子模式都**不因阈值可用性不足**，而是因为生产链路无标准答案 +
+ *   抽检未完成，见 `HANDOVER.md` §13 B-24。）
  * - 影子模式默认开：语义层一旦被启用（评测链路/未来接入题库题），仍然只记录不拦截；
  * - 模型层开：改造前 Tutor 就有 AI 评审，关掉等于功能回退；
  * - EVAL_MODE=offline：offline 下不期望真实 LLM 调用。

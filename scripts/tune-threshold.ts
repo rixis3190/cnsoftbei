@@ -169,7 +169,10 @@ function build() {
     reason.push(`最弱正样本得分 ${weakestPositive.toFixed(2)} < 阈值 ${plateau.threshold}`)
   }
   if (!THRESHOLD_PROVENANCE.humanReviewed) {
-    reason.push(`锚点未复核（anchorSource=${THRESHOLD_PROVENANCE.anchorSource}），结论只能验证流程`)
+    reason.push(
+      `锚点已做 ${THRESHOLD_PROVENANCE.structuralReview}，但**人工抽检未完成**` +
+        `（anchorSource=${THRESHOLD_PROVENANCE.anchorSource}，见 HANDOVER §13 B-24）：结论只能验证流程`,
+    )
   }
   const usable = reason.length === 0
 
