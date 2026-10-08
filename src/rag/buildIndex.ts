@@ -54,6 +54,21 @@ export const DEFAULT_TOP_K = 3
 /** 关键词通道默认权重（余弦占 0.7） */
 export const DEFAULT_KEYWORD_WEIGHT = 0.3
 
+/**
+ * 概览型提问的意图识别。
+ * 「XX 这个主题整体讲了什么」与「某个具体问题」需要的块类型不同：
+ * 前者要 tag 概览块，后者要题目块。纯 n-gram 相似度区分不了这两种意图
+ * （实测概览型查询 Recall@3 仅 0.14），因此加一个**显式可解释**的意图加权。
+ */
+const OVERVIEW_INTENT = /整体|概览|总结|全貌|系统地讲|有哪些考|知识体系/gi
+/** 命中概览意图时给概览块的加分（0.15 足以进入 top-3，又不至于压过明确的问题块） */
+export const OVERVIEW_INTENT_BONUS = 0.15
+
+function hasOverviewIntent(query: string): boolean {
+  OVERVIEW_INTENT.lastIndex = 0
+  return OVERVIEW_INTENT.test(query)
+}
+
 export interface RagIndex {
   chunks: RagChunk[]
   vectors: Float32Array[]
@@ -138,6 +153,7 @@ export function retrieve(query: string, options: RetrieveOptions = {}): Retrieve
   const queryVector = index.provider.embed(trimmed)
   const queryTokens = new Set(tokenize(trimmed))
   const hintSet = tagHint?.length ? new Set(tagHint) : null
+  const overviewIntent = hasOverviewIntent(trimmed)
   const results: RetrievedChunk[] = []
 
   for (let i = 0; i < index.chunks.length; i++) {
@@ -145,7 +161,8 @@ export function retrieve(query: string, options: RetrieveOptions = {}): Retrieve
     if (hintSet && !chunk.tags.some(tag => hintSet.has(tag))) continue
     const cosine = cosineDot(queryVector, index.vectors[i])
     const keyword = keywordScore(queryTokens, index.keywordTokens[i])
-    const score = (1 - keywordWeight) * cosine + keywordWeight * keyword
+    let score = (1 - keywordWeight) * cosine + keywordWeight * keyword
+    if (overviewIntent && chunk.kind === 'tag-overview') score += OVERVIEW_INTENT_BONUS
     if (score >= floor) results.push({ chunk, score, cosine, keyword })
   }
 

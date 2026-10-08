@@ -34,6 +34,7 @@ import {
 } from '../services/promptBuilder';
 import { validateAnswerRules, findBestMatchByKeywords } from '../services/tutorQuality';
 import { runQualityFunnel } from '../services/qualityFunnel';
+import { EVAL_SWITCHES } from '../config/evalConfig';
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -303,6 +304,27 @@ const Tutor: React.FC = () => {
     }
   };
 
+  // RAG 模块动态加载（计划 S4-9）：向量索引约 350KB，静态 import 会拖慢首屏。
+  // 开关关闭时**连 chunk 都不加载**（否则「RAG 关 = 零成本」只是空话）。
+  const loadRagContext = useCallback(async () => {
+    if (!EVAL_SWITCHES.RAG_ENABLED) return null;
+    try {
+      const [retriever, prompts, builder] = await Promise.all([
+        import('../rag/retriever'),
+        import('../rag/ragPrompts'),
+        import('../services/promptBuilder'),
+      ]);
+      return {
+        retrieveForQuestion: retriever.retrieveForQuestion,
+        formatChunksForPrompt: prompts.formatChunksForPrompt,
+        buildRagAnswerPrompt: builder.buildRagAnswerPrompt,
+      };
+    } catch (error) {
+      console.warn('[Tutor RAG] 模块加载失败，本次不注入上下文', error);
+      return null;
+    }
+  }, []);
+
   const handleAsk = useCallback(async (inputQuestion?: string, parentQA?: QAItem | null) => {
     const q = (inputQuestion ?? question).trim();
     if (!q) return;
@@ -447,9 +469,29 @@ const Tutor: React.FC = () => {
 
     let fullAnswer = '';
     try {
-      const systemPrompt = isFollowUp && contextParent
+      const baseSystemPrompt = isFollowUp && contextParent
         ? buildFollowUpSystemPrompt(profile)
         : buildTutorSystemPrompt(activeMode, profile);
+
+      // RAG 注入：在构造 messages **之前**检索一次，且只在非追问链路注入
+      // （追问已有上下文，注入片段反而会干扰）。检索为空则完全不注入。
+      let systemPrompt = baseSystemPrompt;
+      if (!isFollowUp) {
+        const rag = await loadRagContext();
+        if (rag) {
+          const retrieval = rag.retrieveForQuestion(q, { topK: 3 });
+          if (retrieval.chunks.length > 0) {
+            const formatted = rag.formatChunksForPrompt(retrieval.chunks);
+            const { systemSuffix } = rag.buildRagAnswerPrompt(formatted, profile);
+            systemPrompt = `${systemPrompt}\n${systemSuffix}`;
+            console.log(
+              `[Tutor RAG] 注入 ${formatted.length} 个片段（topScore=${retrieval.topScore.toFixed(3)}，标签=${retrieval.matchedTags.join(',')}）`,
+            );
+          } else if (retrieval.ragUnavailable) {
+            console.warn('[Tutor RAG] 索引不可用，本次不注入上下文（降级 L3）');
+          }
+        }
+      }
 
       const userContent = isFollowUp && contextParent
         ? buildFollowUpUserPrompt(contextParent, q)

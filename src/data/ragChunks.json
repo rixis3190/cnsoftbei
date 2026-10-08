@@ -5784,7 +5784,7 @@
   "tags": [
    "python-syntax"
   ],
-  "text": "【知识点概览】python-syntax\n本主题共 14 道题，典型考点包括：\n- Python 中变量在使用前必须先声明类型。\n- Python 中的 `elif` 可以替代 `else if` 使用，效果完全相同。\n- Python 使用缩进（indentation）来标识代码块。\n- Python 中多条语句可以写在同一行，语句之间使用分号分隔。\n- Python 关键字可以被用作自定义变量名。\n- Python 多行注释可以使用三个单引号 ''' 或者三个双引号 \"\"\"。\n- 变量名可以以数字作为开头。\n- Python 区分大小写，变量 name 和 Name 是两个不同变量。\n- Python 中括号、引号可以不配对使用。\n- pass 语句是空语句，仅用于占位，不会执行任何操作。\n- 请说明 Python 中 `==` 和 `is` 的区别，并举例说明何时应该使用哪个。\n- Python 的 for 循环和 while 循环有什么区别？各适合什么场景？",
+  "text": "【知识点概览】Python · syntax\n本主题共 14 道题，Pythonsyntax的典型考点包括：\n- Python 中变量在使用前必须先声明类型。\n- Python 中的 `elif` 可以替代 `else if` 使用，效果完全相同。\n- Python 使用缩进（indentation）来标识代码块。\n- Python 中多条语句可以写在同一行，语句之间使用分号分隔。\n- Python 关键字可以被用作自定义变量名。\n- Python 多行注释可以使用三个单引号 ''' 或者三个双引号 \"\"\"。\n- 变量名可以以数字作为开头。\n- Python 区分大小写，变量 name 和 Name 是两个不同变量。\n- Python 中括号、引号可以不配对使用。\n- pass 语句是空语句，仅用于占位，不会执行任何操作。\n- 请说明 Python 中 `==` 和 `is` 的区别，并举例说明何时应该使用哪个。\n- Python 的 for 循环和 while 循环有什么区别？各适合什么场景？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-1",
@@ -5798,7 +5798,7 @@
   "tags": [
    "python-errorprone"
   ],
-  "text": "【知识点概览】python-errorprone\n本主题共 41 道题，典型考点包括：\n- Python 关键字可以被用作自定义变量名。\n- 变量名可以以数字作为开头。\n- Python 中括号、引号可以不配对使用。\n- 字典（dict）的键（key）可以使用列表类型。\n- 字典中的值（value）不可以为列表类型。\n- 空字符串 '' 参与逻辑判断时，等价于 False。\n- 字符串属于可变数据类型，可以直接修改其中单个字符。\n- 空列表 [] 在逻辑判断中会被判定为 True。\n- += 属于 Python 中的复合赋值运算符。\n- 运算符优先级：算术运算符高于比较运算符。\n- for...else 结构中，循环正常结束没有触发 break 时，会执行 else 代码块。\n- continue 语句会直接终止整个循环的执行。",
+  "text": "【知识点概览】Python · 易错点\n本主题共 41 道题，Python易错点的典型考点包括：\n- Python 关键字可以被用作自定义变量名。\n- 变量名可以以数字作为开头。\n- Python 中括号、引号可以不配对使用。\n- 字典（dict）的键（key）可以使用列表类型。\n- 字典中的值（value）不可以为列表类型。\n- 空字符串 '' 参与逻辑判断时，等价于 False。\n- 字符串属于可变数据类型，可以直接修改其中单个字符。\n- 空列表 [] 在逻辑判断中会被判定为 True。\n- += 属于 Python 中的复合赋值运算符。\n- 运算符优先级：算术运算符高于比较运算符。\n- for...else 结构中，循环正常结束没有触发 break 时，会执行 else 代码块。\n- continue 语句会直接终止整个循环的执行。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-1",
@@ -5812,7 +5812,7 @@
   "tags": [
    "python-data-types"
   ],
-  "text": "【知识点概览】python-data-types\n本主题共 16 道题，典型考点包括：\n- 请说明 Python 中 `==` 和 `is` 的区别，并举例说明何时应该使用哪个。\n- 在 Python 中，list 是可变类型，tuple 是不可变类型。\n- 以下哪个不是 Python 的基本数据类型？\n- 以下哪个表达式的结果为 True？\n- `type({})` 的返回值是？\n- 执行 `a = [1, 2, 3]; b = a; b.append(4)` 后，a 的值是？\n- 元组 tuple 创建完成后，内部元素可以直接修改。\n- 集合（set）中允许存放重复的元素。\n- 字典（dict）的键（key）可以使用列表类型。\n- 字典中的值（value）不可以为列表类型。\n- Python 中布尔类型只有 True 和 False 两个取值。\n- 空字符串 '' 参与逻辑判断时，等价于 False。",
+  "text": "【知识点概览】Python · data-types\n本主题共 16 道题，Pythondata-types的典型考点包括：\n- 请说明 Python 中 `==` 和 `is` 的区别，并举例说明何时应该使用哪个。\n- 在 Python 中，list 是可变类型，tuple 是不可变类型。\n- 以下哪个不是 Python 的基本数据类型？\n- 以下哪个表达式的结果为 True？\n- `type({})` 的返回值是？\n- 执行 `a = [1, 2, 3]; b = a; b.append(4)` 后，a 的值是？\n- 元组 tuple 创建完成后，内部元素可以直接修改。\n- 集合（set）中允许存放重复的元素。\n- 字典（dict）的键（key）可以使用列表类型。\n- 字典中的值（value）不可以为列表类型。\n- Python 中布尔类型只有 True 和 False 两个取值。\n- 空字符串 '' 参与逻辑判断时，等价于 False。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-1",
@@ -5826,7 +5826,7 @@
   "tags": [
    "python-control-flow"
   ],
-  "text": "【知识点概览】python-control-flow\n本主题共 7 道题，典型考点包括：\n- Python 的 for 循环和 while 循环有什么区别？各适合什么场景？\n- if...elif...else 语句中，多个分支会同时执行。\n- for...else 结构中，循环正常结束没有触发 break 时，会执行 else 代码块。\n- break 语句可以终止当前所在的循环，跳出循环体。\n- continue 语句会直接终止整个循环的执行。\n- continue 语句可以跳出多层嵌套循环。\n- while 循环的条件表达式结果必须是布尔类型。",
+  "text": "【知识点概览】Python · control-flow\n本主题共 7 道题，Pythoncontrol-flow的典型考点包括：\n- Python 的 for 循环和 while 循环有什么区别？各适合什么场景？\n- if...elif...else 语句中，多个分支会同时执行。\n- for...else 结构中，循环正常结束没有触发 break 时，会执行 else 代码块。\n- break 语句可以终止当前所在的循环，跳出循环体。\n- continue 语句会直接终止整个循环的执行。\n- continue 语句可以跳出多层嵌套循环。\n- while 循环的条件表达式结果必须是布尔类型。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-1",
@@ -5840,7 +5840,7 @@
   "tags": [
    "python-operators"
   ],
-  "text": "【知识点概览】python-operators\n本主题共 7 道题，典型考点包括：\n- 表达式 `3 ** 2 ** 2` 的结果是？\n- `print(1 or 2)` 的输出是？\n- Python 中 % 运算符的作用是求取两个数字的余数。\n- 逻辑运算符 and 表示两边条件同时成立，整体结果才为真。\n- += 属于 Python 中的复合赋值运算符。\n- 逻辑运算符 or 只要一侧条件为真，整体结果就为真。\n- 运算符优先级：算术运算符高于比较运算符。",
+  "text": "【知识点概览】Python · operators\n本主题共 7 道题，Pythonoperators的典型考点包括：\n- 表达式 `3 ** 2 ** 2` 的结果是？\n- `print(1 or 2)` 的输出是？\n- Python 中 % 运算符的作用是求取两个数字的余数。\n- 逻辑运算符 and 表示两边条件同时成立，整体结果才为真。\n- += 属于 Python 中的复合赋值运算符。\n- 逻辑运算符 or 只要一侧条件为真，整体结果就为真。\n- 运算符优先级：算术运算符高于比较运算符。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-1",
@@ -5854,7 +5854,7 @@
   "tags": [
    "python-functions"
   ],
-  "text": "【知识点概览】python-functions\n本主题共 13 道题，典型考点包括：\n- Python 函数可以返回多个值。\n- 函数的默认参数值可以是可变对象（如 list），且行为总是安全的。\n- 以下哪个是正确的装饰器语法？\n- 执行以下代码，`y` 的值是？\n\n```python\ndef foo(x, lst=[]):\n    lst.append(x)\n    return lst\n\ny = foo(1)\ny = foo(2)\n```\n- 函数参数中 `*args` 和 `**kwargs` 的作用是？\n- 请解释 Python 中函数调用时的参数传递机制。它是按值传递还是按引用传递？请结合示例说明。\n- 以下哪个是 Python 中合法的 lambda 函数？\n- 函数必须设置返回值，不能省略 return 语句。\n- 函数的形参可以设置默认值，有默认值的参数必须放在参数列表末尾。\n- 调用函数时，传入的实参数量必须匹配无默认值的形参数量。\n- 函数可以作为另一个函数的参数进行传递。\n- 使用 global 关键字可以在函数内部修改全局变量。",
+  "text": "【知识点概览】Python · functions\n本主题共 13 道题，Pythonfunctions的典型考点包括：\n- Python 函数可以返回多个值。\n- 函数的默认参数值可以是可变对象（如 list），且行为总是安全的。\n- 以下哪个是正确的装饰器语法？\n- 执行以下代码，`y` 的值是？\n\n```python\ndef foo(x, lst=[]):\n    lst.append(x)\n    return lst\n\ny = foo(1)\ny = foo(2)\n```\n- 函数参数中 `*args` 和 `**kwargs` 的作用是？\n- 请解释 Python 中函数调用时的参数传递机制。它是按值传递还是按引用传递？请结合示例说明。\n- 以下哪个是 Python 中合法的 lambda 函数？\n- 函数必须设置返回值，不能省略 return 语句。\n- 函数的形参可以设置默认值，有默认值的参数必须放在参数列表末尾。\n- 调用函数时，传入的实参数量必须匹配无默认值的形参数量。\n- 函数可以作为另一个函数的参数进行传递。\n- 使用 global 关键字可以在函数内部修改全局变量。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-2",
@@ -5868,7 +5868,7 @@
   "tags": [
    "python-scope"
   ],
-  "text": "【知识点概览】python-scope\n本主题共 3 道题，典型考点包括：\n- 在 Python 中，可以在函数内部修改全局变量的值而不使用 global 关键字。\n- 使用 global 关键字可以在函数内部修改全局变量。\n- 全局变量在整个代码文件内都可以被访问。",
+  "text": "【知识点概览】Python · scope\n本主题共 3 道题，Pythonscope的典型考点包括：\n- 在 Python 中，可以在函数内部修改全局变量的值而不使用 global 关键字。\n- 使用 global 关键字可以在函数内部修改全局变量。\n- 全局变量在整个代码文件内都可以被访问。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-2",
@@ -5882,7 +5882,7 @@
   "tags": [
    "python-modules"
   ],
-  "text": "【知识点概览】python-modules\n本主题共 6 道题，典型考点包括：\n- 以下哪个命令可以将模块 my_module 中的 func 函数导入到当前命名空间？\n- `__all__` 变量在 Python 模块中的作用是？\n- 使用 `from math import *` 会导入 math 模块中的所有公开属性。\n- 请说明 Python 模块的搜索路径顺序，以及如何修改模块搜索路径。\n- 导入模块后，可以直接使用 模块名.功能名 的方式调用内部功能。\n- 导入模块后，模块内部的私有变量可以被外部直接访问。",
+  "text": "【知识点概览】Python · modules\n本主题共 6 道题，Pythonmodules的典型考点包括：\n- 以下哪个命令可以将模块 my_module 中的 func 函数导入到当前命名空间？\n- `__all__` 变量在 Python 模块中的作用是？\n- 使用 `from math import *` 会导入 math 模块中的所有公开属性。\n- 请说明 Python 模块的搜索路径顺序，以及如何修改模块搜索路径。\n- 导入模块后，可以直接使用 模块名.功能名 的方式调用内部功能。\n- 导入模块后，模块内部的私有变量可以被外部直接访问。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-2",
@@ -5896,7 +5896,7 @@
   "tags": [
    "python-oop"
   ],
-  "text": "【知识点概览】python-oop\n本主题共 12 道题，典型考点包括：\n- Python 中所有类的方法的第一个参数都代表当前实例，通常命名为 self。\n- 请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。\n- 类是对象的模板，对象是类的实例。\n- __init__ 方法在手动调用类之后才会执行。\n- 类属性只能通过实例对象访问，不能通过类名直接访问。\n- 执行以下代码，输出是？\n\n```python\nclass A:\n    def __init__(self, v): self.v = v\n    def __eq__(self, other): return self.v == other.v\n\nclass B(A):\n    def __init__(self, v): self.v = v\n\na = A(1); b = B(1)\nprint(a == b)\n```\n- 子类无法重写父类已经定义好的方法。\n- 子类不能调用父类中已经重写的方法。\n- Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。\n- 实现多态的前提通常是子类重写父类的方法。\n- 不同子类调用同名重写方法，执行效果完全一致。",
+  "text": "【知识点概览】Python · 面向对象\n本主题共 12 道题，Python面向对象的典型考点包括：\n- Python 中所有类的方法的第一个参数都代表当前实例，通常命名为 self。\n- 请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。\n- 类是对象的模板，对象是类的实例。\n- __init__ 方法在手动调用类之后才会执行。\n- 类属性只能通过实例对象访问，不能通过类名直接访问。\n- 执行以下代码，输出是？\n\n```python\nclass A:\n    def __init__(self, v): self.v = v\n    def __eq__(self, other): return self.v == other.v\n\nclass B(A):\n    def __init__(self, v): self.v = v\n\na = A(1); b = B(1)\nprint(a == b)\n```\n- 子类无法重写父类已经定义好的方法。\n- 子类不能调用父类中已经重写的方法。\n- Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。\n- 实现多态的前提通常是子类重写父类的方法。\n- 不同子类调用同名重写方法，执行效果完全一致。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-3",
@@ -5910,7 +5910,7 @@
   "tags": [
    "python-classes"
   ],
-  "text": "【知识点概览】python-classes\n本主题共 9 道题，典型考点包括：\n- 以下哪个不是 Python 的魔术方法（dunder method）？\n- Python 中使用 `@property` 装饰器可以让一个方法像属性一样被访问。\n- 以下哪种方法最适合实现类的『单例模式』？\n- 私有属性（如 `self.__x`）在 Python 中是完全无法从类外部访问的。\n- 下面代码的输出是？\n\n```python\nclass A:\n    x = 1\nclass B(A): pass\nclass C(A): pass\nA.x = 2\nprint(B.x, C.x)\n```\n- 请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。\n- 类是对象的模板，对象是类的实例。\n- __init__ 方法在手动调用类之后才会执行。\n- 类属性只能通过实例对象访问，不能通过类名直接访问。",
+  "text": "【知识点概览】Python · classes\n本主题共 9 道题，Pythonclasses的典型考点包括：\n- 以下哪个不是 Python 的魔术方法（dunder method）？\n- Python 中使用 `@property` 装饰器可以让一个方法像属性一样被访问。\n- 以下哪种方法最适合实现类的『单例模式』？\n- 私有属性（如 `self.__x`）在 Python 中是完全无法从类外部访问的。\n- 下面代码的输出是？\n\n```python\nclass A:\n    x = 1\nclass B(A): pass\nclass C(A): pass\nA.x = 2\nprint(B.x, C.x)\n```\n- 请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。\n- 类是对象的模板，对象是类的实例。\n- __init__ 方法在手动调用类之后才会执行。\n- 类属性只能通过实例对象访问，不能通过类名直接访问。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-3",
@@ -5924,7 +5924,7 @@
   "tags": [
    "python-inheritance"
   ],
-  "text": "【知识点概览】python-inheritance\n本主题共 5 道题，典型考点包括：\n- Python 支持多继承，一个子类可以有多个父类。\n- 在 Python 中，以下哪种方式最符合『面向对象设计原则』中的『里氏替换原则』？\n- 使用 `class Child(Parent1, Parent2)` 定义类时，Child 类的方法解析顺序（MRO）是？\n- 子类无法重写父类已经定义好的方法。\n- 子类不能调用父类中已经重写的方法。",
+  "text": "【知识点概览】Python · inheritance\n本主题共 5 道题，Pythoninheritance的典型考点包括：\n- Python 支持多继承，一个子类可以有多个父类。\n- 在 Python 中，以下哪种方式最符合『面向对象设计原则』中的『里氏替换原则』？\n- 使用 `class Child(Parent1, Parent2)` 定义类时，Child 类的方法解析顺序（MRO）是？\n- 子类无法重写父类已经定义好的方法。\n- 子类不能调用父类中已经重写的方法。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-3",
@@ -5938,7 +5938,7 @@
   "tags": [
    "python-polymorphism"
   ],
-  "text": "【知识点概览】python-polymorphism\n本主题共 6 道题，典型考点包括：\n- 在 Python 中，以下哪种方式最符合『面向对象设计原则』中的『里氏替换原则』？\n- 执行以下代码，输出是？\n\n```python\nclass A:\n    def __init__(self, v): self.v = v\n    def __eq__(self, other): return self.v == other.v\n\nclass B(A):\n    def __init__(self, v): self.v = v\n\na = A(1); b = B(1)\nprint(a == b)\n```\n- Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。\n- 实现多态的前提通常是子类重写父类的方法。\n- 不同子类调用同名重写方法，执行效果完全一致。\n- Python 实现多态不需要严格定义父类抽象方法。",
+  "text": "【知识点概览】Python · polymorphism\n本主题共 6 道题，Pythonpolymorphism的典型考点包括：\n- 在 Python 中，以下哪种方式最符合『面向对象设计原则』中的『里氏替换原则』？\n- 执行以下代码，输出是？\n\n```python\nclass A:\n    def __init__(self, v): self.v = v\n    def __eq__(self, other): return self.v == other.v\n\nclass B(A):\n    def __init__(self, v): self.v = v\n\na = A(1); b = B(1)\nprint(a == b)\n```\n- Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。\n- 实现多态的前提通常是子类重写父类的方法。\n- 不同子类调用同名重写方法，执行效果完全一致。\n- Python 实现多态不需要严格定义父类抽象方法。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-3",
@@ -5952,7 +5952,7 @@
   "tags": [
    "python-exceptions"
   ],
-  "text": "【知识点概览】python-exceptions\n本主题共 7 道题，典型考点包括：\n- 在 Python 中，`try...except...finally` 语句中，`finally` 块无论是否发生异常都会执行。\n- 以下哪个语法可以正确捕获所有类型的异常？\n- 执行以下代码，会输出什么？\n\n```python\ntry:\n    raise ValueError('error1')\nexcept ValueError as e:\n    print('caught')\n    raise TypeError('error2')\nfinally:\n    print('finally')\n```\n- 请说明 Python 中自定义异常类的最佳实践，包括如何命名、是否需要定义额外属性，以及在什么场景下应该创建自定义异常。\n- except 语句可以单独使用，不需要搭配 try 语句。\n- 可以针对不同类型的异常，设置多个 except 分支分别处理。\n- try 代码块中出现异常，后续代码依然会继续执行。",
+  "text": "【知识点概览】Python · exceptions\n本主题共 7 道题，Pythonexceptions的典型考点包括：\n- 在 Python 中，`try...except...finally` 语句中，`finally` 块无论是否发生异常都会执行。\n- 以下哪个语法可以正确捕获所有类型的异常？\n- 执行以下代码，会输出什么？\n\n```python\ntry:\n    raise ValueError('error1')\nexcept ValueError as e:\n    print('caught')\n    raise TypeError('error2')\nfinally:\n    print('finally')\n```\n- 请说明 Python 中自定义异常类的最佳实践，包括如何命名、是否需要定义额外属性，以及在什么场景下应该创建自定义异常。\n- except 语句可以单独使用，不需要搭配 try 语句。\n- 可以针对不同类型的异常，设置多个 except 分支分别处理。\n- try 代码块中出现异常，后续代码依然会继续执行。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -5966,7 +5966,7 @@
   "tags": [
    "python-studyhabit"
   ],
-  "text": "【知识点概览】python-studyhabit\n本主题共 5 道题，典型考点包括：\n- 请说明 Python 中自定义异常类的最佳实践，包括如何命名、是否需要定义额外属性，以及在什么场景下应该创建自定义异常。\n- 请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。\n- 代码出现报错时，直接忽略报错继续编写即可。\n- 编写代码前梳理思路、简单注释，有助于减少出错概率。\n- 编写代码时统一缩进格式，是良好的 Python 编码习惯。",
+  "text": "【知识点概览】Python · studyhabit\n本主题共 5 道题，Pythonstudyhabit的典型考点包括：\n- 请说明 Python 中自定义异常类的最佳实践，包括如何命名、是否需要定义额外属性，以及在什么场景下应该创建自定义异常。\n- 请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。\n- 代码出现报错时，直接忽略报错继续编写即可。\n- 编写代码前梳理思路、简单注释，有助于减少出错概率。\n- 编写代码时统一缩进格式，是良好的 Python 编码习惯。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -5980,7 +5980,7 @@
   "tags": [
    "python-files"
   ],
-  "text": "【知识点概览】python-files\n本主题共 8 道题，典型考点包括：\n- 使用 `with open('file.txt') as f:` 打开文件时，文件会在 with 块结束时自动关闭。\n- 以二进制模式写入二进制数据，正确的打开方式是？\n- 请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。\n- 以 r 模式打开文件时，可以向文件中写入新内容。\n- 以 w 模式打开文件，会清空文件原有内容再写入新数据。\n- readline() 方法每次只会读取文件中的一行内容。\n- 使用 a+ 模式打开文件，既可以读取内容也可以追加写入内容。\n- readlines() 方法会将文件所有行读取为一个列表返回。",
+  "text": "【知识点概览】Python · files\n本主题共 8 道题，Pythonfiles的典型考点包括：\n- 使用 `with open('file.txt') as f:` 打开文件时，文件会在 with 块结束时自动关闭。\n- 以二进制模式写入二进制数据，正确的打开方式是？\n- 请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。\n- 以 r 模式打开文件时，可以向文件中写入新内容。\n- 以 w 模式打开文件，会清空文件原有内容再写入新数据。\n- readline() 方法每次只会读取文件中的一行内容。\n- 使用 a+ 模式打开文件，既可以读取内容也可以追加写入内容。\n- readlines() 方法会将文件所有行读取为一个列表返回。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -5994,7 +5994,7 @@
   "tags": [
    "python-comprehensions"
   ],
-  "text": "【知识点概览】python-comprehensions\n本主题共 7 道题，典型考点包括：\n- 请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。\n- 列表推导式 `[x for x in range(5)]` 与生成器表达式 `(x for x in range(5))` 完全等效。\n- `{x: x**2 for x in range(5)}` 创建的对象类型是？\n- 字典也可以使用推导式语法快速生成。\n- 集合推导式和列表推导式的语法符号完全相同。\n- 嵌套循环逻辑也可以使用列表推导式简化编写。\n- 推导式语法只能简化循环，不能搭配条件判断。",
+  "text": "【知识点概览】Python · comprehensions\n本主题共 7 道题，Pythoncomprehensions的典型考点包括：\n- 请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。\n- 列表推导式 `[x for x in range(5)]` 与生成器表达式 `(x for x in range(5))` 完全等效。\n- `{x: x**2 for x in range(5)}` 创建的对象类型是？\n- 字典也可以使用推导式语法快速生成。\n- 集合推导式和列表推导式的语法符号完全相同。\n- 嵌套循环逻辑也可以使用列表推导式简化编写。\n- 推导式语法只能简化循环，不能搭配条件判断。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -6008,7 +6008,7 @@
   "tags": [
    "python-decorators"
   ],
-  "text": "【知识点概览】python-decorators\n本主题共 6 道题，典型考点包括：\n- 执行以下代码，输出是？\n\n```python\ndef decorator(func):\n    return func\n\n@decorator\ndef foo():\n    return 'hello'\n\nprint(foo())\n```\n- 装饰器 `@functools.wraps(func)` 的主要作用是？\n- 带参数的装饰器 `@decorator(arg)` 本质上是一个返回装饰器的函数。\n- 使用装饰器会直接修改原函数内部的代码逻辑。\n- 多个装饰器可以同时装饰同一个函数。\n- 装饰器无法为函数添加额外的日志记录功能。",
+  "text": "【知识点概览】Python · decorators\n本主题共 6 道题，Pythondecorators的典型考点包括：\n- 执行以下代码，输出是？\n\n```python\ndef decorator(func):\n    return func\n\n@decorator\ndef foo():\n    return 'hello'\n\nprint(foo())\n```\n- 装饰器 `@functools.wraps(func)` 的主要作用是？\n- 带参数的装饰器 `@decorator(arg)` 本质上是一个返回装饰器的函数。\n- 使用装饰器会直接修改原函数内部的代码逻辑。\n- 多个装饰器可以同时装饰同一个函数。\n- 装饰器无法为函数添加额外的日志记录功能。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -6022,7 +6022,7 @@
   "tags": [
    "java-syntax"
   ],
-  "text": "【知识点概览】java-syntax\n本主题共 17 道题，典型考点包括：\n- 包（package）的作用是什么？\n- 导入一个包中所有类的正确语法是？\n- Java 中多行注释以 /* 开始，以什么结束？\n- 以下哪个是合法的 Java 标识符？\n- Java 程序编译后生成的文件扩展名是 ___。\n- main 方法参数列表中的数组类型是 ___[]。\n- Java Development Kit 的缩写是 ___。\n- Java Runtime Environment 的缩写是 ___。\n- Java 程序的执行入口方法是？\n- Java 单行注释使用哪个符号？\n- Java 用来划分代码块的符号是？\n- Java 语句结束标志是？",
+  "text": "【知识点概览】Java · syntax\n本主题共 17 道题，Javasyntax的典型考点包括：\n- 包（package）的作用是什么？\n- 导入一个包中所有类的正确语法是？\n- Java 中多行注释以 /* 开始，以什么结束？\n- 以下哪个是合法的 Java 标识符？\n- Java 程序编译后生成的文件扩展名是 ___。\n- main 方法参数列表中的数组类型是 ___[]。\n- Java Development Kit 的缩写是 ___。\n- Java Runtime Environment 的缩写是 ___。\n- Java 程序的执行入口方法是？\n- Java 单行注释使用哪个符号？\n- Java 用来划分代码块的符号是？\n- Java 语句结束标志是？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-1",
@@ -6036,7 +6036,7 @@
   "tags": [
    "java-errorprone"
   ],
-  "text": "【知识点概览】java-errorprone\n本主题共 25 道题，典型考点包括：\n- Java 用来划分代码块的符号是？\n- Java 语句结束标志是？\n- Java 使用________符号划分代码块。\n- 布尔类型的取值个数是？\n- 获取数组长度使用以下哪项？\n- 以下浮点类型是？\n- String 属于________数据类型。\n- 获取数组长度使用________属性。\n- 具备短路效果的逻辑与运算符是？\n- 三元运算符的表达式个数是？\n- 具备短路效果的逻辑与运算符是________。\n- 以下哪项不是循环语句？",
+  "text": "【知识点概览】Java · 易错点\n本主题共 25 道题，Java易错点的典型考点包括：\n- Java 用来划分代码块的符号是？\n- Java 语句结束标志是？\n- Java 使用________符号划分代码块。\n- 布尔类型的取值个数是？\n- 获取数组长度使用以下哪项？\n- 以下浮点类型是？\n- String 属于________数据类型。\n- 获取数组长度使用________属性。\n- 具备短路效果的逻辑与运算符是？\n- 三元运算符的表达式个数是？\n- 具备短路效果的逻辑与运算符是________。\n- 以下哪项不是循环语句？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-1",
@@ -6050,7 +6050,7 @@
   "tags": [
    "java-data-types"
   ],
-  "text": "【知识点概览】java-data-types\n本主题共 20 道题，典型考点包括：\n- 以下哪个是正确的数组声明？\n- 将 int 转换为 Integer 的过程称为？\n- 以下哪个字面量表示 float 类型？\n- 将 double 赋值给 int 会发生什么？\n- Java 中布尔类型的字面量只有 true 和 ___。\n- char 类型在 Java 中占用 ___ 个字节。\n- Java 为了节省内存，字符串字面量存储在 ___ 池中。\n- 引用类型变量可以赋值为 ___，表示不指向任何对象。\n- 以下不属于 Java 基本数据类型的是？\n- 布尔类型的取值个数是？\n- Java 数组下标起始位置是？\n- 获取数组长度使用以下哪项？",
+  "text": "【知识点概览】Java · data-types\n本主题共 20 道题，Javadata-types的典型考点包括：\n- 以下哪个是正确的数组声明？\n- 将 int 转换为 Integer 的过程称为？\n- 以下哪个字面量表示 float 类型？\n- 将 double 赋值给 int 会发生什么？\n- Java 中布尔类型的字面量只有 true 和 ___。\n- char 类型在 Java 中占用 ___ 个字节。\n- Java 为了节省内存，字符串字面量存储在 ___ 池中。\n- 引用类型变量可以赋值为 ___，表示不指向任何对象。\n- 以下不属于 Java 基本数据类型的是？\n- 布尔类型的取值个数是？\n- Java 数组下标起始位置是？\n- 获取数组长度使用以下哪项？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-1",
@@ -6064,7 +6064,7 @@
   "tags": [
    "java-operators"
   ],
-  "text": "【知识点概览】java-operators\n本主题共 15 道题，典型考点包括：\n- 表达式 int a = 5; int b = a++; 执行后 a 和 b 的值分别是？\n- 三元运算符 ?: 的语法是 condition ? expr1 : expr2，expr1 和 expr2 的类型必须？\n- 以下哪个是复合赋值运算符？\n- Java 中求余运算符是 ___。\n- 有符号右移运算符是 ___。\n- 逻辑或的短路运算符是 ___。\n- instanceof 运算符用于测试对象是否为某个 ___ 的实例。\n- 判断两个基本类型数值是否相等使用？\n- 具备短路效果的逻辑与运算符是？\n- 赋值运算符是？\n- 三元运算符的表达式个数是？\n- 判断基本类型数值相等使用________运算符。",
+  "text": "【知识点概览】Java · operators\n本主题共 15 道题，Javaoperators的典型考点包括：\n- 表达式 int a = 5; int b = a++; 执行后 a 和 b 的值分别是？\n- 三元运算符 ?: 的语法是 condition ? expr1 : expr2，expr1 和 expr2 的类型必须？\n- 以下哪个是复合赋值运算符？\n- Java 中求余运算符是 ___。\n- 有符号右移运算符是 ___。\n- 逻辑或的短路运算符是 ___。\n- instanceof 运算符用于测试对象是否为某个 ___ 的实例。\n- 判断两个基本类型数值是否相等使用？\n- 具备短路效果的逻辑与运算符是？\n- 赋值运算符是？\n- 三元运算符的表达式个数是？\n- 判断基本类型数值相等使用________运算符。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-1",
@@ -6078,7 +6078,7 @@
   "tags": [
    "java-control-flow"
   ],
-  "text": "【知识点概览】java-control-flow\n本主题共 13 道题，典型考点包括：\n- 增强 for 循环（for-each）的语法是？\n- continue 语句的作用是？\n- if (condition) { } else { } 中，if 后面的条件必须是？\n- Java 中带标签的 break 用于？\n- switch 语句中的表达式类型可以是 byte, short, int, char, String 以及 ___ 类型（自 Java 5）。\n- ___ 循环至少执行一次循环体。\n- 增强 for 循环的语法是 for (type var : ___)。\n- 使用带 ___ 的 break 可以跳出多重循环。\n- 跳出当前循环的语句是？\n- 以下哪项不是循环语句？\n- do...while 循环的特点是？\n- 多选一分支语句是？",
+  "text": "【知识点概览】Java · control-flow\n本主题共 13 道题，Javacontrol-flow的典型考点包括：\n- 增强 for 循环（for-each）的语法是？\n- continue 语句的作用是？\n- if (condition) { } else { } 中，if 后面的条件必须是？\n- Java 中带标签的 break 用于？\n- switch 语句中的表达式类型可以是 byte, short, int, char, String 以及 ___ 类型（自 Java 5）。\n- ___ 循环至少执行一次循环体。\n- 增强 for 循环的语法是 for (type var : ___)。\n- 使用带 ___ 的 break 可以跳出多重循环。\n- 跳出当前循环的语句是？\n- 以下哪项不是循环语句？\n- do...while 循环的特点是？\n- 多选一分支语句是？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-1",
@@ -6092,7 +6092,7 @@
   "tags": [
    "java-functions"
   ],
-  "text": "【知识点概览】java-functions\n本主题共 12 道题，典型考点包括：\n- 如果一个方法声明返回类型为 void，可以省略 return 语句吗？\n- 可变参数（varargs）的语法是？\n- 递归函数必须包含？\n- 方法重写时，子类方法的返回类型可以是父类方法返回类型的子类吗？\n- 方法签名由方法名和 ___ 列表组成。\n- 使用 ___ import 可以导入类的静态成员，直接使用而不需要类名前缀。\n- 使用 ___ 语句从方法中返回值。\n- 方法重载的解析发生在 ___ 时（编译期或运行期）。\n- 表示方法无返回值的关键字是？\n- 方法重载的要求不包括？\n- 方法返回数据使用的关键字是？\n- 构造方法是否存在返回值？",
+  "text": "【知识点概览】Java · functions\n本主题共 12 道题，Javafunctions的典型考点包括：\n- 如果一个方法声明返回类型为 void，可以省略 return 语句吗？\n- 可变参数（varargs）的语法是？\n- 递归函数必须包含？\n- 方法重写时，子类方法的返回类型可以是父类方法返回类型的子类吗？\n- 方法签名由方法名和 ___ 列表组成。\n- 使用 ___ import 可以导入类的静态成员，直接使用而不需要类名前缀。\n- 使用 ___ 语句从方法中返回值。\n- 方法重载的解析发生在 ___ 时（编译期或运行期）。\n- 表示方法无返回值的关键字是？\n- 方法重载的要求不包括？\n- 方法返回数据使用的关键字是？\n- 构造方法是否存在返回值？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-2",
@@ -6106,7 +6106,7 @@
   "tags": [
    "java-oop"
   ],
-  "text": "【知识点概览】java-oop\n本主题共 18 道题，典型考点包括：\n- 创建一个对象使用的关键字是？\n- 以下哪个访问修饰符的可见性范围最大？\n- 静态变量存储在内存的哪个区域？\n- 关键字 this 在构造器中可以用来调用另一个重载构造器，语法是？\n- 构造器的名称必须与 ___ 名完全相同。\n- Java 自动内存管理机制称为 ___ 收集。\n- 将实例变量声明为 private，然后提供公共的 getter/setter，体现了面向对象的 ___ 特性。\n- 使用 ___ 可以判断对象是否属于某个类。\n- 定义类使用的关键字是？\n- 创建对象使用哪个关键字？\n- 实现类继承的关键字是？\n- Java 类的继承形式是？",
+  "text": "【知识点概览】Java · 面向对象\n本主题共 18 道题，Java面向对象的典型考点包括：\n- 创建一个对象使用的关键字是？\n- 以下哪个访问修饰符的可见性范围最大？\n- 静态变量存储在内存的哪个区域？\n- 关键字 this 在构造器中可以用来调用另一个重载构造器，语法是？\n- 构造器的名称必须与 ___ 名完全相同。\n- Java 自动内存管理机制称为 ___ 收集。\n- 将实例变量声明为 private，然后提供公共的 getter/setter，体现了面向对象的 ___ 特性。\n- 使用 ___ 可以判断对象是否属于某个类。\n- 定义类使用的关键字是？\n- 创建对象使用哪个关键字？\n- 实现类继承的关键字是？\n- Java 类的继承形式是？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-3",
@@ -6120,7 +6120,7 @@
   "tags": [
    "java-classes"
   ],
-  "text": "【知识点概览】java-classes\n本主题共 15 道题，典型考点包括：\n- 创建一个对象使用的关键字是？\n- 以下哪个访问修饰符的可见性范围最大？\n- 静态变量存储在内存的哪个区域？\n- 关键字 this 在构造器中可以用来调用另一个重载构造器，语法是？\n- 构造器的名称必须与 ___ 名完全相同。\n- Java 自动内存管理机制称为 ___ 收集。\n- 将实例变量声明为 private，然后提供公共的 getter/setter，体现了面向对象的 ___ 特性。\n- 定义类使用的关键字是？\n- 创建对象使用哪个关键字？\n- 构造方法的名称要求是？\n- 对象的成员变量也可称为？\n- 权限最小、仅本类可访问的修饰符是？",
+  "text": "【知识点概览】Java · classes\n本主题共 15 道题，Javaclasses的典型考点包括：\n- 创建一个对象使用的关键字是？\n- 以下哪个访问修饰符的可见性范围最大？\n- 静态变量存储在内存的哪个区域？\n- 关键字 this 在构造器中可以用来调用另一个重载构造器，语法是？\n- 构造器的名称必须与 ___ 名完全相同。\n- Java 自动内存管理机制称为 ___ 收集。\n- 将实例变量声明为 private，然后提供公共的 getter/setter，体现了面向对象的 ___ 特性。\n- 定义类使用的关键字是？\n- 创建对象使用哪个关键字？\n- 构造方法的名称要求是？\n- 对象的成员变量也可称为？\n- 权限最小、仅本类可访问的修饰符是？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-3",
@@ -6134,7 +6134,7 @@
   "tags": [
    "java-inheritance"
   ],
-  "text": "【知识点概览】java-inheritance\n本主题共 10 道题，典型考点包括：\n- 实现类继承的关键字是？\n- Java 类的继承形式是？\n- 子类重写父类方法的目的是？\n- 子类不能继承父类哪类成员？\n- final 关键字修饰的类有什么特点？\n- 关于抽象类，以下说法正确的是？\n- 所有 Java 类的最终父类是？\n- 类继承使用 ___ 关键字。\n- 包含抽象方法的类必须声明为 ___ 类。\n- 用 ___ 修饰的方法不能被子类重写。",
+  "text": "【知识点概览】Java · inheritance\n本主题共 10 道题，Javainheritance的典型考点包括：\n- 实现类继承的关键字是？\n- Java 类的继承形式是？\n- 子类重写父类方法的目的是？\n- 子类不能继承父类哪类成员？\n- final 关键字修饰的类有什么特点？\n- 关于抽象类，以下说法正确的是？\n- 所有 Java 类的最终父类是？\n- 类继承使用 ___ 关键字。\n- 包含抽象方法的类必须声明为 ___ 类。\n- 用 ___ 修饰的方法不能被子类重写。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-3",
@@ -6148,7 +6148,7 @@
   "tags": [
    "java-polymorphism"
   ],
-  "text": "【知识点概览】java-polymorphism\n本主题共 6 道题，典型考点包括：\n- 多态的运行特点是？\n- 子类对象赋值给父类引用的过程称为？\n- 向下转型（downcasting）需要？\n- instanceof 运算符返回什么类型？\n- Java 中对于重写的方法，调用时采用 ___ 绑定（根据实际对象类型）。\n- 将父类引用强制转换为子类类型称为向 ___ 转型。",
+  "text": "【知识点概览】Java · polymorphism\n本主题共 6 道题，Javapolymorphism的典型考点包括：\n- 多态的运行特点是？\n- 子类对象赋值给父类引用的过程称为？\n- 向下转型（downcasting）需要？\n- instanceof 运算符返回什么类型？\n- Java 中对于重写的方法，调用时采用 ___ 绑定（根据实际对象类型）。\n- 将父类引用强制转换为子类类型称为向 ___ 转型。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-3",
@@ -6162,7 +6162,7 @@
   "tags": [
    "java-exceptions"
   ],
-  "text": "【知识点概览】java-exceptions\n本主题共 10 道题，典型考点包括：\n- throws 关键字用于？\n- 创建自定义 checked 异常应该继承哪个类？\n- 以下哪个是运行时异常（unchecked exception）？\n- 多个 catch 块捕获异常时，顺序应该是？\n- 手动抛出异常使用 ___ 关键字。\n- try-catch 块后可以跟一个可选的 ___ 块，用于清理资源。\n- 严重的问题如 OutOfMemoryError 是 ___ 类的子类，通常不捕获。\n- 捕获异常使用的关键字组合是？\n- 无论是否异常都会执行的代码块关键字是？\n- 运行时异常英文简称是？",
+  "text": "【知识点概览】Java · exceptions\n本主题共 10 道题，Javaexceptions的典型考点包括：\n- throws 关键字用于？\n- 创建自定义 checked 异常应该继承哪个类？\n- 以下哪个是运行时异常（unchecked exception）？\n- 多个 catch 块捕获异常时，顺序应该是？\n- 手动抛出异常使用 ___ 关键字。\n- try-catch 块后可以跟一个可选的 ___ 块，用于清理资源。\n- 严重的问题如 OutOfMemoryError 是 ___ 类的子类，通常不捕获。\n- 捕获异常使用的关键字组合是？\n- 无论是否异常都会执行的代码块关键字是？\n- 运行时异常英文简称是？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -6176,7 +6176,7 @@
   "tags": [
    "java-io"
   ],
-  "text": "【知识点概览】java-io\n本主题共 9 道题，典型考点包括：\n- BufferedReader 相对于 FileReader 的优势是？\n- Java NIO 中的核心组件不包括？\n- java.nio.file.Paths 类的 get() 方法用于？\n- Java 传统 IO 流的核心包是 java.___。\n- 对象序列化需要实现 ___ 接口。\n- Java NIO 的核心包是 java.___。\n- Java IO 流分为字节流和？\n- 专门操作文本文件优先使用？\n- 以下哪个类用于描述文件本身？",
+  "text": "【知识点概览】Java · IO 流\n本主题共 9 道题，JavaIO 流的典型考点包括：\n- BufferedReader 相对于 FileReader 的优势是？\n- Java NIO 中的核心组件不包括？\n- java.nio.file.Paths 类的 get() 方法用于？\n- Java 传统 IO 流的核心包是 java.___。\n- 对象序列化需要实现 ___ 接口。\n- Java NIO 的核心包是 java.___。\n- Java IO 流分为字节流和？\n- 专门操作文本文件优先使用？\n- 以下哪个类用于描述文件本身？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -6190,7 +6190,7 @@
   "tags": [
    "java-collections"
   ],
-  "text": "【知识点概览】java-collections\n本主题共 10 道题，典型考点包括：\n- 以下哪个 List 实现类底层使用数组？\n- HashSet 判断元素重复的依据是？\n- 要实现对象的自然排序，应该实现哪个接口？\n- 键值对存储的顶级接口是 ___。\n- 遍历集合的标准设计模式是 ___。\n- 先进先出（FIFO）的集合接口是 ___。\n- List 接口保证元素的 ___ 顺序。\n- 以下属于有序可重复集合的是？\n- HashMap 集合中不允许重复的是？\n- 获取集合元素个数使用？",
+  "text": "【知识点概览】Java · collections\n本主题共 10 道题，Javacollections的典型考点包括：\n- 以下哪个 List 实现类底层使用数组？\n- HashSet 判断元素重复的依据是？\n- 要实现对象的自然排序，应该实现哪个接口？\n- 键值对存储的顶级接口是 ___。\n- 遍历集合的标准设计模式是 ___。\n- 先进先出（FIFO）的集合接口是 ___。\n- List 接口保证元素的 ___ 顺序。\n- 以下属于有序可重复集合的是？\n- HashMap 集合中不允许重复的是？\n- 获取集合元素个数使用？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -6204,7 +6204,7 @@
   "tags": [
    "java-generics"
   ],
-  "text": "【知识点概览】java-generics\n本主题共 5 道题，典型考点包括：\n- Java 泛型是通过什么机制实现的？\n- 通配符 ? extends Number 的含义是？\n- Java 7 引入的菱形运算符（<>）的作用是？\n- 泛型类型参数通常使用单个大写字母，如 T 表示 Type，E 表示 ___。\n- 无限制通配符是 ___。",
+  "text": "【知识点概览】Java · generics\n本主题共 5 道题，Javagenerics的典型考点包括：\n- Java 泛型是通过什么机制实现的？\n- 通配符 ? extends Number 的含义是？\n- Java 7 引入的菱形运算符（<>）的作用是？\n- 泛型类型参数通常使用单个大写字母，如 T 表示 Type，E 表示 ___。\n- 无限制通配符是 ___。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -6218,7 +6218,7 @@
   "tags": [
    "java-multithreading"
   ],
-  "text": "【知识点概览】java-multithreading\n本主题共 6 道题，典型考点包括：\n- 创建线程的两种主要方式是继承 Thread 类和实现哪个接口？\n- Thread.sleep(1000) 可能抛出什么异常？\n- volatile 关键字的主要作用是？\n- 启动新线程应调用 Thread 对象的 ___ 方法，而不是直接调用 run()。\n- 等待一个线程结束的方法是 ___。\n- synchronized 代码块中使用的锁对象可以是任何 ___ 对象。",
+  "text": "【知识点概览】Java · multithreading\n本主题共 6 道题，Javamultithreading的典型考点包括：\n- 创建线程的两种主要方式是继承 Thread 类和实现哪个接口？\n- Thread.sleep(1000) 可能抛出什么异常？\n- volatile 关键字的主要作用是？\n- 启动新线程应调用 Thread 对象的 ___ 方法，而不是直接调用 run()。\n- 等待一个线程结束的方法是 ___。\n- synchronized 代码块中使用的锁对象可以是任何 ___ 对象。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -6232,7 +6232,7 @@
   "tags": [
    "java-lambda"
   ],
-  "text": "【知识点概览】java-lambda\n本主题共 6 道题，典型考点包括：\n- 以下哪个是 Java 中合法的 Lambda 表达式？\n- Stream API 中的终端操作（terminal operation）是？\n- 方法引用 System.out::println 等价于以下哪个 Lambda 表达式？\n- 如果一个接口只有一个抽象方法，则称为 ___ 接口。\n- Stream API 中用于将流元素收集到集合的终端操作是 ___。\n- 将 Stream 转换为并行流可以使用 ___() 方法。",
+  "text": "【知识点概览】Java · lambda\n本主题共 6 道题，Javalambda的典型考点包括：\n- 以下哪个是 Java 中合法的 Lambda 表达式？\n- Stream API 中的终端操作（terminal operation）是？\n- 方法引用 System.out::println 等价于以下哪个 Lambda 表达式？\n- 如果一个接口只有一个抽象方法，则称为 ___ 接口。\n- Stream API 中用于将流元素收集到集合的终端操作是 ___。\n- 将 Stream 转换为并行流可以使用 ___() 方法。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -6246,7 +6246,7 @@
   "tags": [
    "java-annotations"
   ],
-  "text": "【知识点概览】java-annotations\n本主题共 4 道题，典型考点包括：\n- @Override 注解的作用是？\n- @Retention(RetentionPolicy.RUNTIME) 表示注解会保留到？\n- @Deprecated 注解用于标记已过时的程序元素，编译器会生成 ___ 警告。\n- @Target 注解用于指定自定义注解可以应用的 ___ 元素类型。",
+  "text": "【知识点概览】Java · annotations\n本主题共 4 道题，Javaannotations的典型考点包括：\n- @Override 注解的作用是？\n- @Retention(RetentionPolicy.RUNTIME) 表示注解会保留到？\n- @Deprecated 注解用于标记已过时的程序元素，编译器会生成 ___ 警告。\n- @Target 注解用于指定自定义注解可以应用的 ___ 元素类型。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-4",
@@ -6260,7 +6260,7 @@
   "tags": [
    "database-fundamentals"
   ],
-  "text": "【知识点概览】database-fundamentals\n本主题共 7 道题，典型考点包括：\n- 数据库的英文缩写是？\n- 数据库管理系统的英文缩写是？\n- 以下不属于数据库三大范式作用的是？\n- 数据库系统包含数据库、数据库管理系统、管理员和应用程序。\n- 数据冗余一定是有害的，需要完全消除。\n- 数据库的核心目的是高效存储和管理数据。\n- 简述数据库、数据库管理系统、数据库系统的区别。",
+  "text": "【知识点概览】数据库 · 数据库基础\n本主题共 7 道题，数据库数据库基础的典型考点包括：\n- 数据库的英文缩写是？\n- 数据库管理系统的英文缩写是？\n- 以下不属于数据库三大范式作用的是？\n- 数据库系统包含数据库、数据库管理系统、管理员和应用程序。\n- 数据冗余一定是有害的，需要完全消除。\n- 数据库的核心目的是高效存储和管理数据。\n- 简述数据库、数据库管理系统、数据库系统的区别。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-db-1",
@@ -6274,7 +6274,7 @@
   "tags": [
    "database-sql-basics"
   ],
-  "text": "【知识点概览】database-sql-basics\n本主题共 38 道题，典型考点包括：\n- SQL中用于查询数据的关键字是？\n- SQL中用于插入新数据的语句是？\n- SQL中用于修改表中已有数据的语句是？\n- SQL中用于删除表中数据的语句是？\n- 以下哪个关键字用于SQL条件筛选？\n- SQL中用于排序的关键字是？\n- SQL中用于去重的关键字是？\n- 以下哪个函数用于统计数据行数？\n- 以下哪个函数用于计算平均值？\n- SUM()函数的作用是？\n- GROUP BY的作用是？\n- 分组后筛选数据需要使用哪个子句？",
+  "text": "【知识点概览】数据库 · SQL 基础\n本主题共 38 道题，数据库SQL 基础的典型考点包括：\n- SQL中用于查询数据的关键字是？\n- SQL中用于插入新数据的语句是？\n- SQL中用于修改表中已有数据的语句是？\n- SQL中用于删除表中数据的语句是？\n- 以下哪个关键字用于SQL条件筛选？\n- SQL中用于排序的关键字是？\n- SQL中用于去重的关键字是？\n- 以下哪个函数用于统计数据行数？\n- 以下哪个函数用于计算平均值？\n- SUM()函数的作用是？\n- GROUP BY的作用是？\n- 分组后筛选数据需要使用哪个子句？",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-db-1",
@@ -6288,7 +6288,7 @@
   "tags": [
    "database-constraints"
   ],
-  "text": "【知识点概览】database-constraints\n本主题共 19 道题，典型考点包括：\n- 主键约束的关键字是？\n- 外键约束的关键字是？\n- 用于限制字段值唯一的约束是？\n- 用于限制字段不能为空的约束是？\n- DEFAULT约束的作用是？\n- CHECK约束的作用是？\n- 主键可以为NULL。\n- 一张数据表只能有一个主键。\n- UNIQUE约束字段允许存在一个NULL值。\n- 外键约束可以关联非主键字段。\n- DEFAULT默认值可以为NULL。\n- CHECK约束可以限制字符串长度。",
+  "text": "【知识点概览】数据库 · 数据库约束\n本主题共 19 道题，数据库数据库约束的典型考点包括：\n- 主键约束的关键字是？\n- 外键约束的关键字是？\n- 用于限制字段值唯一的约束是？\n- 用于限制字段不能为空的约束是？\n- DEFAULT约束的作用是？\n- CHECK约束的作用是？\n- 主键可以为NULL。\n- 一张数据表只能有一个主键。\n- UNIQUE约束字段允许存在一个NULL值。\n- 外键约束可以关联非主键字段。\n- DEFAULT默认值可以为NULL。\n- CHECK约束可以限制字符串长度。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-db-2",
@@ -6302,7 +6302,7 @@
   "tags": [
    "database-index"
   ],
-  "text": "【知识点概览】database-index\n本主题共 13 道题，典型考点包括：\n- 以下哪种索引查询效率最高？\n- 索引的主要作用是？\n- 以下哪种场景不适合建立索引？\n- 索引可以提升增删改查所有操作的效率。\n- 主键索引属于聚簇索引。\n- 数据表索引越多越好。\n- NULL值不会被普通索引收录。\n- 简述索引的优缺点。\n- 简述哪些场景不适合建立索引。\n- InnoDB存储引擎的主键索引属于______索引。\n- 数据库索引的核心作用是______查询效率。\n- B+树索引中，所有数据记录都存储在______节点中。",
+  "text": "【知识点概览】数据库 · 数据库索引\n本主题共 13 道题，数据库数据库索引的典型考点包括：\n- 以下哪种索引查询效率最高？\n- 索引的主要作用是？\n- 以下哪种场景不适合建立索引？\n- 索引可以提升增删改查所有操作的效率。\n- 主键索引属于聚簇索引。\n- 数据表索引越多越好。\n- NULL值不会被普通索引收录。\n- 简述索引的优缺点。\n- 简述哪些场景不适合建立索引。\n- InnoDB存储引擎的主键索引属于______索引。\n- 数据库索引的核心作用是______查询效率。\n- B+树索引中，所有数据记录都存储在______节点中。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-db-2",
@@ -6316,7 +6316,7 @@
   "tags": [
    "database-transaction"
   ],
-  "text": "【知识点概览】database-transaction\n本主题共 16 道题，典型考点包括：\n- 以下不属于事务四大特性的是？\n- 事务ACID中A代表的特性是？\n- 事务执行成功后永久保存数据的特性是？\n- 事务提交的关键字是？\n- 事务回滚的关键字是？\n- 事务的原子性指事务操作不可分割。\n- 未提交的事务数据，所有客户端都可以查询到。\n- COMMIT提交后的事务数据永久生效。\n- 事务隔离级别可以解决脏读、幻读等问题。\n- 简述事务ACID四大特性。\n- 简述数据库事务的三种并发问题。\n- 简述MySQL四种事务隔离级别。",
+  "text": "【知识点概览】数据库 · 数据库事务\n本主题共 16 道题，数据库数据库事务的典型考点包括：\n- 以下不属于事务四大特性的是？\n- 事务ACID中A代表的特性是？\n- 事务执行成功后永久保存数据的特性是？\n- 事务提交的关键字是？\n- 事务回滚的关键字是？\n- 事务的原子性指事务操作不可分割。\n- 未提交的事务数据，所有客户端都可以查询到。\n- COMMIT提交后的事务数据永久生效。\n- 事务隔离级别可以解决脏读、幻读等问题。\n- 简述事务ACID四大特性。\n- 简述数据库事务的三种并发问题。\n- 简述MySQL四种事务隔离级别。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-db-3",
@@ -6330,7 +6330,7 @@
   "tags": [
    "database-multi-table-query"
   ],
-  "text": "【知识点概览】database-multi-table-query\n本主题共 9 道题，典型考点包括：\n- 查询两张表交集数据的连接方式是？\n- 返回左表所有数据，右表匹配数据的连接是？\n- FULL JOIN 的作用是？\n- INNER JOIN 会保留左表所有不匹配数据。\n- LEFT JOIN 查询结果可能包含NULL值。\n- 多表查询必须使用JOIN语句。\n- 简述内连接、左连接、右连接的区别。\n- 返回两个表中匹配行的连接称为______JOIN，返回左表所有行的连接称为LEFT JOIN。\n- 合并两个查询结果并自动去除重复行的操作符是______。",
+  "text": "【知识点概览】数据库 · 多表查询\n本主题共 9 道题，数据库多表查询的典型考点包括：\n- 查询两张表交集数据的连接方式是？\n- 返回左表所有数据，右表匹配数据的连接是？\n- FULL JOIN 的作用是？\n- INNER JOIN 会保留左表所有不匹配数据。\n- LEFT JOIN 查询结果可能包含NULL值。\n- 多表查询必须使用JOIN语句。\n- 简述内连接、左连接、右连接的区别。\n- 返回两个表中匹配行的连接称为______JOIN，返回左表所有行的连接称为LEFT JOIN。\n- 合并两个查询结果并自动去除重复行的操作符是______。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-db-3",
@@ -6344,7 +6344,7 @@
   "tags": [
    "database-design"
   ],
-  "text": "【知识点概览】database-design\n本主题共 14 道题，典型考点包括：\n- 数据库表中不可再分的最小数据单元称为？\n- E-R图中，矩形代表的是？\n- E-R图中菱形代表的是？\n- 第一范式要求字段不可再分。\n- 第二范式消除了非主键字段对主键的传递依赖。\n- E-R图可以用于数据库概念结构设计。\n- 三大范式可以完全杜绝所有数据异常。\n- 简述数据库三大范式的核心规则。\n- 简述E-R模型的三大组成要素。\n- 外键约束保证了数据的______完整性。\n- 第一范式要求表中的每个属性值都是______的。\n- 为了提高查询性能，故意引入数据冗余称为______。",
+  "text": "【知识点概览】数据库 · 数据库设计\n本主题共 14 道题，数据库数据库设计的典型考点包括：\n- 数据库表中不可再分的最小数据单元称为？\n- E-R图中，矩形代表的是？\n- E-R图中菱形代表的是？\n- 第一范式要求字段不可再分。\n- 第二范式消除了非主键字段对主键的传递依赖。\n- E-R图可以用于数据库概念结构设计。\n- 三大范式可以完全杜绝所有数据异常。\n- 简述数据库三大范式的核心规则。\n- 简述E-R模型的三大组成要素。\n- 外键约束保证了数据的______完整性。\n- 第一范式要求表中的每个属性值都是______的。\n- 为了提高查询性能，故意引入数据冗余称为______。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-db-4",
@@ -6358,7 +6358,7 @@
   "tags": [
    "database-ops"
   ],
-  "text": "【知识点概览】database-ops\n本主题共 9 道题，典型考点包括：\n- 以下哪个语句用于删除数据表结构？\n- TRUNCATE TABLE 和 DELETE 的主要区别是？\n- TRUNCATE操作速度比DELETE更快。\n- DROP操作的数据可以通过事务回滚恢复。\n- 数据库备份可以防止数据丢失。\n- 简述数据库常用优化方式。\n- 删除表中所有数据但保留表结构的命令是______。\n- 数据库系统的英文缩写是______。\n- 数据库管理员的英文缩写是______。",
+  "text": "【知识点概览】数据库 · 数据库运维\n本主题共 9 道题，数据库数据库运维的典型考点包括：\n- 以下哪个语句用于删除数据表结构？\n- TRUNCATE TABLE 和 DELETE 的主要区别是？\n- TRUNCATE操作速度比DELETE更快。\n- DROP操作的数据可以通过事务回滚恢复。\n- 数据库备份可以防止数据丢失。\n- 简述数据库常用优化方式。\n- 删除表中所有数据但保留表结构的命令是______。\n- 数据库系统的英文缩写是______。\n- 数据库管理员的英文缩写是______。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-db-4",
@@ -6372,7 +6372,7 @@
   "tags": [
    "database-db-types"
   ],
-  "text": "【知识点概览】database-db-types\n本主题共 11 道题，典型考点包括：\n- MySQL属于什么类型的数据库？\n- Redis属于什么类型的数据库？\n- 关系型数据库基于二维数据表存储数据。\n- NoSQL数据库完全不支持事务。\n- Oracle是开源免费的关系型数据库。\n- 简述关系型数据库和非关系型数据库的区别。\n- MongoDB是一种典型的______型NoSQL数据库。\n- CAP定理指出，分布式系统最多能同时满足一致性、可用性和______中的两个。\n- MySQL中用于存储数据库元数据（如表结构）的数据库是______。\n- 授予用户权限的命令是______，收回权限的命令是REVOKE。\n- 数据库崩溃恢复时，使用______日志重做已提交的事务，使用UNDO日志回滚未提交的事务。",
+  "text": "【知识点概览】数据库 · 数据库类型\n本主题共 11 道题，数据库数据库类型的典型考点包括：\n- MySQL属于什么类型的数据库？\n- Redis属于什么类型的数据库？\n- 关系型数据库基于二维数据表存储数据。\n- NoSQL数据库完全不支持事务。\n- Oracle是开源免费的关系型数据库。\n- 简述关系型数据库和非关系型数据库的区别。\n- MongoDB是一种典型的______型NoSQL数据库。\n- CAP定理指出，分布式系统最多能同时满足一致性、可用性和______中的两个。\n- MySQL中用于存储数据库元数据（如表结构）的数据库是______。\n- 授予用户权限的命令是______，收回权限的命令是REVOKE。\n- 数据库崩溃恢复时，使用______日志重做已提交的事务，使用UNDO日志回滚未提交的事务。",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-db-4",

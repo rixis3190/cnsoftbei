@@ -93,3 +93,14 @@ export function tagLabel(normalizedTag: string): string {
     : normalizedTag
   return SLUG_TO_CHINESE[slug] ?? slug
 }
+
+/** 题库的中文名（用户提问与语料正文都用它，而不是英文 slug） */
+export const BANK_LABEL: Record<QuestionBank, string> = {
+  python: 'Python',
+  java: 'Java',
+  database: '数据库',
+}
+
+export function bankLabel(bank: QuestionBank): string {
+  return BANK_LABEL[bank]
+}

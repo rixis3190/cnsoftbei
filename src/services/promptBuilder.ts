@@ -216,6 +216,36 @@ export function buildRagRegenerateHint(reasons: readonly string[]): string {
   return `你的回答质量评分偏低，问题如下：\n${list}\n请针对以上问题改进回答的准确性、完整性和清晰度，重新回答。`;
 }
 
+/**
+ * RAG 回答提示词（计划 S4-3）
+ *
+ * 关键约束：**chunks 为空时返回空上下文**（''），而不是「无约束的默认 prompt」——
+ * 否则 RAG 关掉后模型仍被暗示「可以依据资料回答」，行为与改造前不一致，
+ * 破坏「RAG_ENABLED=false 等价于改造前」这条安全网（计划 §1.2）。
+ */
+export function buildRagAnswerPrompt(
+  chunks: readonly { index: number; text: string; tagLabel: string }[],
+  profile: StudentProfile | null,
+): { context: string; systemSuffix: string } {
+  if (chunks.length === 0) {
+    return { context: '', systemSuffix: '' }
+  }
+  const context = chunks
+    .map(c => `[${c.index}]（${c.tagLabel || '知识点'}）\n${c.text}`)
+    .join('\n\n')
+  const systemSuffix = [
+    '',
+    '【参考资料】',
+    context,
+    '',
+    '回答要求：',
+    '1. 仅依据上面给出的资料回答，不要补充资料之外的事实；',
+    '2. 资料未覆盖的部分，直接说明「给定的资料中没有说明」，不要推测；',
+    '3. 引用资料时用 [1]、[2] 标注来源编号。',
+  ].join('\n')
+  return { context, systemSuffix: systemSuffix + buildProfileContext(profile) }
+}
+
 export function buildGradeByAIMessages(
   questionText: string,
   sampleAnswer: string,

@@ -18,6 +18,7 @@
     "golden:check": "tsx scripts/gen-golden-dataset.ts --check",
     "vectors:build": "tsx scripts/build-vectors.ts",
     "threshold:tune": "tsx scripts/tune-threshold.ts",
+    "rag:queries": "tsx scripts/gen-rag-queries.ts",
     "eval:golden": "vitest run tests/eval",
     "measure:size": "node scripts/measure-entry-size.mjs",
     "test:e2e": "playwright test",

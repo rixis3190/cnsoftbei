@@ -10,7 +10,7 @@
  * 标签一律走 normalizeTags 归一化，因此产物里不会出现原始中文标签。
  */
 
-import { normalizeTags, type QuestionBank } from '../data/tagMap'
+import { bankLabel, normalizeTags, tagLabel, type QuestionBank } from '../data/tagMap'
 import type { PracticeQuestion, QuestionType } from '../types'
 
 export type ChunkKind = 'question' | 'tag-overview'
@@ -142,9 +142,14 @@ export function buildCorpus(banks: readonly { bank: QuestionBank; questions: rea
   for (const { bank, tag, questions } of tagBuckets.values()) {
     if (questions.length < MIN_TAG_OVERVIEW_QUESTIONS) continue
     const sample = questions.slice(0, 12)
+    // 概览块正文用**中文题库名 + 中文标签名**：用户提问是自然语言，
+    // 若正文只写英文 slug（如 python-syntax），概览型查询几乎召回不到
+    // （实测 Recall@3 仅 0.14）。
+    const label = tagLabel(tag)
+    const bankName = bankLabel(bank)
     const text = [
-      `【知识点概览】${tag}`,
-      `本主题共 ${questions.length} 道题，典型考点包括：`,
+      `【知识点概览】${bankName} · ${label}`,
+      `本主题共 ${questions.length} 道题，${bankName}${label}的典型考点包括：`,
       ...sample.map(q => `- ${q.question.trim()}`),
     ].join('\n')
     chunks.push({

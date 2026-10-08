@@ -3,7 +3,7 @@
   "questionChunks": 405,
   "overviewChunks": 43,
   "splitChunks": 0,
-  "maxChunkChars": 578,
+  "maxChunkChars": 592,
   "chunkCharsLimit": 600,
   "dim": 256,
   "tagCount": {
@@ -56,14 +56,14 @@
   "skipped": [],
   "skipRatio": 0,
   "sizeBytes": {
-    "chunks": 204930,
-    "vectors": 167051
+    "chunks": 205960,
+    "vectors": 167041
   },
   "idf": {
     "min": 1,
     "median": 2.3534,
-    "max": 3.4181,
-    "discrimination": 3.4181
+    "max": 3.4435,
+    "discrimination": 3.4435
   },
-  "hash": "fe8a9101"
+  "hash": "86e018a7"
 }
