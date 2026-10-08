@@ -126,11 +126,14 @@ async function runSemanticAndModel(
       console.warn('[QualityFunnel] 语义层开关关闭，本次跳过语义层')
     }
   } else {
+    // 和模型层同一写法：「这一层已进入执行」在调用**之前**记录。
+    // 否则 scoreAnswer 抛异常时，'semantic' 会既不在 layersRun 也不在 layersSkipped，
+    // 层状态并集不变量被破坏（评审 MAJOR-1）。
+    layersRun.push('semantic')
     try {
       const scored = scoreAnswer(answer, reference, { scorer })
       semanticScore = scored.total
       semanticAvailable = scored.semanticAvailable
-      layersRun.push('semantic')
 
       if (!semanticAvailable) {
         // 语义分不可用（缺 provider 或零向量）时阈值判定会被短路，
@@ -207,8 +210,10 @@ async function runSemanticAndModel(
     const blocking = switches.MODEL_DEGRADE_IS_BLOCKING
     return ok({
       accepted: !blocking,
-      blockedBy: blocking ? 'model' : undefined,
-      reasons: blocking ? ['模型评审不可用，且配置要求降级必须阻塞'] : undefined,
+      // 不能用 `: undefined` 覆盖 ok() 的默认值 —— 那会让运行期的 blockedBy 变成
+      // undefined（类型声明是 FunnelLayer | null），任何 `reasons.length` 都会崩。
+      blockedBy: blocking ? 'model' : null,
+      reasons: blocking ? ['模型评审不可用，且配置要求降级必须阻塞'] : [],
       semanticScore,
       semanticAvailable,
       modelDegraded: true,

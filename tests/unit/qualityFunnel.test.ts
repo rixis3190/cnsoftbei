@@ -231,6 +231,22 @@ describe('第 2 层：语义层', () => {
           switches: STRICT_SWITCHES,
         },
       },
+      {
+        // 语义层抛异常（L1 降级）——最容易被漏掉的一支：
+        // scoreAnswer 崩了，'semantic' 必须仍被记为「已执行」
+        name: '语义层异常',
+        input: {
+          answer: GOOD_ANSWER,
+          questionText: QUESTION,
+          reference: REFERENCE,
+          scorer: {
+            embed: () => {
+              throw new Error('模拟 embedding 崩溃')
+            },
+          },
+          switches: STRICT_SWITCHES,
+        },
+      },
     ]
     for (const { name, input } of cases) {
       const result = await runQualityFunnel(input)

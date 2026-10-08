@@ -107,6 +107,23 @@ describe('要点覆盖', () => {
     expect(result.mustIncludeCovered).toEqual([])
     expect(result.total).toBeGreaterThan(90)
   })
+
+  it('要点全是「答题要求」填充项时，权重也全给余弦（不漏算 45%）', () => {
+    // 生成器理论上不会产出这种条目（ensureMinPoints 先补参考答案类要点），
+    // 但一旦阈值/评测口径遇到它，覆盖率恒为 0 会把总分静默压低 45%。
+    const fillerOnly = {
+      referenceAnswer: REFERENCE.referenceAnswer,
+      expectedPoints: ['（答题要求）结论要与参考答案一致', '（答题要求）需结合题目条件判断'],
+      mustExclude: [],
+    }
+    const withFiller = scoreAnswer(REFERENCE.referenceAnswer, fillerOnly, { scorer })
+    const noPoints = scoreAnswer(REFERENCE.referenceAnswer, { referenceAnswer: REFERENCE.referenceAnswer }, { scorer })
+
+    expect(withFiller.mustIncludeMissing).toEqual([])
+    expect(withFiller.mustIncludeCovered).toEqual([])
+    // 与「完全没有要点」等价：total 只由余弦决定
+    expect(withFiller.total).toBeCloseTo(noPoints.total, 6)
+  })
 })
 
 describe('混沌演练 D-9：异常输入', () => {

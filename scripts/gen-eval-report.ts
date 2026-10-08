@@ -164,7 +164,13 @@ function renderRag(data: RagMetrics | null): string {
   // 只渲染「结构完整的检索类型」条目：上游若混入其他形状的对象，
   // 这里跳过而不是崩溃（报告是构建期产物，不该因为一个字段缺失整条流水线失败）
   const rows = Object.entries(data.retrieval)
-    .filter(([, m]) => typeof m?.mrr === 'number' && typeof m?.ndcgAt3 === 'number')
+    .filter(
+      ([, m]) =>
+        typeof m?.count === 'number' &&
+        typeof m?.recallAt3 === 'number' &&
+        typeof m?.mrr === 'number' &&
+        typeof m?.ndcgAt3 === 'number',
+    )
     .map(([kind, m]) => {
       const noHint = m.noHintRecallAt3
       return `<tr>

@@ -18,20 +18,23 @@ import { fnv1a } from './embeddingProvider'
  *
  * **为什么不用 JSON 文本做哈希**：那样会把「文件怎么格式化」也算进哈希，
  * 一次 prettier 重排或换行符变化就会让运行期误判为产物损坏（假 L3 降级）。
- * 这里只对**数据本身**（向量 base64 + id 列表 + 块文本）取哈希，与排版无关。
+ * 这里只对**数据本身**（向量 base64 + id 列表 + **idf** + 块文本）取哈希，与排版无关。
+ *
+ * `idf` 是必填参数：它是「运行期与构建期不一致」的头号风险源，
+ * 漏传会静默算出另一个哈希（fail-closed，会走 L3 降级，但仍是调用方写错了）。
  *
  * **能力边界**：这是自指的完整性检查，能发现「只改了其中一部分、没同步 hash」的半改状态；
  * 防不住「改完再重算 hash」的完整重写 —— 那由 `npm run vectors:build -- --check`
  * 的逐字节比对负责（CI 里跑的就是它）。
  */
 export function computeArtifactsHash(
-  input: { ids: readonly string[]; vectorsBase64: string; idf?: readonly number[] },
+  input: { ids: readonly string[]; vectorsBase64: string; idf: readonly number[] },
   chunkTexts: readonly string[],
 ): string {
   // idf 必须进 payload：它是「运行期与构建期不一致」的头号风险源
   // （docs/eval-methodology.md 明确列为阈值失真的首因），
   // 只在 vectors:build --check 里把关不够，运行期也该发现半改。
-  const idfPart = input.idf ? input.idf.map(v => v.toFixed(6)).join(',') : ''
+  const idfPart = input.idf.map(v => v.toFixed(6)).join(',')
   const payload =
     `${input.vectorsBase64}\u0001${input.ids.join('\u0002')}\u0001` +
     `${idfPart}\u0001${chunkTexts.join('\u0002')}`

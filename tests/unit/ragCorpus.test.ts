@@ -155,6 +155,35 @@ describe('splitLongText', () => {
   })
 })
 
+describe('概览块超长时的显式截断（不允许静默丢数据）', () => {
+  it('超过 MAX_CHUNK_CHARS 时保留前 N 字并追加省略标记', () => {
+    // 造 20 道同标签、题干很长的题，逼概览块超限
+    const longQuestions = Array.from({ length: 20 }, (_, i) => ({
+      id: `syn-${i}`,
+      moduleId: 'module-1',
+      type: 'short' as const,
+      difficulty: 'medium' as const,
+      category: 'core' as const,
+      tags: ['syntax'],
+      question: `第${i}题的题干写得非常长，用来把概览块撑过上限。${'补充说明文字。'.repeat(6)}`,
+      sampleAnswer: '参考答案',
+      explanation: '解析',
+    }))
+
+    const { chunks } = buildCorpus([{ bank: 'python', questions: longQuestions }])
+    const overview = chunks.find(c => c.kind === 'tag-overview')
+    expect(overview).toBeDefined()
+    expect(overview!.text.length).toBeGreaterThan(MAX_CHUNK_CHARS)
+    expect(overview!.text.endsWith('…（其余条目已省略）')).toBe(true)
+
+    // 负向：未超限时不应出现标记
+    const shortQuestions = longQuestions.slice(0, 3)
+    const { chunks: smallChunks } = buildCorpus([{ bank: 'python', questions: shortQuestions }])
+    const smallOverview = smallChunks.find(c => c.kind === 'tag-overview')
+    expect(smallOverview!.text.includes('已省略')).toBe(false)
+  })
+})
+
 describe('异常数据', () => {
   it('空题干的题目被跳过并记录原因', () => {
     const result = buildCorpus([

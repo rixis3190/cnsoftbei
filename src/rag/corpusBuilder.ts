@@ -79,7 +79,9 @@ export function splitLongText(text: string, maxChars = MAX_CHUNK_CHARS): string[
 }
 
 /**
- * 概览块正文：超长时保留第一段并显式标注省略。
+ * 概览块正文：超长时保留前 maxChunkChars 个字符并**显式标注省略**。
+ * （注意是字符级硬切，可能切在某个条目中间 —— 这里优先保证「不静默丢数据」
+ * 与长度上限，不追求切在条目边界上。）
  * 之前用 `splitLongText(text)?.[0] ?? text`，超出上限的那部分会被**静默丢掉**，
  * 既没有截断标记也不进 skipped 清单；一旦某标签题数变多，检索内容会无痕减少。
  */
