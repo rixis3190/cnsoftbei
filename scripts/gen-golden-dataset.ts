@@ -199,19 +199,45 @@ function truncateAtTokenBoundary(text: string, maxLen: number): string {
 function shortenToPoint(text: string, maxLen: number): string {
   if (text.length <= maxLen) return text
   const clauses = splitClauses(text).map(c => collapsePunctuation(c)).filter(Boolean)
-  // 从右往左累加完整子句，直到再加下一个就超长
+  // 优先保留**完整的子句**：短一点没关系，半句才是问题。
+  // （旧实现要求累加结果 ≥8 字才采用，结果把「不可变对象(int,str)函数内修改不」这类
+  //  半句放了出来 —— 见 HANDOVER §13 B-24 的抽检清单标记 D。）
   let acc = ''
   for (const clause of clauses) {
     const next = acc ? `${acc}；${clause}` : clause
     if (next.length > maxLen) break
     acc = next
   }
-  if (acc && acc.length >= 8) return acc
-  const head = truncateAtTokenBoundary(text, maxLen)
-  // 截断结果若以半个词/半个括号结尾，宁可取到上一个逗号
-  const lastSep = Math.max(head.lastIndexOf('，'), head.lastIndexOf('、'), head.lastIndexOf('；'))
-  if (lastSep >= 8) return head.slice(0, lastSep)
+  if (acc) return acc
+  // 连第一个子句都超长：先尝试**去掉行内括号注释**（"(int,str)"、"（Atomicity）" 这类例子/英文名），
+  // 往往能让整句落进 maxLen 且语义仍完整 —— 比硬截断强得多。
+  const stripped = collapsePunctuation(text.replace(/（[^）]*）|\([^)]*\)/g, '')).trim()
+  if (stripped && stripped.length >= 4 && stripped.length <= maxLen) return stripped
+  const firstClause = clauses[0] ?? stripped ?? text
+  const head = truncateAtTokenBoundary(firstClause, maxLen)
+  // 截断结果若落在半句上，退到最近的分隔符（含冒号、分号）
+  const lastSep = Math.max(
+    head.lastIndexOf('，'),
+    head.lastIndexOf('、'),
+    head.lastIndexOf('；'),
+    head.lastIndexOf('：'),
+  )
+  if (lastSep >= 4) return head.slice(0, lastSep).trim()
   return head
+}
+
+/**
+ * 是否是「代码示例 / 举例」而不是知识点。
+ * 抽检清单标记 D 暴露的真实案例（golden-python-q46）：
+ *   `示例：def func(lst):`、`def func(x):x=5 → 不会` —— 这些是参考答案里的行内示例，
+ *   既不是知识点，也不该参与覆盖率（回答里当然不会出现示例代码）。
+ */
+function isCodeExample(text: string): boolean {
+  const t = text.trim()
+  if (/^(示例|例如|比如|举例)\s*[:：]/.test(t)) return true
+  if (/\b(def|class|print|return)\b/.test(t) && /[（(]|→|:\s*$/.test(t)) return true
+  if (t.includes('→')) return true
+  return false
 }
 
 /** 句子 → 可长期作为要点的候选子句（保证括号配对、不以逗号结尾） */
@@ -284,6 +310,8 @@ function derivePoints(
       ? shortenToPoint(cleaned, MAX_POINT_LENGTH)
       : cleaned
     if (!point) continue
+    // 代码示例不是知识点（见 isCodeExample 的注释）
+    if (isCodeExample(point)) continue
     const key = point.replace(/\s/g, '')
     if (seen.has(key)) continue
     seen.add(key)

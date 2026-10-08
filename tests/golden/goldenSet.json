@@ -81,10 +81,8 @@
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
         "Python 采用\"按对象引用传递\"",
-        "不可变对象(int,str)函数内修改不",
-        "可变对象(list,dict)在函数内修",
-        "示例：def func(lst):",
-        "def func(x):x=5 → 不会"
+        "不可变对象函数内修改不影响外部",
+        "可变对象在函数内修改会影响外部"
       ],
       "mustExclude": [
         "函数内修改任意形参都会影响实参",
@@ -114,7 +112,7 @@
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
         "sys.path[0] 是脚本所在目录",
-        "搜索顺序：1.当前目录",
+        "搜索顺序",
         "可用"
       ],
       "mustExclude": [
@@ -179,7 +177,7 @@
       "expectedPoints": [
         "静态多态基于继承/接口，需显式声明类型",
         "Python duck typing 只",
-        "示例：有 len() 方法的对象就能用"
+        "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
         "实现多态必须先声明接口或抽象类",
@@ -210,7 +208,7 @@
       "expectedPoints": [
         "当需要精确表达业务逻辑错误时使用",
         "命名以 Error 结尾",
-        "示例：class"
+        "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
         "IDE 自动补全可以替代规范的命名",
@@ -2080,8 +2078,8 @@
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
         "核心区别为筛选阶段和聚合函数支持性不同",
-        "1.筛选时机：WHERE",
-        "分组前筛选原始"
+        "1.筛选时机",
+        "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
         "HAVING 子句可以完全代替 WHERE 的功能",
@@ -2168,7 +2166,7 @@
       "referenceAnswer": "1.主键约束（PRIMARY KEY）：唯一标识记录，非空且唯一；2.外键约束（FOREIGN KEY）：关联多表，保证数据参照完整性；3.非空约束（NOT NULL）：限制字段不能为空；4.唯一约束（UNIQUE）：保证字段值唯一，允许单个空值；5.默认约束（DEFAULT）：为字段设置默认填充值。",
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
-        "1.主键约束（PRIMARY KEY）：",
+        "1.主键约束（PRIMARY KEY）",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2255,7 +2253,7 @@
       "referenceAnswer": "1.原子性（Atomicity）：事务操作不可分割，要么全成功、要么全回滚；2.一致性（Consistency）：事务执行前后，数据库数据完整性约束不变；3.隔离性（Isolation）：多个事务并发执行互不干扰，相互隔离；4.持久性（Durability）：事务提交后，数据修改永久生效，断电不丢失。",
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
-        "1.原子性（Atomicity）：事务操",
+        "1.原子性（Atomicity）",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2285,7 +2283,7 @@
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
         "可通过调整事务隔离级别解决三种并发问题",
-        "1.脏读：一个事务读取到另一个事务未提交",
+        "1.脏读",
         "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
@@ -2342,7 +2340,7 @@
       "referenceAnswer": "1.内连接（INNER JOIN）：只返回两张表中匹配成功的交集数据，无匹配则不展示；2.左连接（LEFT JOIN）：保留左表所有数据，匹配右表数据，无匹配则右表字段为NULL；3.右连接（RIGHT JOIN）：保留右表所有数据，匹配左表数据，无匹配则左表字段为NULL。",
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
-        "1.内连接（INNER JOIN）：只返",
+        "1.内连接（INNER JOIN）",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2487,7 +2485,7 @@
       "referenceAnswer": "正确答案：错误 Python 是动态类型语言，变量无需声明类型。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：错误 Python 是动态类型",
+        "正确答案",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2518,7 +2516,7 @@
       "referenceSource": "synthesized",
       "expectedPoints": [
         "pass 常用来补全语法结构",
-        "正确答案：正确 pass 常用来补全语法",
+        "正确答案",
         "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
@@ -2577,8 +2575,8 @@
       "referenceSource": "synthesized",
       "expectedPoints": [
         "日志统计是装饰器最常用的场景之一",
-        "正确答案：错误 日志统计",
-        "装饰器最常用"
+        "正确答案",
+        "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
         "被装饰的函数引用会指向原函数",
@@ -2609,7 +2607,7 @@
       "expectedPoints": [
         "生成器只可迭代一次",
         "列表推导式返回列表可迭代多次",
-        "正确答案：错误 列表推导式返回列表可迭代"
+        "正确答案"
       ],
       "mustExclude": [
         "列表推导式会修改原列表",
@@ -2638,7 +2636,7 @@
       "referenceAnswer": "正确答案：dict {key: value for ...} 是字典推导式。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：dict {key:",
+        "正确答案",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2730,8 +2728,8 @@
       "referenceSource": "synthesized",
       "expectedPoints": [
         "良好的编码习惯提升代码质量",
-        "正确答案：正确 良好",
-        "编码习惯提升代码质"
+        "正确答案",
+        "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
         "单字母变量名更便于阅读",
@@ -2788,7 +2786,7 @@
       "referenceAnswer": "正确答案：array array 非内置基本类型，需用 list 或 numpy。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：array array 非内置",
+        "正确答案",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2818,7 +2816,7 @@
       "referenceAnswer": "正确答案：81 ** 右结合：3**(2**2)=3**4=81。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：81 ** 右结合：3**",
+        "正确答案：81 ** 右结合",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2849,7 +2847,7 @@
       "referenceSource": "synthesized",
       "expectedPoints": [
         "or 短路返回第一个真值 1",
-        "正确答案：1 or 短路返回第一个真值",
+        "正确答案",
         "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
@@ -2879,7 +2877,7 @@
       "referenceSource": "synthesized",
       "expectedPoints": [
         "只执行第一个条件成立的分支",
-        "正确答案：错误 只执行第一个条件成立的分",
+        "正确答案",
         "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
@@ -2907,7 +2905,7 @@
       "referenceAnswer": "正确答案：正确 Python 特有语法：break 中断不执行 else，正常完毕则执行。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：正确 Python 特有语法：",
+        "正确答案：正确 Python 特有语法",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -2967,7 +2965,7 @@
       "referenceAnswer": "正确答案：错误 可变默认参数在多次调用间共享，使用 None 作为默认值是最佳实践。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：错误 可变默认参数在多次调用间",
+        "正确答案",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -3030,7 +3028,7 @@
       "referenceSource": "synthesized",
       "expectedPoints": [
         "global 声明变量为全局变量",
-        "正确答案：正确 global 声明变量为",
+        "正确答案",
         "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
@@ -3060,7 +3058,7 @@
       "referenceAnswer": "正确答案：from my_module import func from...import... 是导入模块成员的标准语法。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：from my_module",
+        "正确答案",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -3089,7 +3087,7 @@
       "referenceAnswer": "正确答案：控制 from module import * 导入内容 __all__ 列表定义 * 导入时的名称集合。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：控制 from module",
+        "正确答案",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -3147,7 +3145,7 @@
       "referenceAnswer": "正确答案：__main__ __main__ 是模块运行标识，不是类的方法。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：__main__",
+        "正确答案",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -3178,7 +3176,7 @@
       "referenceAnswer": "正确答案：正确 @property 将方法转为 Getter 属性。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：正确 @property 将方",
+        "正确答案",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -3271,7 +3269,7 @@
       "referenceAnswer": "正确答案：子类扩展父类但不改变父类行为 里氏替换：子类可替代父类而不改变程序正确性。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：子类扩展父类但不改变父类行为",
+        "正确答案",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
@@ -3302,9 +3300,9 @@
       "referenceAnswer": "正确答案：正确 finally 用于清理资源，始终执行。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "finally 用于清理资源，始终执行",
-        "正确答案：正确 finally 用于清理",
-        "（答题要求）结论要与参考答案一致"
+        "finally",
+        "清理资源，始终执行",
+        "正确答案"
       ],
       "mustExclude": [
         "finally 块一定不会执行",
@@ -3332,7 +3330,7 @@
       "referenceSource": "synthesized",
       "expectedPoints": [
         "with 利用上下文管理器自动关闭文件",
-        "正确答案：正确 with 利用上下文管理",
+        "正确答案",
         "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
@@ -3362,7 +3360,7 @@
       "referenceAnswer": "正确答案：'hello' decorator 直接返回 func，foo() 调用原始函数。",
       "referenceSource": "synthesized",
       "expectedPoints": [
-        "正确答案：'hello'",
+        "正确答案",
         "（答题要求）结论要与参考答案一致",
         "（答题要求）需结合题目条件判断"
       ],
