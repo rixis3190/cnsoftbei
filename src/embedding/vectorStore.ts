@@ -11,6 +11,27 @@
  * 量化误差控制在 1/127 ≈ 0.8% 以内，对**排序**无影响。
  */
 
+import { fnv1a } from './embeddingProvider'
+
+/**
+ * 产物一致性哈希（构建期写入 manifest.hash，运行期 verifyManifestHash 复用同一实现）。
+ *
+ * **为什么不用 JSON 文本做哈希**：那样会把「文件怎么格式化」也算进哈希，
+ * 一次 prettier 重排或换行符变化就会让运行期误判为产物损坏（假 L3 降级）。
+ * 这里只对**数据本身**（向量 base64 + id 列表 + 块文本）取哈希，与排版无关。
+ *
+ * **能力边界**：这是自指的完整性检查，能发现「只改了其中一部分、没同步 hash」的半改状态；
+ * 防不住「改完再重算 hash」的完整重写 —— 那由 `npm run vectors:build -- --check`
+ * 的逐字节比对负责（CI 里跑的就是它）。
+ */
+export function computeArtifactsHash(
+  input: { ids: readonly string[]; vectorsBase64: string },
+  chunkTexts: readonly string[],
+): string {
+  const payload = `${input.vectorsBase64}\u0001${input.ids.join('\u0002')}\u0001${chunkTexts.join('\u0002')}`
+  return fnv1a(payload).toString(16).padStart(8, '0')
+}
+
 /** base64 → Uint8Array：atob 优先（浏览器），Buffer 兜底（Node 脚本） */
 export function base64ToBytes(base64: string): Uint8Array {
   if (typeof atob === 'function') {

@@ -12,7 +12,13 @@
 import chunksJson from '../data/ragChunks.json'
 import vectorsJson from '../data/ragVectors.json'
 import { createEmbeddingProvider, type EmbeddingProvider } from '../embedding/embeddingProvider'
-import { base64ToBytes, cosineDot, decodeVectors, QUANT_SCALE } from '../embedding/vectorStore'
+import {
+  base64ToBytes,
+  computeArtifactsHash,
+  cosineDot,
+  decodeVectors,
+  QUANT_SCALE,
+} from '../embedding/vectorStore'
 import { jaccardSimilarity } from '../services/tutorQuality'
 import { tokenize } from '../services/textMatch'
 import type { RagChunk } from './corpusBuilder'
@@ -60,12 +66,13 @@ export const DEFAULT_KEYWORD_WEIGHT = 0.3
  * 前者要 tag 概览块，后者要题目块。纯 n-gram 相似度区分不了这两种意图
  * （实测概览型查询 Recall@3 仅 0.14），因此加一个**显式可解释**的意图加权。
  */
-const OVERVIEW_INTENT = /整体|概览|总结|全貌|系统地讲|有哪些考|知识体系/gi
+// 不加 g 标志：g 标志会让 test() 在模块级共享的 RegExp 上留下 lastIndex 状态，
+// 是个「当前正确但改动易踩」的陷阱（评审 MINOR-3）；这里不需要连续匹配。
+const OVERVIEW_INTENT = /整体|概览|总结|全貌|系统地讲|有哪些考|知识体系/i
 /** 命中概览意图时给概览块的加分（0.15 足以进入 top-3，又不至于压过明确的问题块） */
 export const OVERVIEW_INTENT_BONUS = 0.15
 
 function hasOverviewIntent(query: string): boolean {
-  OVERVIEW_INTENT.lastIndex = 0
   return OVERVIEW_INTENT.test(query)
 }
 
@@ -76,6 +83,27 @@ export interface RagIndex {
   keywordTokens: Set<string>[]
   provider: EmbeddingProvider
   manifest: RagVectorsManifest
+}
+
+/**
+ * 校验 manifest 自带的 hash 是否与「本文件看到的 chunks + vectors」一致。
+ *
+ * **能力边界（务必别误解）**：hash 是随产物一起生成的**自指**字段，它能发现的是
+ * 「有人只改了 chunks，或只改了 vectors，却没同步 hash」这类**部分篡改/漂移**；
+ * 它**不能**防住「改完再重算一次 hash」的完整重写。
+ * 真正的不一致门禁是 `npm run vectors:build -- --check`（逐字节比对重新生成的结果），
+ * CI 里跑的是那一个。这里保留 hash 是为了让运行期也能发现半改状态（L3 降级）。
+ */
+export function verifyManifestHash(
+  manifest: Pick<RagVectorsManifest, 'hash' | 'vectors' | 'ids'>,
+  chunks: readonly RagChunk[],
+): boolean {
+  if (typeof manifest?.hash !== 'string' || manifest.hash.length === 0) return false
+  const expected = computeArtifactsHash(
+    { ids: manifest.ids, vectorsBase64: manifest.vectors },
+    chunks.map(c => c.text),
+  )
+  return expected === manifest.hash
 }
 
 /**
@@ -95,6 +123,8 @@ export function loadIndex(sources?: {
       if (chunks[i].id !== manifest.ids[i]) return null
     }
     if (manifest.idf.length !== manifest.dim) return null
+    // hash 不一致 = chunks 与 vectors 不同源（半改状态）→ 拒绝索引，走 L3 降级
+    if (!verifyManifestHash(manifest, chunks)) return null
     const quantized = new Int8Array(base64ToBytes(manifest.vectors))
     const vectors = decodeVectors(quantized, manifest.ids.length, manifest.dim)
     if (manifest.scale !== QUANT_SCALE) return null

@@ -57,8 +57,10 @@ function retrievalFor(query: QueryItem): { retrieved: RankedHit[]; gold: string[
   }
   const hint = query.goldTag ? [query.goldTag] : undefined
   const hits = retrieve(query.query, { topK: 5, floor: 0, tagHint: hint })
+  // 金标集合必须与检索侧的过滤口径一致：检索用的是 `chunk.tags.some(t => hint.has(t))`，
+  // 这里若只看 tags[0]，多标签块「能被召回却不算命中」，指标会被系统性低估（评审 MAJOR-5）。
   const gold = (getIndex()?.chunks ?? [])
-    .filter(c => (hint ?? []).includes(c.tags[0] ?? ''))
+    .filter(c => (hint ?? []).some(t => c.tags.includes(t)))
     .map(c => c.id)
   return { retrieved: hits.map(h => ({ id: h.chunk.id, score: h.score })), gold }
 }

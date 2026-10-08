@@ -14,7 +14,6 @@
 import { EVAL_SWITCHES } from '../config/evalConfig'
 import { RETRIEVAL_FLOOR } from '../config/qualityThresholds'
 import { isRagUnavailable, retrieve, type RetrievedChunk } from './buildIndex'
-import { tagLabel } from '../data/tagMap'
 
 export interface RetrieveForQuestionOptions {
   topK?: number
@@ -66,8 +65,7 @@ export function retrieveForQuestion(
   }
 }
 
-/** 把命中标签转成中文标签名，便于在回答里标注「依据：数据库事务」 */
-export function describeMatchedTags(tags: readonly string[]): string {
-  return tags.map(tagLabel).join('、')
-}
+// 注：曾有一个 describeMatchedTags(tags) 把标签列表转成中文串，
+// 但引用标注已由 ragPrompts.formatCitations 负责（它对 FormattedChunk 起作用），
+// 该函数没有生产调用方，故删除（评审：死代码清理）。
 

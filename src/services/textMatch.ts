@@ -44,13 +44,6 @@ export function tokenize(text: string): string[] {
   return tokens
 }
 
-/** 词频表（用 Map 而非 Object，避免原型键与遍历顺序问题） */
-export function termFrequency(tokens: readonly string[]): Map<string, number> {
-  const map = new Map<string, number>()
-  for (const token of tokens) map.set(token, (map.get(token) ?? 0) + 1)
-  return map
-}
-
 /**
  * 单条要点被候选答案覆盖的比例（0~1）。
  * 判定方式：要点切词后，出现在候选答案中的词数 / 要点总词数。

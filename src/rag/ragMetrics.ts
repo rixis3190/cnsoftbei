@@ -49,7 +49,12 @@ export function mrr(retrieved: readonly RankedHit[], gold: readonly string[], k:
 
 function dcg(ranks: readonly number[], k: number): number {
   let sum = 0
-  for (const rank of ranks.slice(0, k)) sum += 1 / Math.log2(rank + 1)
+  // rank = 0 表示「未命中」，不贡献 DCG。必须在函数内兜住：
+  // log2(0 + 1) = 0 → 1/0 = Infinity，漏一处就会静默污染 NDCG。
+  for (const rank of ranks.slice(0, k)) {
+    if (rank <= 0) continue
+    sum += 1 / Math.log2(rank + 1)
+  }
   return sum
 }
 
@@ -64,7 +69,7 @@ export function ndcgAtK(retrieved: readonly RankedHit[], gold: readonly string[]
   const idealCount = Math.min(gold.length, k)
   const idealRanks = Array.from({ length: idealCount }, (_, i) => i + 1)
   const idcg = dcg(idealRanks, k)
-  return idcg === 0 ? 0 : dcg(ranks.filter(r => r > 0), k) / idcg
+  return idcg === 0 ? 0 : dcg(ranks, k) / idcg
 }
 
 /** 按中文标点切句（只切这三类，刻意不切逗号：太碎会稀释支撑判定） */

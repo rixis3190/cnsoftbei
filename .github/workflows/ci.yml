@@ -100,6 +100,15 @@ jobs:
       - name: 阈值仍接近最优
         run: npm run threshold:tune -- --check
 
+      # golden-eval.json 与 rag-metrics.json 是测试的副作用产物，
+      # 写在 test job 自己的工作区里，本 job 必须自己再跑一遍，
+      # 否则生成的报告会缺掉「基准集跑批」与「检索指标」两块（评审 MAJOR-4）。
+      - name: 基准集跑批（零额度）
+        run: npm run eval:golden
+
+      - name: 检索与忠实度指标（零额度）
+        run: npm run eval:rag
+
       - name: 生成评测报告
         if: always()
         run: npm run eval:report

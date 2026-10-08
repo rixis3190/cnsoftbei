@@ -22,7 +22,12 @@ import { questions as javaQuestions } from '../src/data/javaQuestionBank'
 import { questions as databaseQuestions } from '../src/data/databaseQuestionBank'
 import { buildCorpus, MAX_CHUNK_CHARS, type RagChunk } from '../src/rag/corpusBuilder'
 import { createEmbeddingProvider, extractFeatures, fnv1a } from '../src/embedding/embeddingProvider'
-import { bytesToBase64, encodeVectors, QUANT_SCALE } from '../src/embedding/vectorStore'
+import {
+  bytesToBase64,
+  computeArtifactsHash,
+  encodeVectors,
+  QUANT_SCALE,
+} from '../src/embedding/vectorStore'
 import type { QuestionBank } from '../src/data/tagMap'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -42,9 +47,12 @@ function argValue(name: string): string | undefined {
   return hit ? hit.slice(prefix.length) : undefined
 }
 
-/** 32 位 FNV-1a 十六进制哈希（与运行时 embedding 使用同一实现） */
-function hashText(text: string): string {
-  return fnv1a(text).toString(16).padStart(8, '0')
+/**
+ * 产物一致性哈希：与运行期 `verifyManifestHash` 共用同一实现（vectorStore.computeArtifactsHash），
+ * 因此这里不再自己拼 JSON 文本 —— 拼文本会把文件排版也算进哈希。
+ */
+function artifactsHash(ids: readonly string[], vectorsBase64: string, texts: readonly string[]): string {
+  return computeArtifactsHash({ ids, vectorsBase64 }, texts)
 }
 
 const BANKS: { bank: QuestionBank; questions: typeof pythonQuestions }[] = [
@@ -94,14 +102,15 @@ function build(): BuildResult {
   const vectorsBase64 = bytesToBase64(new Uint8Array(quantized.buffer, quantized.byteOffset, quantized.length))
 
   const chunksJson = `${JSON.stringify(chunks, null, 1)}\n`
+  const ids = chunks.map(c => c.id)
   const manifest = {
     dim: DIM,
     model: 'int8-global-scale',
     scale: QUANT_SCALE,
     idf,
-    ids: chunks.map(c => c.id),
+    ids,
     vectors: vectorsBase64,
-    hash: hashText(chunksJson + vectorsBase64),
+    hash: artifactsHash(ids, vectorsBase64, chunks.map(c => c.text)),
   }
   const vectorsJson = `${JSON.stringify(manifest, null, 1)}\n`
 

@@ -4,16 +4,24 @@
  * 这是「产物可信性」的门禁：
  * - ids 与 chunks 严格同序同集（不一致 → 运行期 L3 降级）
  * - dim 一致、base64 长度 = 块数 × dim
- * - 篡改产物 → 哈希校验失败（负向验证）
+ * - **半改状态检测（负向验证）**：只改 vectors 或只改块文本而不同步 hash → verifyManifestHash 返回 false、
+ *   loadIndex 拒绝索引。注意这**不是防篡改**：改完再重算 hash 依然能过，
+ *   真正的整体一致性门禁是 `npm run vectors:build -- --check`（CI 里跑它）。
  * - 检索性能护栏：全量扫描 < 5ms
  */
 
 import { describe, it, expect } from 'vitest'
 import chunksJson from '../../src/data/ragChunks.json'
 import vectorsJson from '../../src/data/ragVectors.json'
-import { base64ToBytes, QUANT_SCALE } from '../../src/embedding/vectorStore'
-import { fnv1a } from '../../src/embedding/embeddingProvider'
-import { __resetIndexCache, getIndex, isRagUnavailable, loadIndex, retrieve } from '../../src/rag/buildIndex'
+import { base64ToBytes, computeArtifactsHash, QUANT_SCALE } from '../../src/embedding/vectorStore'
+import {
+  __resetIndexCache,
+  getIndex,
+  isRagUnavailable,
+  loadIndex,
+  retrieve,
+  verifyManifestHash,
+} from '../../src/rag/buildIndex'
 import type { RagChunk } from '../../src/rag/corpusBuilder'
 
 const chunks = chunksJson as RagChunk[]
@@ -51,8 +59,41 @@ describe('产物结构一致性', () => {
   })
 
   it('文件哈希等于构建时写入的 manifest', () => {
-    const expected = fnv1a(`${JSON.stringify(chunks, null, 1)}\n${manifest.vectors}`).toString(16).padStart(8, '0')
+    const expected = computeArtifactsHash(
+      { ids: manifest.ids, vectorsBase64: manifest.vectors },
+      chunks.map(c => c.text),
+    )
     expect(manifest.hash).toBe(expected)
+  })
+
+  it('哈希与 JSON 排版无关（重排产物不应触发假降级）', () => {
+    // 用 2 空格缩进重新序列化再解析回来，数据等价 → 哈希必须仍然一致
+    const reformatted = JSON.parse(JSON.stringify(chunks, null, 2)) as RagChunk[]
+    expect(
+      computeArtifactsHash(
+        { ids: manifest.ids, vectorsBase64: manifest.vectors },
+        reformatted.map(c => c.text),
+      ),
+    ).toBe(manifest.hash)
+  })
+
+  it('负向验证：只改 vectors 而不更新 hash → verifyManifestHash 返回 false', () => {
+    const tampered = { ...manifest, vectors: `${manifest.vectors}AAAA` }
+    expect(verifyManifestHash(tampered, chunks)).toBe(false)
+  })
+
+  it('负向验证：只改块文本而不更新 hash → verifyManifestHash 返回 false', () => {
+    const tamperedChunks = chunks.map((c, i) => (i === 0 ? { ...c, text: '这是被篡改的块文本' } : c))
+    expect(verifyManifestHash(manifest, tamperedChunks)).toBe(false)
+  })
+
+  it('负向验证：只改 id 顺序而不更新 hash → verifyManifestHash 返回 false', () => {
+    const tampered = { ...manifest, ids: [...manifest.ids].reverse() }
+    expect(verifyManifestHash(tampered, chunks)).toBe(false)
+  })
+
+  it('负向验证：hash 不一致时 loadIndex 拒绝索引（走 L3 降级）', () => {
+    expect(loadIndex({ chunks, vectors: { ...manifest, hash: 'deadbeef' } })).toBeNull()
   })
 
   it('块文本非空且 id 唯一', () => {

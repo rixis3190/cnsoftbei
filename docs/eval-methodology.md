@@ -11,10 +11,13 @@
 | 指标 | 定义 | 门禁含义 | 当前状态 |
 |---|---|---|---|
 | 规则层通过率 | 无禁止项命中 且 要点覆盖率 ≥ 阈值 | 确定性，可阻断 | 已阻断（一直如此） |
-| 语义层得分 | 0.55×余弦 + 0.45×要点覆盖率，禁止项硬否决 | 统计性，**当前只记录** | 影子模式（`SEMANTIC_SHADOW_MODE=true`） |
-| 模型层评审 | LLM 打分 0~100，< 70 触发重生成 | 不确定，默认不阻塞 | 已启用（`MODEL_DEGRADE_IS_BLOCKING=false`） |
+| 语义层得分 | 0.55×余弦 + 0.45×要点覆盖率，禁止项硬否决 | 统计性，**当前只记录** | **默认关闭**（`SEMANTIC_LAYER_ENABLED=false`）；即使打开，Tutor 生产链路也不注入 `reference/scorer`（自由提问没有标准答案），语义层恒为 `skipped`；它只在评测链路与题库题上生效。影子模式开关默认 `true`，含义是「一旦被启用也只记录不拦截」 |
+| 模型层评审 | LLM 打分 0~100，< 70 触发重生成 | 不确定，默认不阻塞 | 已启用（`MODEL_DEGRADE_IS_BLOCKING=false`；设为 `true` 时模型层降级会阻塞） |
 | Recall@3 / MRR / NDCG@3 | 检索质量 | 确定性（检索是纯计算） | 有门禁（stem 类 ≥0.9） |
 | 忠实度 | 被支撑断言句 / 总断言句 | **观测指标，不进门禁** | 只记录 |
+
+**降级可观测性**：`runQualityFunnel` 返回 `layersRun`（跑了哪些层）与 `layersSkipped`（没跑哪些层）。
+报告与日志必须同时看这两个字段 —— 只看 `accepted` 无法区分「语义层通过」与「语义层没跑」。
 
 ## 1. 怎么跑
 
@@ -31,7 +34,14 @@ npm run eval:rag            # 检索与忠实度指标
 npm run eval:report         # 生成 test-results/eval-report.html
 ```
 
-CI 对应 job：`test`（`test:coverage`）→ `eval`（golden:check / vectors:check / threshold:check / report）。
+CI 对应 job：
+
+- `test` job 跑 `npm run test:coverage`（含 `tests/eval/**`，零额度）；
+- `eval` job 依次跑 `golden:check` → `vectors:build --check` → `threshold:tune --check` →
+  **`eval:golden` → `eval:rag`** → `eval:report`，并上传 `test-results/`。
+  注意最后三步是必需的：`golden-eval.json` 与 `rag-metrics.json` 是**测试的副作用产物**，
+  由 `test` job 写在它自己的工作区里，`eval` job 拿不到 —— 不自己跑一遍，
+  生成的报告会缺掉基准集与检索两块内容（评审 MAJOR-4）。
 
 ## 2. 基准集的两层结构
 
@@ -81,7 +91,14 @@ CI 对应 job：`test`（`test:coverage`）→ `eval`（golden:check / vectors:c
     因此 `Recall@3` 的上限是 `min(1, 3/金标块数)`；
   - `overview`（43 条）：概览型提问，目标是 `tag-overview` 块。
 
-实测：stem 0.976 / paraphrase 0.345 / overview 0.372（Recall@3）。
+实测（2026-10-08 口径修正后）：stem 0.976 / paraphrase 0.333 / overview 0.372（Recall@3）；
+MRR 分别为 0.924 / 0.210 / 0.264。
+
+> **口径变更记录**：paraphrase 的金标集合原先按 `chunk.tags[0]` 过滤，
+> 而检索侧的 tag 过滤是 `chunk.tags.some(...)`（任一标签命中）。两者不一致会导致
+> 「能被召回的多标签块不算命中」，指标被系统性低估。现已改为同一口径
+> （`some(t => c.tags.includes(t))`），金标集合变大 → Recall@3 由 0.345 变为 0.333。
+> 修正后 NDCG@3 = 1.0，说明「top-3 全在金标集合内」，指标回到可解释状态。
 
 ### 4.1 忠实度的已知局限
 

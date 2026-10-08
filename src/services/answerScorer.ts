@@ -15,7 +15,7 @@
  * total 恒在 [0,100]（混沌演练 D-9）。
  */
 
-import { coverageRatio, hitsMustExclude } from './textMatch'
+import { coverageRatio, hitsMustExclude, scorablePoints } from './textMatch'
 import { cosineDot } from '../embedding/vectorStore'
 
 /** 语义层需要的最小参考结构（运行期只有参考答案，评测期才有要点/锚点） */
@@ -105,8 +105,12 @@ export function scoreAnswer(
   const coverage = coverageRatio(points, text)
   const covered: string[] = []
   const missing: string[] = []
-  for (const point of points) {
-    // 与 coverageRatio 同一口径：单条要点覆盖率 > 0 即视为覆盖
+  // 与 coverageRatio 严格同口径：剔除「答题要求」类要点，
+  // 否则它们会落进 missing，让重生成提示出现
+  // 「回答未覆盖关键要点：（答题要求）结论要与参考答案一致」这种自相矛盾的指令（评审 MINOR-5）。
+  const scoredPoints = scorablePoints(points)
+  for (const point of scoredPoints) {
+    // 单条要点覆盖率 > 0 即视为覆盖
     if (coverageRatio([point], text) > 0) covered.push(point)
     else missing.push(point)
   }

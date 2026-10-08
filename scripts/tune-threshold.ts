@@ -19,7 +19,7 @@ import { writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import rawDataset from '../tests/golden/goldenSet.json'
+import { getGoldSet, loadGoldenSet } from '../tests/golden/goldenSet'
 import { scoreAnswer } from '../src/services/answerScorer'
 import { getIndex } from '../src/rag/buildIndex'
 import { SEMANTIC_PASS_SCORE, THRESHOLD_PROVENANCE } from '../src/config/qualityThresholds'
@@ -92,6 +92,13 @@ function sweep(positives: number[], negatives: number[]): SweepPoint[] {
 }
 
 /** Youden J 的「平坦区中心」：取 J ≥ maxJ - 0.02 的区间中心，避免选到尖峰（G-12） */
+/** 取离目标阈值最近的整数扫描点（平坦区中心可能是 x.5） */
+function nearestPoint(points: SweepPoint[], threshold: number): SweepPoint {
+  return points.reduce((best, p) =>
+    Math.abs(p.threshold - threshold) < Math.abs(best.threshold - threshold) ? p : best,
+  )
+}
+
 function plateauCenter(points: SweepPoint[]): { threshold: number; youdenJ: number; width: number } {
   const maxJ = Math.max(...points.map(p => p.youdenJ))
   const flat = points.filter(p => p.youdenJ >= maxJ - 0.02)
@@ -110,18 +117,9 @@ function build() {
     throw new Error('RAG 索引不可用，无法取得与线上一致的 idf；请先运行 npm run vectors:build')
   }
 
-  const items = (rawDataset as { items: Record<string, unknown>[] }).items
-  const gold = items.filter(
-    i => i.referenceSource === 'sampleAnswer',
-  ) as unknown as Parameters<typeof scoreAnswer>[1] & {
-    id: string
-    bank: string
-    tags: string[]
-    anchors: { excellent: string; fair: string; poor: string }
-    expectedPoints: string[]
-    mustExclude: string[]
-    referenceAnswer: string
-  }[]
+  // 复用基准集的加载器与 getGoldSet()（深拷贝 + 金标层筛选的唯一口径），
+  // 不再自己 import JSON 并做交叉类型断言 —— 那会绕开 S6-1「消除双份真相」的目标。
+  const gold = getGoldSet(loadGoldenSet().items)
 
   const rows: GoldenRow[] = gold.map(item => ({
     id: item.id,
@@ -179,8 +177,12 @@ function build() {
       optimalThreshold: plateau.threshold,
       youdenJ: plateau.youdenJ,
       plateauWidth: plateau.width,
-      tpr: points.find(p => p.threshold === plateau.threshold)?.tpr ?? 0,
-      fpr: points.find(p => p.threshold === plateau.threshold)?.fpr ?? 0,
+      // 平坦区中心可能是 x.5 这样的半整数，而 sweep 的点是整数：
+      // 精确匹配会落空，`?? 0` 会把 TPR/FPR 静默归零（评审 MINOR-4）。
+      // 因此取**最近的整数点**，并同时把精确命中情况显式记录下来。
+      tpr: nearestPoint(points, plateau.threshold).tpr,
+      fpr: nearestPoint(points, plateau.threshold).fpr,
+      tprFprAtNearestPoint: Number(nearestPoint(points, plateau.threshold).threshold.toFixed(1)),
       positiveMedian: Number(posMedian.toFixed(2)),
       negativeMedian: Number(negMedian.toFixed(2)),
       scoreRange: { min: Math.min(...positives, ...negatives), max: Math.max(...positives, ...negatives) },

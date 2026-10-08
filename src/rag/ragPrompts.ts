@@ -16,6 +16,8 @@ import { tagLabel } from '../data/tagMap'
 export const MAX_CHUNK_CHARS = 300
 /** 所有片段注入总长度上限 */
 export const MAX_TOTAL_CHARS = 1500
+/** 注入片段数量上限（与单片段字数上限是**两个不同的量纲**，不要混用） */
+export const MAX_CHUNKS = 3
 
 export interface FormattedChunk {
   /** 引用编号，从 1 开始 */
@@ -33,19 +35,24 @@ export interface FormattedChunk {
  */
 export function formatChunksForPrompt(
   hits: readonly RetrievedChunk[],
-  options: { maxChunkChars?: number; maxTotalChars?: number } = {},
+  options: { maxChunkChars?: number; maxTotalChars?: number; maxChunks?: number } = {},
 ): FormattedChunk[] {
   const maxChunkChars = options.maxChunkChars ?? MAX_CHUNK_CHARS
   const maxTotalChars = options.maxTotalChars ?? MAX_TOTAL_CHARS
+  const maxChunks = options.maxChunks ?? MAX_CHUNKS
   const out: FormattedChunk[] = []
   let used = 0
 
   for (const hit of hits) {
-    if (out.length >= maxChunkChars) break
+    // 用 maxChunks（片段个数）比较，不要用 maxChunkChars（字符数）——
+    // 量纲混用会让这个守卫永远不触发
+    if (out.length >= maxChunks) break
     const text = hit.chunk.text
-    // 单片段截断
-    let body = text.length > maxChunkChars ? `${text.slice(0, maxChunkChars)}…` : text
-    let truncated = body.length < text.length
+    // 单片段截断：truncated 必须在截断分支里直接置位，
+    // 用长度比较会漏报 text.length === maxChunkChars + 1 的边界
+    const chunkTruncated = text.length > maxChunkChars
+    let body = chunkTruncated ? `${text.slice(0, maxChunkChars)}…` : text
+    let truncated = chunkTruncated
 
     // 总长预算：放不下就停止追加（不硬截，避免半句话）
     if (used + body.length > maxTotalChars) {
