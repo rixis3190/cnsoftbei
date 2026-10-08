@@ -81,12 +81,12 @@ for (const r of rows) for (const f of r.flags) markerCounts.set(f, (markerCounts
 const lines: string[] = []
 lines.push('# 基准集人工抽检清单（自动生成，勿手改）')
 lines.push('')
-lines.push(`生成命令：\`npx tsx scripts/gen-golden-review-sheet.ts\`　条目：${items.length}`)
+lines.push(`生成命令：\`npx tsx scripts/gen-golden-review-sheet.ts\` 条目：${items.length}`)
 lines.push('')
-lines.push(`- 审校方式：\`${String(meta.reviewedBy ?? '未知')}\`　锚点来源：\`${String(meta.anchorSource ?? '未知')}\``)
+lines.push(`- 审校方式：\`${String(meta.reviewedBy ?? '未知')}\` 锚点来源：\`${String(meta.anchorSource ?? '未知')}\``)
 lines.push(`- 带风险标记的条目：**${bad.length} / ${items.length}**（标记含义见脚本头注释）`)
 lines.push(
-  `- 标记分布：${[...markerCounts.entries()].map(([k, v]) => `${k}=${v}`).join('　') || '（无）'}`,
+  `- 标记分布：${[...markerCounts.entries()].map(([k, v]) => `${k}=${v}`).join('、') || '（无）'}`,
 )
 lines.push('')
 lines.push('## 抽检方法（建议 15 分钟）')
