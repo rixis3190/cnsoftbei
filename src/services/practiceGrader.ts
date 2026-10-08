@@ -117,14 +117,11 @@ export async function gradeByAI(
 }
 
 // ==================== 答案相似度计算（Jaccard） ====================
-// 统一到 tutorQuality 的实现（计划 S3-5 / S6-1，消除双份真相）。
+// 相似度口径已统一到 tutorQuality.jaccardText（计划 S3-5 / S6-1，消除双份真相）。
 // 口径差异说明：旧实现按「单字 + 英文词」切词、两段皆空返回 1；
 // tutorQuality.extractTokens 按中文 2-gram 切词、两段皆空返回 0。
-// 现有 practiceGrader 测试全部零改动通过（assertScoreReasonable 的判定边界未变），
+// 统一后 practiceGrader 全部测试零改动通过（assertScoreReasonable 的判定边界未变），
 // 说明该差异不影响既有判分结论。
-function jaccardSimilarity(a: string, b: string): number {
-  return jaccardText(a, b);
-}
 
 // ==================== AI 判分合理性断言 ====================
 export function assertScoreReasonable(
@@ -137,7 +134,7 @@ export function assertScoreReasonable(
     return { reasonable: true };
   }
 
-  const similarity = jaccardSimilarity(userAnswer, sampleAnswer);
+  const similarity = jaccardText(userAnswer, sampleAnswer);
 
   // 答案高度相似但分数过低
   if (similarity > 0.6 && score < 40) {
