@@ -69,6 +69,14 @@ function AppLayout() {
   const [profileSubmitting, setProfileSubmitting] = useState(false);
   const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
 
+  // 学生首次登录时判断要不要弹「信息登记」。
+  //
+  // 依赖数组说明（原为 `[isLoggedIn, currentUser?.id]`，留着 react-hooks/exhaustive-deps 告警 ——
+  // 见 HANDOVER §13 B-26）：effect 里实际读了 `isAdmin`、`currentUser.name` 与 `profileForm`，
+  // 少写依赖不是「避免循环渲染」的必要手段 —— `currentUser` 来自 `useState`，
+  // 只在登录/登出/刷新时换引用，`profileForm` 由 `Form.useForm()` 返回、引用恒定，
+  // `isAdmin` 是布尔派生值。因此补齐依赖不会造成重复 setState，
+  // 反而修掉了「isAdmin/用户名变化时弹窗判断用了旧值」的隐患。
   useEffect(() => {
     if (!isLoggedIn || !currentUser) { setNeedProfile(false); return; }
     if (isAdmin) { setNeedProfile(false); return; }
@@ -81,7 +89,7 @@ function AppLayout() {
         setNeedProfile(true);
       }
     } catch { setNeedProfile(true); }
-  }, [isLoggedIn, currentUser?.id]);
+  }, [isLoggedIn, currentUser, isAdmin, profileForm]);
 
   // 条件返回放在所有 hooks 之后
   if (!isLoggedIn) return <Login />;
