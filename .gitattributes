@@ -3,7 +3,10 @@
 # 用 readFileSync(file,'utf8') 与重新生成结果逐字符比对；
 # 在 core.autocrlf=true 的 Windows 上，checkout 会把 LF 展开成 CRLF，导致该检查必然假失败。
 # -text 表示"不进行任何换行符转换"，使工作区字节与脚本写入的字节始终一致。
-# 注意：本文件只覆盖这 3 个产物，不改动仓库其它文件的换行符策略。
+# 基准集同理：scripts/gen-golden-dataset.ts 以 '\n' 写入 tests/golden/goldenSet.json，
+# 若 checkout 时被展开成 CRLF，重新生成后 git 会一直显示「已修改」（假修改）。
+# 注意：本文件只覆盖这 4 个产物，不改动仓库其它文件的换行符策略。
 src/data/ragChunks.json -text
 src/data/ragVectors.json -text
 src/data/ragBuildReport.json -text
+tests/golden/goldenSet.json -text
