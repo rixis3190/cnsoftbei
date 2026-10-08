@@ -241,7 +241,6 @@
         "安全处理：用 with 自动关闭",
         "with 语句确保正确关闭",
         "针对性捕获异常更安全",
-        "r读/w写(覆盖)/a追加/r+读写/",
         "try...except 捕获"
       ],
       "mustExclude": [
@@ -635,8 +634,8 @@
       "referenceSource": "sampleAnswer",
       "expectedPoints": [
         "引用",
-        "String 不",
-        "基本类型，属于引用类型"
+        "String 不是基本类型，属于引用类型",
+        "（答题要求）结论要与参考答案一致"
       ],
       "mustExclude": [
         "基本类型与包装类完全相同",

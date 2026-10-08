@@ -133,7 +133,8 @@ function renderGolden(data: GoldenEval | null): string {
   const note = typeof data.summary.note === 'string' ? data.summary.note : ''
   const candidate = data.summary.candidate ?? (note.includes('负样本轮') ? 'poor' : 'other')
   const isNegativeRound = candidate === 'poor'
-  const roundTag = isNegativeRound ? ' · 负样本轮：候选 = poor 锚点' : ` · 候选来源 = ${candidate}`
+  // 注意：candidate 来自产物 JSON，必须转义后再进 HTML（本文件头部的安全契约，评审 MINOR-3）
+  const roundTag = isNegativeRound ? ' · 负样本轮：候选 = poor 锚点' : ` · 候选来源 = ${escapeHtml(candidate)}`
   const roundNote = isNegativeRound
     ? `<p class="muted">本节的「通过率 / 平均分」是<strong>差锚点</strong>的得分，不是基准集上的模型成绩；
       excellent 轮的对应数字会贴顶（≈100%），对本报告没有信息量，故只落盘负样本轮。</p>`
@@ -225,8 +226,24 @@ function renderDegradation(
     typeof flagged === 'number' && typeof injected === 'number' && injected > 0
       ? `${flagged} / ${injected}`
       : '—'
+  /**
+   * 演练是否全部被正确标记。
+   * 三块**统一**用 `flagged === injected` 判定（评审 MINOR-5）：
+   * 旧实现把 L1 写死成 `=== 1`，演练一旦扩到 2 条注入就会把「全过」误报成 warn；
+   * 而阻塞开关那一格当时压根没参与判定，blocked=0 也会显示 ok。
+   */
+  const allFlagged = (flagged: number | undefined, injected: number | undefined) =>
+    typeof flagged === 'number' && typeof injected === 'number' && injected > 0 && flagged === injected
+  const drillAllFlagged =
+    allFlagged(d?.l1SemanticFallback.flagged, d?.l1SemanticFallback.injected) &&
+    allFlagged(d?.l2ModelFallback.flagged, d?.l2ModelFallback.injected) &&
+    allFlagged(d?.l2BlockingSwitch.blocked, d?.l2BlockingSwitch.injected)
   // 金标两格的解读依赖轮次：只有负样本轮才有意义（评审 MINOR-2：这里要和基准集小节口径一致）
-  const goldenCandidate = golden?.summary.candidate ?? (String(golden?.summary.note ?? '').includes('负样本轮') ? 'poor' : 'other')
+  // 三种状态必须分开：产物缺失 / 未声明来源 / 声明了非 poor 来源 —— 混为一谈会误导读者
+  // （评审 MINOR-4：golden 缺失时不能显示「候选来源 = other」，那读起来像「跑过一轮 other」）
+  const goldenCandidate = golden
+    ? golden.summary.candidate ?? (String(golden.summary.note ?? '').includes('负样本轮') ? 'poor' : 'other')
+    : null
   const goldenIsNegative = goldenCandidate === 'poor'
   return `
     <h2>降级可观测（§1.3）</h2>
@@ -246,10 +263,12 @@ function renderDegradation(
       检索无覆盖 = 该查询在生产 floor（${r?.retrievalFloor ?? '—'}）下无任何片段，生产路径按 L3 降级不注入上下文。
       ${goldenIsNegative
         ? '金标两格取自 <strong>golden-eval.json 的负样本轮</strong>（候选 = poor 锚点）—— excellent 轮的两项结构性恒为 0，不能用作降级观测。'
-        : `⚠️ 金标两格的候选来源是 <strong>${escapeHtml(goldenCandidate)}</strong>，<b>不是负样本轮</b>：这两个数字此时不反映拒答能力，请勿用于降级观测。`}
+        : goldenCandidate === null
+          ? '⚠️ 未找到 <strong>golden-eval.json</strong>：上面两格显示为「—」，本报告没有金标降级数据（请先运行 <code>npm run eval:golden</code>）。'
+          : `⚠️ 金标两格的候选来源是 <strong>${escapeHtml(goldenCandidate)}</strong>，<b>不是负样本轮</b>：这两个数字此时不反映拒答能力，请勿用于降级观测。`}
       降级率长期为 0 且伴随低通过率时，应怀疑「降级分支根本没被走到」而不是「质量很好」。</p>
     ${drill
-      ? `<p class="note ${d?.l2ModelFallback.flagged === d?.l2ModelFallback.injected && d?.l1SemanticFallback.flagged === 1 ? 'ok' : 'warn'}">
+      ? `<p class="note ${drillAllFlagged ? 'ok' : 'warn'}">
       <strong>L1/L2 是演练结果，不是生产降级率</strong>（来源 degradation-drill.json，
       ${escapeHtml(String(drill.generatedAt ?? '未记录时间'))}）：
       注入 ${d?.l1SemanticFallback.injected ?? 0} 次语义层异常 → 标记 ${d?.l1SemanticFallback.flagged ?? 0} 次；
@@ -259,7 +278,7 @@ function renderDegradation(
       ${r?.modelDegradationNotInstrumented ? '⚠️ 生产链路的 L1/L2 降级率**仍需运行期埋点**：当前只写 console，未进本报告。' : ''}
     </p>
     <p class="muted">${escapeHtml(String(drill.note ?? ''))}</p>`
-      : '<p class="missing">未找到 degradation-drill.json，L1/L2 降级卡片缺失 —— 请运行 <code>npm run eval:golden</code>（其中包含降级演练）或直接跑该测试文件。</p>'}`
+      : '<p class="missing">未找到 degradation-drill.json，L1/L2 降级卡片缺失 —— 请运行 <code>npm run eval:drill</code>（它单独跑降级演练；<code>eval:golden</code> **不包含**演练）。</p>'}`
 }
 
 function renderRag(data: RagMetrics | null): string {

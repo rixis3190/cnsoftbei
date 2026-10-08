@@ -235,8 +235,11 @@ function shortenToPoint(text: string, maxLen: number): string {
 function isCodeExample(text: string): boolean {
   const t = text.trim()
   if (/^(示例|例如|比如|举例)\s*[:：]/.test(t)) return true
-  if (/\b(def|class|print|return)\b/.test(t) && /[（(]|→|:\s*$/.test(t)) return true
-  if (t.includes('→')) return true
+  // ⚠️ 箭头不能单独作为判据（评审 NIT-1）：`1NF→2NF`、`索引失效→全表扫描` 这类链式知识点
+  // 是正常要点，不是代码示例。只有「代码 token + 箭头」同时出现才算示例。
+  const hasCodeToken = /\b(def|class|print|return)\b/.test(t)
+  if (hasCodeToken && /[（(]|→|:\s*$/.test(t)) return true
+  if (hasCodeToken && t.includes('→')) return true
   return false
 }
 
@@ -326,7 +329,7 @@ function derivePoints(
  * 早先的版本会切出「String 不」「如果左侧」这类半句（连接词两侧长度不受约束），
  * 那不是要点而是噪声，因此这里要求每段 ≥ MIN_CLAUSE_LEN 且以中文结尾。
  */
-function ensureMinPoints(points: string[], minPoints: number): string[] {
+function ensureMinPoints(points: string[], minPoints: number, label?: string): string[] {
   const out = [...points]
   let guard = 0
   while (out.length < minPoints && guard < 5) {
@@ -346,14 +349,34 @@ function ensureMinPoints(points: string[], minPoints: number): string[] {
       .filter(Boolean)
     if (pieces.length !== 2) break
     if (pieces.some(s => s.length < MIN_CLAUSE_LEN || s.length > MAX_POINT_LENGTH)) break
+    // 连接词可能落在否定词/连接词中间：`String 不是基本类型` 按「是」切会得到 `String 不`（残片）。
+    // 任何一段以悬空字符结尾就放弃这次切分（评审发现的 golden-java-j155 即此例）。
+    if (pieces.some(s => /[不也就都很，,、；;的了在把被和与或]$/.test(s.trim()))) break
     out.splice(target, 1, ...pieces)
   }
   for (const filler of [`${FILLER_PREFIX}结论要与参考答案一致`, `${FILLER_PREFIX}需结合题目条件判断`]) {
     if (out.length >= minPoints) break
     if (!out.includes(filler)) out.push(filler)
   }
-  // 收尾清理：切片可能留下尾逗号（如「正确答案：正确 return a,b,」）
-  return out.map(p => (p.startsWith(FILLER_PREFIX) ? p : collapsePunctuation(p) || p))
+  // 收尾清理：切片可能留下尾逗号（如「正确答案：正确 return a,b,」），
+  // 也可能以分隔符结尾（如 golden-python-q90 的 `r读/w写(覆盖)/a追加/r+读写/`）—— 一律不采用
+  const cleaned = out.map(p => (p.startsWith(FILLER_PREFIX) ? p : collapsePunctuation(p) || p))
+  const usable = cleaned.filter(p => {
+    if (p.startsWith(FILLER_PREFIX)) return true
+    const t = p.trim()
+    if (!/[/、，,;；]$/.test(t)) return true
+    // 以分隔符结尾 ≠ 一定是截断：纯标号要点（`//`、`>>`）本身就是这个形状，必须保留
+    return t.length <= 4 || !/[\u4e00-\u9fa5]/.test(t)
+  })
+  // 构建期就保证不变量：不足 minPoints 条说明这道题的参考答案/解析切不出知识点，必须人工看，
+  // 而不是让「2 条要点」悄悄进数据集（旧实现会 break 出循环，golden:check 还照过 —— 评审 MINOR-8）
+  if (usable.length < minPoints) {
+    throw new Error(
+      `${label ?? '某题'}：要点不足，切出 ${usable.length} 条（要求 ≥${minPoints}）。` +
+        '请检查该题的参考答案/解析是否可切分，或补解析。',
+    )
+  }
+  return usable
 }
 
 /** 与给定语料的词面重合度（0~1，用于给候选禁止项排序：越贴近本题越靠前） */
@@ -519,7 +542,11 @@ function buildItem(bank: QuestionBank, q: PracticeQuestion, gold: boolean): Gold
   // 反过来会把被剔除的碎片当成补齐素材（早先版本即如此）。
   const rawPoints = derivePoints(reference, explanation, MAX_POINTS)
   const grounded = rawPoints.filter(p => overlaps(coverageTargets, p))
-  const points = ensureMinPoints(grounded.length >= MIN_POINTS ? grounded : rawPoints, MIN_POINTS)
+  const points = ensureMinPoints(
+    grounded.length >= MIN_POINTS ? grounded : rawPoints,
+    MIN_POINTS,
+    `${gold ? 'golden' : 'smoke'}-${bank}-${q.id}`,
+  )
   // 锚点与禁止项互相独立（poor 锚点已不再使用禁止项原文），因此只需各算一次。
   // 禁止项按「不得与参考答案/优秀锚点自相矛盾」筛选，口径与校验器一致。
   const anchors = buildAnchors(reference, explanation)

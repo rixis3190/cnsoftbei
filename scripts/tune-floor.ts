@@ -86,8 +86,13 @@ function main(): void {
   }
 
   // --- 探针：无关提问的 top1 分 ---
-  const probeScores = IRRELEVANT_PROBES.map(q => retrieve(q, { topK: 3, floor: 0 })[0]?.score ?? 0)
-  const maxProbe = Math.max(...probeScores)
+  // 逐条保留（而非只取最大值）：文档里引用的「晚饭 0.2408 / 天气 0.2345 / zzz 0.1965」
+  // 必须能由本脚本一步复现（评审 NIT-2）
+  const probeScores = IRRELEVANT_PROBES.map(q => ({
+    q,
+    top: retrieve(q, { topK: 3, floor: 0 })[0]?.score ?? 0,
+  }))
+  const maxProbe = Math.max(...probeScores.map(p => p.top))
 
   // --- 已固化 floor 的实际行为 ---
   const noHit = all.filter(q => retrieve(q.query, { topK: 3, floor: RETRIEVAL_FLOOR }).length === 0)
@@ -104,10 +109,19 @@ function main(): void {
         `p10=${fmt(percentile(nz, 10))} 中位=${fmt(percentile(nz, 50))}`,
     )
   }
-  console.log(`\n无关探针最高分 = ${fmt(maxProbe)}（共 ${IRRELEVANT_PROBES.length} 条，人工构造）`)
+  console.log(`\n无关探针 top1 分（共 ${IRRELEVANT_PROBES.length} 条，人工构造，升序）：`)
+  for (const p of [...probeScores].sort((a, b) => a.top - b.top)) {
+    console.log(`  ${fmt(p.top)}  ${p.q}`)
+  }
+  console.log(`  最高分 = ${fmt(maxProbe)}`)
   console.log(`已固化 floor 的实际行为：探针挡掉 ${probesBlocked}/${IRRELEVANT_PROBES.length}；` +
     `查询集内判为无覆盖 ${noHit.length}/${all.length}（${((noHit.length / all.length) * 100).toFixed(1)}%）`)
   if (noHit.length > 0 && noHit.length <= 8) console.log(`  无覆盖条目：${noHit.map(q => q.id).join(', ')}`)
+
+  // 建议值：能挡掉全部探针的**最小**候选（保守优先）
+  const candidates = [0.15, 0.2, 0.22, 0.24, 0.25, 0.26, 0.28, 0.3]
+  const feasible = candidates.filter(f => IRRELEVANT_PROBES.every(q => retrieve(q, { topK: 3, floor: f }).length === 0))
+  const recommend = feasible.length > 0 ? Math.min(...feasible) : null
 
   if (checkMode) {
     const ratio = noHit.length / all.length
@@ -118,6 +132,14 @@ function main(): void {
     if (ratio > MAX_NO_HIT_RATIO) {
       problems.push(
         `查询集内无覆盖比例 ${(ratio * 100).toFixed(1)}% 超过上限 ${(MAX_NO_HIT_RATIO * 100).toFixed(0)}% → floor 偏高，误杀过多`,
+      )
+    }
+    if (recommend === null) {
+      problems.push('候选区间 [0.15, 0.3] 内没有能挡掉全部探针的值 → 需要扩大候选范围或补探针样本')
+    } else if (Math.abs(RETRIEVAL_FLOOR - recommend) > 0.02) {
+      // 只提示不阻断：行为检查已由上面两条覆盖，这里防的是「值被悄悄改成偏离最小可行解」的情形
+      console.log(
+        `\n⚠️ 提示：已固化 ${RETRIEVAL_FLOOR} 与当前建议值 ${recommend} 偏离 >0.02，请复核是否需要重新标定`,
       )
     }
     if (problems.length > 0) {
@@ -138,15 +160,16 @@ function main(): void {
     const mark = f === RETRIEVAL_FLOOR ? '  ← 当前固化值' : ''
     console.log(`  ${f}: 无覆盖 ${String(n).padStart(3)}/${all.length}，探针挡掉 ${b}/${IRRELEVANT_PROBES.length}${mark}`)
   }
-  const recommend = Math.min(
-    ...[0.15, 0.2, 0.22, 0.24, 0.25, 0.26, 0.28, 0.3].filter(
-      f => IRRELEVANT_PROBES.every(q => retrieve(q, { topK: 3, floor: f }).length === 0),
-    ),
-  )
-  console.log(
-    `\n建议：取能挡掉全部探针的最小候选（保守优先，计划 S4-R4：宁可不注入也不注入不相关）= ${recommend}`,
-  )
-  console.log('改值后需同步：src/config/qualityThresholds.ts、docs/eval-methodology.md §4、HANDOVER §13 B-28。')
+  if (recommend === null) {
+    // 候选区间内没有可行解时必须报错，否则会打印「建议 = Infinity」（评审 NIT-3）
+    console.log('\n❌ 候选区间 [0.15, 0.3] 内没有能挡掉全部探针的值：请扩大候选范围或补探针样本')
+    process.exitCode = 1
+  } else {
+    console.log(
+      `\n建议：取能挡掉全部探针的最小候选（保守优先，计划 S4-R4：宁可不注入也不注入不相关）= ${recommend}`,
+    )
+  }
+  console.log('改值后需同步：src/config/qualityThresholds.ts、docs/eval-methodology.md §4.1、HANDOVER §13 B-28。')
 }
 
 main()

@@ -249,6 +249,9 @@ npm run dev        # 启动开发服务器（默认 http://localhost:5173）
 | `npm run test:report` | 跑测试并生成中文 HTML 报告 `test-results/report.html` |
 | `npm run test:e2e` | Playwright E2E（自动拉起 dev server；本机需先 `npx playwright install chromium`） |
 | `npm run eval:golden` / `eval:rag` / `eval:report` | 评测：基准集跑批 / 检索与忠实度指标 / 生成 `test-results/eval-report.html`（全部零额度） |
+| `npm run eval:drill` | 降级演练（注入 L1/L2 故障，产出 `test-results/degradation-drill.json`，报告的三张演练卡片读它） |
+| `npm run check:workflow` | 校验 `.github/workflows/*.yml` 的上下文合法性（`secrets` 出现在 `if` 里这类错误会让整份工作流 0 job 失败） |
+| `npm run golden:review-sheet` | 生成基准集人工抽检清单 `test-results/golden-review-sheet.md`（带风险标记） |
 | `npm run vectors:build` / `golden:check` / `threshold:tune` / `floor:tune` | 语料与阈值工具（`--check` 为只校验模式） |
 
 ### 4.3 典型使用流程

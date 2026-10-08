@@ -20,7 +20,25 @@
 
 import { readdirSync, readFileSync, existsSync } from 'node:fs'
 import path from 'node:path'
-import { parse } from 'yaml'
+
+/**
+ * `yaml` 目前是 **vite 的 optional peerDependency**，不在本仓库的 devDependencies 里。
+ * 普通 `npm ci` 会装上它，但 `npm ci --omit=optional` 或 vite 侧 peer 变更会让本脚本
+ * 连模块都加载不到（评审 MINOR-1）。这里做成显式失败 + 可操作提示，
+ * **绝不静默跳过检查**（静默跳过等于把门禁关掉）。
+ * 彻底解法是把它登记为显式 devDependency，属需用户确认的依赖变更（见 HANDOVER §13 B-30）。
+ */
+let parse
+try {
+  ;({ parse } = await import('yaml'))
+} catch {
+  console.error(
+    '❌ check-workflow 无法加载 `yaml`（当前它是 vite 的 optional peerDependency）。\n' +
+      '   修复：npm i -D yaml，或在 HANDOVER §13 B-30 登记后由维护者显式声明该依赖。\n' +
+      '   注意：本检查**不会静默跳过** —— 加载失败即视为检查失败。',
+  )
+  process.exit(1)
+}
 
 const JOB_IF_ALLOWED = ['github', 'needs', 'vars', 'inputs', 'always', 'cancelled', 'success', 'failure']
 const STEP_IF_ALLOWED = [...JOB_IF_ALLOWED, 'strategy', 'matrix', 'job', 'runner', 'env', 'steps']

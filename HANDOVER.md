@@ -741,7 +741,7 @@ git --no-pager log --oneline -20
     - uses: actions/checkout@v4
       if: env.HAS_KEY == 'true'
   ```
-- 本地自检：`node scripts/tmp/check-workflow.mjs .github/workflows/ci.yml`
+- 本地自检：`npm run check:workflow`（等价于 `node scripts/check-workflow.mjs`，可传多个文件）
   （临时脚本，检查 if 上下文合法性 / runs-on 缺失 / needs 悬空；未接入 CI，见 §13 B-29）
 
 **陷阱 2：本地 YAML 解析通过 ≠ GitHub 能接收。**
@@ -860,7 +860,7 @@ $env:LLM_E2E='1'; $env:VITE_DEEPSEEK_API_KEY='<Key>'; npm run test:api
 - **关键判别**：对比「上一次在同一仓库能跑起来的运行」的 job 数。若旧运行有 job、新运行为 0，
   一定是本次 workflow 改动引入的解析错误，**与业务代码无关**。
 - **处置**：本地 YAML 解析**发现不了**这类问题，必须按 §10.4 的上下文规则逐条核对；
-  可用 `node scripts/tmp/check-workflow.mjs .github/workflows/ci.yml` 做一次静态自检。
+  可用 `npm run check:workflow` 做一次静态自检（已接入 pre-commit 与 CI）。
 
 ---
 
@@ -915,6 +915,25 @@ $env:LLM_E2E='1'; $env:VITE_DEEPSEEK_API_KEY='<Key>'; npm run test:api
 | 35 | 2026-10-08 | 步骤 1（R4） | **基准集定向审校**（计划 §9.5 R4）：① 生成器查误区表前先做标签归一化（database 题库原始标签是中文，原实现命中 0 条候选 → 15 条题的禁止项退化为占位项）② 禁止项按与参考答案的词面重合排序并剔出自相矛盾项 ③ 要点改为句子级抽取（保护括号与列表序号，消除 `a=[1,2]`/`不可变对象(int` 式碎片）④ 锚点长度单调改由构造保证，poor 改为「答得很少且含糊」的低质量回答（原 113 条全为「不知道。」）⑤ `reviewed` 全量置 true，meta 增 `anchorSource='curated'` 与 `reviewedBy` | `scripts/gen-golden-dataset.ts`、`tests/golden/goldenSet.json`、`tests/golden/goldenSet.ts` | 计划 §9.5 R4 为最高优先级质量任务：`reviewed=0` 时任何评测数字都不可用（附录 B 禁写） | `npm run golden:check` exit 0（113 条 == 生成器）；`npm test` 513 用例全绿；产物 `tests/golden/goldenSet.json` 与生成器逐字段一致 | CodeBuddy |
 | 36 | 2026-10-08 | 步骤 3（R5） | **语义阈值重新标定**（计划 §9.5 R5）：`usable` 判定新增「最强负样本 < 阈值 ≤ 最弱正样本」两条硬条件（防止只有中位数可分时的假可用），复核后 `SEMANTIC_PASS_SCORE` 61 → **77**，`anchorSource='curated'`、新增 `structuralReview='ai-assisted-systematic-review'`；**`humanReviewed` 保持 false**（该字段是 `usable` 的实质闸门，人工抽检未完成前不得置真，见 §13 B-24） | `src/config/qualityThresholds.ts`、`scripts/tune-threshold.ts`、`tests/unit/tuneThreshold.test.ts` | 阈值入库是计划 S3-8 要求；旧值 61 建立在模板锚点上，锚点重构后必须重标 | `npm run threshold:tune` 实测：最优 77、J=1.00、TPR/FPR=1.00/0.00、最强负 60.54 < 77 ≤ 最弱正 100、负样本唯一值 68 种（原为 1）；`usable=false`（人工抽检未完成，刻意闸门）；`npm test` 全绿 | CodeBuddy |
 | 37 | 2026-10-08 | 评测口径 | 断言口径随 R4/R5 更新：`runGoldenEval` 的逐条有序断言限定在「参考答案 ≥4 字」的 54 条（单 token 填空题在规则层结构上不可区分，区分度由语义层承担）；`rag-eval` 的饱和度断言改为「excellent 饱和 / fair 不饱和」 | `tests/eval/runGoldenEval.test.ts`、`tests/eval/rag-eval.test.ts` | 旧断言基于阈值 61 + 模板锚点，锚点重构后其表述已与事实不符；改成钉住**当前真实行为**，漂移时会失败 | `npm test` 22 文件 / 513 用例全绿。**注：#37 的 54 条豁免已于 #38 随 `pointCoverage` 缺陷修复一并移除** | CodeBuddy |
+| 45 | 2026-10-08 | 评审修复（第二轮） | 对 `9ea8024..HEAD` 累积评审提出的 8 MINOR / 6 NIT 逐条处理：
+
+① 报告安全与健壮性：`candidate` 进 HTML 前转义；`golden-eval.json` 缺失时不再显示「候选来源 = other」（改为明确的「未找到」提示）；
+
+演练卡片的 ok/warn 判定统一为 `flagged === injected`（旧实现把 L1 写死 `=== 1`、且漏判阻塞开关）；缺产物时的提示改为正确的 `npm run eval:drill`（`eval:golden` 不含演练）；
+
+② 基准集不变量：`ensureMinPoints` 补足后仍 <3 条要点时**构建期直接抛错**（旧实现 break 出循环，`golden:check` 还照过）；
+
+切断连接词时禁止切出 `String 不` 这类残片；过滤以分隔符结尾的截断枚举（保留 `//`、`>>` 纯标号要点）；
+
+③ `isCodeExample` 收窄：箭头不再单独作为判据（`1NF→2NF` 这类链式知识点是正常要点）；
+
+④ `tune-floor`：逐条打印探针 top1 分（文档数字可一步复现）、候选区间无可行值时不再打印 `Infinity`、`--check` 增加「固化值 vs 建议值偏离 >0.02」提示；
+
+⑤ `check-workflow`：`yaml` 加载失败时显式 exit 1 + 修复提示（不静默跳过），并登记 B-30；⑥ 抽检清单补「A 对单 token 题结构性成立」说明与「改 `MISCONCEPTIONS` 表而非生成物」的落点；⑦ HANDOVER §10.4/§11.13 路径引用更新；⑧ README 命令表补 `eval:drill` / `check:workflow` / `golden:review-sheet`
+
+| `HANDOVER.md`、`README.md`、`scripts/gen-eval-report.ts`、`scripts/gen-golden-dataset.ts`、`scripts/gen-golden-review-sheet.ts`、`scripts/tune-floor.ts`、`scripts/check-workflow.mjs`、`tests/golden/goldenSet.json` | 累积评审（第 4 轮）结论为 APPROVE 但列出 8 MINOR / 6 NIT；本轮把其中可执行项全部处理，未处理项（如把 `App.tsx` 依赖写成基本值）已说明理由 |
+
+`npm run golden:build` 113 条（最少要点数 3 的不变量成立）；`npm run golden:check` exit 0；`npm test` 23 文件 / **523 用例**全绿；`npm run lint` 0 problem；`npm run typecheck` exit 0；`npm run check:workflow` exit 0；`npm run floor:tune -- --check` exit 0；`eval:golden`/`eval:rag`/`eval:drill`/`eval:report` 全 exit 0 | CodeBuddy |
 | 44 | 2026-10-08 | 配置收口 | ① `package.json` 新增 4 个脚本：`eval:drill`（降级演练）、`floor:tune`（检索 floor 标定/校验）、`check:workflow`（工作流上下文自检）、`golden:review-sheet`（人工抽检清单）；lint-staged 增加 `.github/workflows/*.yml` → `node scripts/check-workflow.mjs`；② `ci.yml`：lint job 增加 `npm run check:workflow`，eval job 增加 `npm run floor:tune -- --check` 与 `npm run eval:drill`（让报告拿到演练产物）；③ `scripts/check-workflow.mjs` 由临时目录提升为正式脚本（B-29）；④ **README 同步**：13 处替换（测试数 334→523、lint 42 errors→0/0、覆盖率门槛已落地、E2E 已修复、构建体积、CI 6 个 job、目录树补 eval/golden 目录、后续计划勾销）+ §7.5 整节重写为「ESLint 现状（0/0）+ 治理轨迹表」+ §8 更新记录补 2026-10-09 行 | `package.json`、`.github/workflows/ci.yml`、`scripts/check-workflow.mjs`、`README.md` | 计划 §9.5 R9（轻微项打包）与 §13 B-25/B-29；README 原属受保护文件，本轮**经用户明确授权**后同步 | `npm run check:workflow` exit 0（6 个 job）；`npm run eval:drill` 6 用例全绿；`npm run floor:tune -- --check` exit 0（探针 8/8 挡、3/148 无覆盖）；`npm run lint` 0 problem；`npm test` 23 文件 / 523 用例全绿；提交经 husky 钩子（含新增的 workflow 自检）通过，未用 `--no-verify` | CodeBuddy |
 | 43 | 2026-10-08 | 基准集质量 | ① 拍要塞点截断：`shortenToPoint` 优先保留**完整子句**（旧实现要求累加 ≥8 字才采用，导致「不可变对象(int,str)函数内修改不」这类半句）；第一个子句就超长时先**去掉行内括号注释**再退到分隔符切分；② 新增 `isCodeExample()` 过滤参考答案里的行内示例（`示例：def func(lst):`、`def x → 不`），它们不是知识点、也不该进覆盖率分母；③ 新增**人工抽检清单生成器** `scripts/gen-golden-review-sheet.ts`（产物 `test-results/golden-review-sheet.md`，带 A/B/D/E 风险标记与 15 分钟抽检法），把 B-24 的人工成本从「读 113 条」压到「看 55 条标记项」 | `scripts/gen-golden-dataset.ts`、`tests/golden/goldenSet.json`、`scripts/gen-golden-review-sheet.ts` | 抽检清单第一版暴露：D（截断残句）21 条中含真实残句，也有 4 条是启发式误报 —— 顺手把真残句修掉，并把启发式改准 | `npm run golden:build` 113 条；`npm test` 23 文件 / 523 用例全绿；`npm run threshold:tune` 最优仍 77（平台宽 44、最强负 60.54、J=1.00，数据改动未扰动阈值）；抽检清单标记 D **21 → 2** | CodeBuddy |
 | 42 | 2026-10-08 | lint 收尾 | 清掉最后一个 lint warning（`src/App.tsx:84` `react-hooks/exhaustive-deps`）：核实「收窄依赖数组以避免重复 setState」的理由不成立，补齐 `currentUser` / `isAdmin` / `profileForm` 依赖；`profileForm` 与 `currentUser` 引用恒定，无重复渲染。计划文档 §2.1 前置条件 0 的 DoD 与验收表、§0.1 状态面板同步为「0 error / 0 warning」 | `src/App.tsx`、`实施计划_细化版.md`、`HANDOVER.md` | §13 B-26；原状态是「保留 warning 作为可见提示」，属**有意偏离**，核实后改为直接修掉 | `npm run lint` → **0 problem（0 error / 0 warning）**；`npm run typecheck` exit 0；`npm test` 23 文件 / 523 用例全绿；`npm run test:e2e` 10 passed（本地，Playwright chromium 已安装）；`git diff` 仅 App.tsx 的依赖数组与注释 | CodeBuddy |
@@ -978,7 +997,8 @@ git --no-pager log --stat -20
 | B-24 | **基准集人工抽检**（唯一剩下的质量闸门）：`meta.reviewedBy='ai-assisted-systematic-review'`，113 条的要点/禁止项/锚点由 AI 辅助系统化产出。**已备好抽检清单**：`npx tsx scripts/gen-golden-review-sheet.ts` → `test-results/golden-review-sheet.md`（每条一行 + 风险标记 A/B/D/E，含「建议 15 分钟抽检法」）。当前标记分布：**A=42 / B=6 / D=2 / E=29**（合计 55 条带标记）。其中 **A=42 是结构性的**：禁止项来自**标签级**误区表，对「填空型」窄问题会显得与本题不直接相关（例：问 `.class` 扩展名，禁止项却是「用 # 表示单行注释」）—— 要不要改成逐题禁止项属**产品决策**，抽样时请一并判断 | **抽检完成前，任何评测数字不得对外引用**（`实施计划_细化版.md` 附录 B 禁用表述）；完成后把 `qualityThresholds.ts` 的 `humanReviewed` 置 true 并重跑 `threshold:tune` | 1~2h（有了清单） | **P0** |
 | B-25 | **README 数字同步**（受保护文件）：README 仍写着旧的测试数/lint 状态（334 用例 / 42 errors），需写回「lint **0 error / 0 warning**」「**23 文件 / 523 用例**」「覆盖率 statements 30.63 / branches 22.80 / functions 20.25 / lines 31.17」「阈值 77（`usable=false`，见 B-24）」「E2E 已修复并通过（10 用例）」「`RETRIEVAL_FLOOR = 0.25`」。**现成的替换文本见 `实施计划_细化版.md` §9.5 R8 备注** | 收口期按交接红线未改 README（`实施计划_细化版.md` §9.5 R8）；数字真源见该文档 §0.1 | 30min | P1 |
 | B-27 | ~~L2（模型层降级）计数接入评测产物~~ | **已完成**（台账 #41）：新增 `tests/eval/degradationDrill.test.ts` 真实注入 L1/L2 故障并落盘 `test-results/degradation-drill.json`，报告新增三张演练卡片（L1 1/1、L2 2/2、阻塞开关 1/1）。**注意口径**：卡片标的是「演练通过数」而不是生产降级率 —— 生产链路的 L1/L2 埋点仍未做，报告里已用 ⚠️ 显式写明 | — | **已完成** |
-| B-29 | ~~**把 workflow 静态自检接入本地门禁**~~ | **已完成**（台账 #44）：脚本从 `scripts/tmp/` 提升为正式的 `scripts/check-workflow.mjs`（支持多文件、零依赖），并接入 ① husky pre-commit 的 lint-staged（`.github/workflows/*.yml`）② CI 的 lint job（`npm run check:workflow`）。现在「secrets 出现在 if」这类解析期错误会在**本地提交时**被拦住，不必再靠推送后发现 | — | **已完成** |
+| B-30 | **把 `yaml` 登记为显式 devDependency**：`scripts/check-workflow.mjs` 依赖 `yaml`，而它目前只是 **vite 的 optional peerDependency**（不在 devDependencies）。普通 `npm ci` 会装上，但 `npm ci --omit=optional` 或 vite 侧 peer 变更会让该脚本（以及 pre-commit / CI 的 lint job）直接失败。脚本已做成「加载失败显式 exit 1 + 修复提示」，不会静默跳过；彻底解法是显式声明依赖（需用户确认后再改 `package.json` 与锁文件） | 想把这条链路彻底钉死时 | 10min | P2 |
+| B-29 | ~~**把 workflow 静态自检接入本地门禁**~~ | **已完成**（台账 #44）：脚本从 `scripts/tmp/` 提升为正式的 `scripts/check-workflow.mjs`（支持多文件；依赖 vite 的 optional peer `yaml`，彻底解法见 B-30），并接入 ① husky pre-commit 的 lint-staged（`.github/workflows/*.yml`）② CI 的 lint job（`npm run check:workflow`）。现在「secrets 出现在 if」这类解析期错误会在**本地提交时**被拦住，不必再靠推送后发现 | — | **已完成** |
 | B-28 | ~~**`RETRIEVAL_FLOOR` 偏低，L3「无覆盖降级」实测不触发**~~ | **已完成**（台账 #41）：新增可复现标定脚本 `scripts/tune-floor.ts`（含 `--check`），按 8 条题库外探针 + 148 条查询集数据把 floor 由 **0.12 → 0.25**；实测探针 8/8 全挡、查询集内 3/148 判无覆盖（`paraphrase-5/-10/-12`，L3 降级为纯 prompt）；`npx tsx scripts/tune-floor.ts --check` exit 0。**两类存在重叠**（最弱 paraphrase 0.2001 < 最强无关提问 0.2408），不存在完美切分，0.25 是保守取法。局限：探针仅 8 条且人工构造 | 想让 L3 降级真正生效时 | 2h | **已完成** |
 | B-26 | ~~`src/App.tsx:84` 的 `react-hooks/exhaustive-deps` warning 重构~~ | **已完成**（台账 #42）：核实「收窄依赖以避免重复 setState」的前提不成立（`currentUser` 来自 `useState`、`profileForm` 引用恒定、`isAdmin` 是布尔派生值），补齐依赖后 lint 达到 **0 error / 0 warning**；e2e 10 用例复跑全绿 | — | **已完成** |
 

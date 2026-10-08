@@ -64,7 +64,9 @@ function flagsOf(item: Item): string[] {
         /[的到为和与或在把被是不会需由成吗呢吧了]$/.test(p.trim()) ||
         (p.match(/[（(]/g)?.length ?? 0) !== (p.match(/[）)]/g)?.length ?? 0) ||
         /^(示例|例如|比如|举例)\s*[:：]/.test(p.trim()) ||
-        p.includes('→'),
+        // 以分隔符结尾的截断枚举（如 golden-python-q90 的「r读/w写/a追加/」，D 曾漏检）——
+        // 纯标号要点（`//`、`>>`）豁免，判据与 gen-golden-dataset 的同名过滤保持一致
+        (/[/、，,;；]$/.test(p.trim()) && p.trim().length > 4 && /[\u4e00-\u9fa5]/.test(p)),
     )
   ) {
     flags.push('D')
@@ -91,7 +93,10 @@ lines.push(
 lines.push('')
 lines.push('## 抽检方法（建议 15 分钟）')
 lines.push('')
-lines.push('1. 先只看带 `A` 标记的条目：禁止项必须与本题强相关，若发现「无关名词堆砌」就改数据并重跑 `npm run golden:build`；')
+lines.push('1. 先看**带 `A` 且不带 `E`** 的条目（A 对单 token / 填空型题是**结构性成立**的：参考答案只有一个词时，' +
+        '任何标签级误区都必然与它零词面重合，不代表数据有问题）。若确认某条禁止项是「无关名词堆砌」，' +
+        '**要改的是 `scripts/gen-golden-dataset.ts` 里的 `MISCONCEPTIONS` 误区表**（`tests/golden/goldenSet.json` 是生成物，' +
+        '直接改会被 `npm run golden:build` 覆盖），改完重跑生成器；')
 lines.push('2. 再抽样 20 条（含 `E` 单 token 题）：确认「预期要点」确实是本题的知识点，且「禁止项」是常见误区而不是正确答案；')
 lines.push('3. 抽查 `poor` 锚点：它应当读起来像「答了一点又说不清」，不能包含参考答案的完整句子；')
 lines.push('4. 全部通过后，把 `src/config/qualityThresholds.ts` 的 `humanReviewed` 置 `true`、重跑 `npm run threshold:tune`，')
