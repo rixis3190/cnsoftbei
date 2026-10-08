@@ -14,6 +14,8 @@
     "test:api": "vitest run --config vitest.api.config.ts",
     "test:report": "vitest run && tsx scripts/gen-test-report.ts",
     "typecheck": "tsc -b",
+    "golden:build": "tsx scripts/gen-golden-dataset.ts",
+    "golden:check": "tsx scripts/gen-golden-dataset.ts --check",
     "measure:size": "node scripts/measure-entry-size.mjs",
     "test:e2e": "playwright test",
     "prepare": "husky"

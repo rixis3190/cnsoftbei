@@ -73,6 +73,11 @@ function getResponseForPrompt(systemPrompt: string): string {
   if (systemPrompt.includes('相关') || systemPrompt.includes('主题')) {
     return '相关'
   }
+  // RAG 增强回答（S1-8 预留桩，步骤 4 接入检索后使用）
+  // 特征：提示词里出现引用编号约定或「仅依据给定资料」约束
+  if (systemPrompt.includes('[1]') || systemPrompt.includes('仅依据给定资料')) {
+    return '依据 [1]，该知识点的定义如下；其余细节题目未覆盖，不作推测。'
+  }
   // 质量评审
   if (systemPrompt.includes('评审') || systemPrompt.includes('质量')) {
     return '80'
