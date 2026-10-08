@@ -124,6 +124,30 @@ describe('splitLongText', () => {
     expect(segments!.length).toBeGreaterThan(1)
     // 末段应包含最后一句
     expect(segments![segments!.length - 1]).toContain('中文句子')
+
+    // 重叠必须是「上一段的最后一句出现在下一段开头」，而不是整句重复
+    const sentenceList = long.split(/(?<=[。！？])/).filter(s => s.trim().length > 0)
+    for (let i = 1; i < segments!.length; i++) {
+      const prevLast = segments![i - 1]
+        .split(/(?<=[。！？])/)
+        .filter(s => s.trim().length > 0)
+        .pop()!
+      expect(segments![i].startsWith(prevLast)).toBe(true)
+    }
+    expect(sentenceList.length).toBeGreaterThan(segments!.length)
+  })
+
+  it('不重复句子（旧实现会产出重复段的负向验证）', () => {
+    // 用短 maxChars 逼出多段，逐段检查「同一句不在段内连续出现两次」
+    const text = 'AAA。BBB。CCC。DDD。EEE。FFF。'
+    const segments = splitLongText(text, 12)
+    expect(segments).not.toBeNull()
+    for (const segment of segments!) {
+      const parts = segment.split(/(?<=[。！？])/).filter(s => s.trim().length > 0)
+      for (let i = 1; i < parts.length; i++) {
+        expect(parts[i]).not.toBe(parts[i - 1])
+      }
+    }
   })
 
   it('无法切分（只有一句超长）时返回 null', () => {

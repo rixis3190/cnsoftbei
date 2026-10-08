@@ -20,7 +20,13 @@ import path from 'node:path'
 import queryDataset from '../golden/rag-queries.json'
 import { retrieve } from '../../src/rag/buildIndex'
 import { retrieveForQuestion } from '../../src/rag/retriever'
-import { formatChunksForPrompt, formatCitations, MAX_CHUNK_CHARS, MAX_TOTAL_CHARS } from '../../src/rag/ragPrompts'
+import {
+  formatChunksForPrompt,
+  formatCitations,
+  MAX_CHUNKS,
+  MAX_CHUNK_CHARS,
+  MAX_TOTAL_CHARS,
+} from '../../src/rag/ragPrompts'
 import { faithfulness, mrr, ndcgAtK, recallAtK, splitSentences, type RankedHit } from '../../src/rag/ragMetrics'
 import { getIndex } from '../../src/rag/buildIndex'
 import { scoreAnswer } from '../../src/services/answerScorer'
@@ -86,18 +92,48 @@ const stemMetrics = metricsFor(queries.filter(q => q.kind === 'stem'), 3)
 const paraphraseMetrics = metricsFor(queries.filter(q => q.kind === 'paraphrase'), 3)
 const overviewMetrics = metricsFor(queries.filter(q => q.kind === 'overview'), 3)
 
+/**
+ * 不带 tagHint 的 paraphrase 指标 = **与生产一致的调用路径**
+ * （Tutor 调 `retrieveForQuestion(q, { topK: 3 })`，不传 tagHint）。
+ * 带 hint 的那一份是「标签路由上限」，不带 hint 的才是真实检索质量。
+ */
+function metricsForNoHint(items: QueryItem[], k: number) {
+  const rows = items.map(q => {
+    const retrieved = runRetrieval(q.query)
+    const gold = (getIndex()?.chunks ?? [])
+      .filter(c => (q.goldTag ? [q.goldTag] : []).some(t => c.tags.includes(t)))
+      .map(c => c.id)
+    return { id: q.id, recall: gold.length ? recallAtK(retrieved, gold, k) : NaN }
+  })
+  const valid = rows.filter(r => !Number.isNaN(r.recall))
+  return {
+    validCount: valid.length,
+    recall: valid.length === 0 ? 0 : valid.reduce((s, r) => s + r.recall, 0) / valid.length,
+  }
+}
+
+const paraphraseNoHint = metricsForNoHint(queries.filter(q => q.kind === 'paraphrase'), 3)
+
 describe('检索质量（按查询类型分开统计）', () => {
   it('stem 类：管道接通，Recall@3 ≥ 0.9（健康检查，非质量结论）', () => {
     expect(stemMetrics.validCount).toBe(83)
     expect(stemMetrics.recall).toBeGreaterThanOrEqual(0.9)
   })
 
-  it('paraphrase 类：手写口语化查询的真实召回（结果如实记录，不设虚假门禁）', () => {
-    // 金标集合是「该标签下的全部块」（口语化提问没有唯一正确块），
-    // 因此 Recall@3 的理论上限是 min(1, 3/金标块数)，这里只断言「有非零召回」。
+  it('paraphrase 类（带 tagHint = 标签路由上限）：结果如实记录，不设虚假门禁', () => {
+    // 金标集合是「该标签下的全部块」，而检索也用同一标签过滤 → 候选集 = gold 集合，
+    // Recall@3 恒等于 min(3,|gold|)/|gold|，**不携带排序信息**。
+    // 因此这一份只能读作「标签路由上限」，不能当检索质量结论。
     expect(paraphraseMetrics.validCount).toBe(22)
     expect(paraphraseMetrics.recall).toBeGreaterThan(0)
     expect(Number.isNaN(paraphraseMetrics.recall)).toBe(false)
+  })
+
+  it('paraphrase 类（不带 tagHint = 生产路径）：真实检索质量', () => {
+    expect(paraphraseNoHint.validCount).toBe(22)
+    expect(paraphraseNoHint.recall).toBeGreaterThan(0)
+    // 不带 hint 的召回不会比带 hint 更高（hint 只会缩小候选集、提高命中密度）
+    expect(paraphraseNoHint.recall).toBeLessThanOrEqual(paraphraseMetrics.recall + 1e-9)
   })
 
   it('overview 类：概览块能被概览型查询召回', () => {
@@ -220,16 +256,62 @@ describe('withRag / withoutRag 对照（模拟对照，非真实模型输出）'
 })
 
 describe('注入文本的长度上限（S4-R5 / DoD）', () => {
-  it('单片段 ≤300 字、总长 ≤1500 字', () => {
+  it('片段数 ≤3、单片段 ≤300 字、总长 ≤1500 字', () => {
     const hits = retrieve('事务与索引', { topK: 20, floor: 0 })
     const formatted = formatChunksForPrompt(hits)
     expect(formatted.length).toBeGreaterThan(0)
+    // 片段数守卫（曾经用 maxChunkChars 比较片个数，量纲错导致恒不触发）
+    expect(formatted.length).toBeLessThanOrEqual(MAX_CHUNKS)
     let total = 0
     for (const c of formatted) {
       expect(c.text.length).toBeLessThanOrEqual(MAX_CHUNK_CHARS + 1)
       total += c.text.length
     }
     expect(total).toBeLessThanOrEqual(MAX_TOTAL_CHARS + 1)
+  })
+
+  it('truncated 标记在三种边界上都正确', () => {
+    const chunkOf = (text: string) => ({
+      chunk: {
+        id: 'x',
+        kind: 'question' as const,
+        bank: 'python' as const,
+        tags: ['python-syntax'],
+        text,
+        sourceQuestionId: 'q1',
+        partIndex: 0,
+        moduleId: 'module-1',
+        type: 'short' as const,
+        difficulty: 'easy' as const,
+      },
+      score: 1,
+      cosine: 1,
+      keyword: 1,
+    })
+
+    // ① 超限 → 置 true
+    const long = formatChunksForPrompt([chunkOf('长'.repeat(MAX_CHUNK_CHARS + 50))])
+    expect(long[0].truncated).toBe(true)
+    expect(long[0].text.length).toBeLessThanOrEqual(MAX_CHUNK_CHARS + 1)
+
+    // ② 恰好等于上限 → 不截断（这里就是旧实现漏报的边界）
+    const exact = formatChunksForPrompt([chunkOf('长'.repeat(MAX_CHUNK_CHARS))])
+    expect(exact[0].truncated).toBe(false)
+
+    // ③ 单片段未超限但总预算放不下 → 置 true
+    const many = formatChunksForPrompt(
+      [
+        chunkOf('甲'.repeat(MAX_CHUNK_CHARS)),
+        chunkOf('乙'.repeat(MAX_CHUNK_CHARS)),
+        chunkOf('丙'.repeat(MAX_CHUNK_CHARS)),
+        chunkOf('丁'.repeat(MAX_CHUNK_CHARS)),
+      ],
+      { maxTotalChars: MAX_CHUNK_CHARS * 2 + 100 },
+    )
+    expect(many.length).toBeGreaterThan(2)
+    const last = many[many.length - 1]
+    expect(last.truncated).toBe(true)
+    expect(many.reduce((s, c) => s + c.text.length, 0)).toBeLessThanOrEqual(MAX_CHUNK_CHARS * 2 + 101)
   })
 
   it('空检索结果 → 空数组（不注入任何占位文本）', () => {
@@ -256,6 +338,14 @@ describe('产出 rag-metrics.json', () => {
           recallAt3: paraphraseMetrics.recall,
           mrr: paraphraseMetrics.mrr,
           ndcgAt3: paraphraseMetrics.ndcg,
+          noHintRecallAt3: paraphraseNoHint.recall,
+        },
+        // 与生产一致（不传 tagHint）的真实检索质量
+        paraphraseNoHint: {
+          count: paraphraseNoHint.validCount,
+          recallAt3: paraphraseNoHint.recall,
+          /** 报告侧把它并到 paraphrase 一行展示，避免读者把「标签路由上限」当质量 */
+          noHintRecallAt3: paraphraseNoHint.recall,
         },
         overview: {
           count: overviewMetrics.validCount,

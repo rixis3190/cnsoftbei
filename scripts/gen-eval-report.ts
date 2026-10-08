@@ -29,6 +29,8 @@ interface GoldenEval {
     avgScore: number
     separation: number | null
     confidence: string
+    /** 要点全是「答题要求」填充项的条目数（覆盖率对这些条目无意义） */
+    fillerOnlyItems?: number
     note: string
   }
   rows: { id: string; bank: string; coverage: number; ruleScore: number; rulePassed: boolean }[]
@@ -51,7 +53,17 @@ interface ThresholdReport {
 
 interface RagMetrics {
   knowledgeBaseChunks: number
-  retrieval: Record<string, { count: number; recallAt3: number; mrr: number; ndcgAt3: number }>
+  retrieval: Record<
+    string,
+    {
+      count: number
+      recallAt3: number
+      mrr: number
+      ndcgAt3: number
+      /** 与生产一致（不传 tagHint）的 Recall@3；只有 paraphrase 类提供 */
+      noHintRecallAt3?: number
+    }
+  >
   note: string
 }
 
@@ -94,6 +106,7 @@ function renderGolden(data: GoldenEval | null): string {
       ${card(data.summary.avgScore.toFixed(1), '平均分')}
       ${card(data.summary.separation === null ? '—' : data.summary.separation.toFixed(1), '优秀-差 区分度', 'pass')}
       ${card(escapeHtml(data.summary.confidence), '置信度', 'skip')}
+      ${card(String(data.summary.fillerOnlyItems ?? 0), '要点全为填充项', (data.summary.fillerOnlyItems ?? 0) > 0 ? 'skip' : '')}
     </div>
     <p class="note">${escapeHtml(data.summary.note)}</p>
     <table>
@@ -149,15 +162,17 @@ function renderThreshold(data: ThresholdReport | null): string {
 function renderRag(data: RagMetrics | null): string {
   if (!data) return '<p class="missing">未找到 rag-metrics.json，请先运行 <code>npm run eval:rag</code></p>'
   const rows = Object.entries(data.retrieval)
-    .map(
-      ([kind, m]) => `<tr>
+    .map(([kind, m]) => {
+      const noHint = m.noHintRecallAt3
+      return `<tr>
         <td>${escapeHtml(kind)}</td>
         <td>${m.count}</td>
         <td>${m.recallAt3.toFixed(3)}</td>
+        <td>${noHint === undefined ? '—' : noHint.toFixed(3)}</td>
         <td>${m.mrr.toFixed(3)}</td>
         <td>${m.ndcgAt3.toFixed(3)}</td>
-      </tr>`,
-    )
+      </tr>`
+    })
     .join('\n')
   return `
     <h2>RAG 检索指标</h2>
@@ -165,7 +180,7 @@ function renderRag(data: RagMetrics | null): string {
       ${card(String(data.knowledgeBaseChunks), '知识库块数')}
     </div>
     <table>
-      <thead><tr><th>查询类型</th><th>样本</th><th>Recall@3</th><th>MRR</th><th>NDCG@3</th></tr></thead>
+      <thead><tr><th>查询类型</th><th>样本</th><th>Recall@3</th><th>Recall@3（无 tagHint=生产路径）</th><th>MRR</th><th>NDCG@3</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
     <p class="note">${escapeHtml(data.note)}</p>`

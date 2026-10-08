@@ -61,20 +61,31 @@ export function splitLongText(text: string, maxChars = MAX_CHUNK_CHARS): string[
 
   const segments: string[] = []
   let current = ''
-  for (let i = 0; i < sentences.length; i++) {
-    const sentence = sentences[i]
-    // 重叠：上一段结尾的句子也放进下一段，避免答案被切在边界上
-    const carry = segments.length > 0 ? sentences[i - 1] : ''
-    const candidate = carry ? `${carry}${sentence}` : sentence
-    if (current && (current + candidate).length > maxChars) {
+  for (const sentence of sentences) {
+    if (current && (current + sentence).length > maxChars) {
       segments.push(current)
-      current = sentence
+      // 重叠：把**刚结束那一段的最后一句**带进新段的开头，避免答案被切在边界上。
+      // 注意别把 carry 再叠加到 current 上 —— 那样会把同一句写两遍
+      // （旧实现会产出 "D。D。E。" 这种重复段，已修复）。
+      const prevSentences = current.split(/(?<=[。！？])/).filter(s => s.trim().length > 0)
+      const carry = prevSentences[prevSentences.length - 1] ?? ''
+      current = carry && carry.length + sentence.length <= maxChars ? carry + sentence : sentence
     } else {
-      current += candidate
+      current += sentence
     }
   }
   if (current) segments.push(current)
   return segments.length > 1 ? segments : null
+}
+
+/**
+ * 概览块正文：超长时保留第一段并显式标注省略。
+ * 之前用 `splitLongText(text)?.[0] ?? text`，超出上限的那部分会被**静默丢掉**，
+ * 既没有截断标记也不进 skipped 清单；一旦某标签题数变多，检索内容会无痕减少。
+ */
+function buildOverviewText(text: string, maxChunkChars: number): string {
+  if (text.length <= maxChunkChars) return text
+  return `${text.slice(0, maxChunkChars)}…（其余条目已省略）`
 }
 
 /** 归一化题库输入：只保留检索需要的字段 */
@@ -157,7 +168,9 @@ export function buildCorpus(banks: readonly { bank: QuestionBank; questions: rea
       kind: 'tag-overview',
       bank,
       tags: [tag],
-      text: splitLongText(text)?.[0] ?? text,
+      // 概览块超出上限时保留第一段并**显式标注省略**，
+      // 不做静默丢弃（与「不允许静默丢数据」的口径一致）
+      text: buildOverviewText(text, MAX_CHUNK_CHARS),
       sourceQuestionId: null,
       partIndex: 0,
       moduleId: questions[0].moduleId,

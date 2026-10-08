@@ -147,6 +147,8 @@ async function runSemanticAndModel(
           semanticScore,
           semanticAvailable,
           layersRun,
+          // 语义层否决时模型层同样没跑，必须记录（否则降级统计会低估）
+          layersSkipped: ['model'],
         })
       }
 
@@ -158,6 +160,7 @@ async function runSemanticAndModel(
           semanticScore,
           semanticAvailable,
           layersRun,
+          layersSkipped: ['model'],
         })
       }
     } catch (error) {
@@ -174,9 +177,11 @@ async function runSemanticAndModel(
     )
   }
 
+  // 「模型层已执行」必须在调用**之前**记录：若 callModel 抛异常，
+  // 这一层确实已经被调用过，不能既不在 layersRun 也不在 layersSkipped 里凭空消失。
+  layersRun.push('model')
   try {
     const modelScore = await callModel(answer, questionText)
-    layersRun.push('model')
     if (!Number.isFinite(modelScore)) throw new Error(`模型层返回非数字：${modelScore}`)
     if (modelScore < MODEL_PASS_SCORE) {
       return Promise.resolve(

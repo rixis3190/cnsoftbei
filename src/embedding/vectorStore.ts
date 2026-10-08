@@ -25,10 +25,16 @@ import { fnv1a } from './embeddingProvider'
  * 的逐字节比对负责（CI 里跑的就是它）。
  */
 export function computeArtifactsHash(
-  input: { ids: readonly string[]; vectorsBase64: string },
+  input: { ids: readonly string[]; vectorsBase64: string; idf?: readonly number[] },
   chunkTexts: readonly string[],
 ): string {
-  const payload = `${input.vectorsBase64}\u0001${input.ids.join('\u0002')}\u0001${chunkTexts.join('\u0002')}`
+  // idf 必须进 payload：它是「运行期与构建期不一致」的头号风险源
+  // （docs/eval-methodology.md 明确列为阈值失真的首因），
+  // 只在 vectors:build --check 里把关不够，运行期也该发现半改。
+  const idfPart = input.idf ? input.idf.map(v => v.toFixed(6)).join(',') : ''
+  const payload =
+    `${input.vectorsBase64}\u0001${input.ids.join('\u0002')}\u0001` +
+    `${idfPart}\u0001${chunkTexts.join('\u0002')}`
   return fnv1a(payload).toString(16).padStart(8, '0')
 }
 

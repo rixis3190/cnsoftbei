@@ -16,7 +16,7 @@ import { writeFileSync, mkdirSync } from 'node:fs'
 import path from 'node:path'
 
 import { getGoldSet, getSmokeSet, loadGoldenSet, type GoldenItem } from '../golden/goldenSet'
-import { coverageRatio, hitsMustExclude } from '../../src/services/textMatch'
+import { coverageRatio, hitsMustExclude, scorablePoints } from '../../src/services/textMatch'
 
 export interface GoldenEvalRow {
   id: string
@@ -74,6 +74,8 @@ export interface GoldenEvalSummary {
   /** anchor 模式下的区分度：excellent 均分 − poor 均分 */
   separation: number | null
   confidence: 'low' | 'medium' | 'high'
+  /** 参数量全部是「答题要求」类填充项的条目数（这些条目的覆盖率无意义） */
+  fillerOnlyItems: number
   note: string
 }
 
@@ -98,6 +100,12 @@ export function runGoldenEval(
     separation = Number((excellentAvg - poorAvg).toFixed(2))
   }
 
+  // 降级可观测（评审 MINOR-5）：把「覆盖率无意义的条目」数出来，
+  // 报告侧据此显示标注质量的边界，而不是让读者以为 100% 覆盖等于标注很好。
+  const fillerOnlyItems = items.filter(
+    item => item.expectedPoints.length > 0 && scorablePoints(item.expectedPoints).length === 0,
+  ).length
+
   const summary: GoldenEvalSummary = {
     mode,
     sampleSize: rows.length,
@@ -105,9 +113,11 @@ export function runGoldenEval(
     avgScore: Number(avgScore.toFixed(2)),
     separation,
     confidence: rows.length >= 100 ? 'high' : rows.length >= 50 ? 'medium' : 'low',
+    fillerOnlyItems,
     note:
       '锚点为脚本派生初稿（reviewed=false），本报告只证明评测管线可用，' +
-      '不代表模型真实质量；阈值固化前不得作为最终指标引用。',
+      '不代表模型真实质量；阈值固化前不得作为最终指标引用。' +
+      `其中 ${fillerOnlyItems} 条的要点全部为「答题要求」类填充项，其覆盖率不参与打分分母。`,
   }
 
   const outDir = path.resolve(process.cwd(), 'test-results')

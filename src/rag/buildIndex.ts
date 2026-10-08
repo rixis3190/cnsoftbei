@@ -95,12 +95,12 @@ export interface RagIndex {
  * CI 里跑的是那一个。这里保留 hash 是为了让运行期也能发现半改状态（L3 降级）。
  */
 export function verifyManifestHash(
-  manifest: Pick<RagVectorsManifest, 'hash' | 'vectors' | 'ids'>,
+  manifest: Pick<RagVectorsManifest, 'hash' | 'vectors' | 'ids' | 'idf'>,
   chunks: readonly RagChunk[],
 ): boolean {
   if (typeof manifest?.hash !== 'string' || manifest.hash.length === 0) return false
   const expected = computeArtifactsHash(
-    { ids: manifest.ids, vectorsBase64: manifest.vectors },
+    { ids: manifest.ids, vectorsBase64: manifest.vectors, idf: manifest.idf },
     chunks.map(c => c.text),
   )
   return expected === manifest.hash

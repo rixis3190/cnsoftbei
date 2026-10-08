@@ -78,7 +78,9 @@ jobs:
           path: test-results/
 
   # eval job：只跑「确定性检查 + 报告生成」，不重复跑测试（职责切分见实施计划 T-3）
-  # 门禁阶段：**A 观察** —— 检查全部跑完，失败只告警不阻断（连续 3 次绿后才收紧到 C 阻断）
+  # 门禁阶段：**A 观察** —— 所有检查都跑完、失败只告警不阻断（连续 3 次绿后才按 §1.4 收紧到 C 阻断）。
+  # 「只告警」是靠 continue-on-error: true 实现的：不写它的话，任一失败会中止 job 并跳过后续 step，
+  # 观察期要求的「全量检查 + 汇总」就不成立（评审 MINOR-6）。
   eval:
     name: 评测门禁（观察阶段）
     runs-on: ubuntu-latest
@@ -92,21 +94,26 @@ jobs:
       - run: npm ci
 
       - name: 基准集与题库一致性
+        continue-on-error: true
         run: npm run golden:check
 
       - name: 向量产物一致性
+        continue-on-error: true
         run: npm run vectors:build -- --check
 
       - name: 阈值仍接近最优
+        continue-on-error: true
         run: npm run threshold:tune -- --check
 
       # golden-eval.json 与 rag-metrics.json 是测试的副作用产物，
       # 写在 test job 自己的工作区里，本 job 必须自己再跑一遍，
       # 否则生成的报告会缺掉「基准集跑批」与「检索指标」两块（评审 MAJOR-4）。
-      - name: 基准集跑批（零额度）
+      - name: 基准集跑批（零额度，只跑 runGoldenEval，避免与下一步重复）
+        continue-on-error: true
         run: npm run eval:golden
 
       - name: 检索与忠实度指标（零额度）
+        continue-on-error: true
         run: npm run eval:rag
 
       - name: 生成评测报告

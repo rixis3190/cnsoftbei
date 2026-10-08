@@ -51,8 +51,13 @@ function argValue(name: string): string | undefined {
  * 产物一致性哈希：与运行期 `verifyManifestHash` 共用同一实现（vectorStore.computeArtifactsHash），
  * 因此这里不再自己拼 JSON 文本 —— 拼文本会把文件排版也算进哈希。
  */
-function artifactsHash(ids: readonly string[], vectorsBase64: string, texts: readonly string[]): string {
-  return computeArtifactsHash({ ids, vectorsBase64 }, texts)
+function artifactsHash(
+  ids: readonly string[],
+  vectorsBase64: string,
+  idf: readonly number[],
+  texts: readonly string[],
+): string {
+  return computeArtifactsHash({ ids, vectorsBase64, idf }, texts)
 }
 
 const BANKS: { bank: QuestionBank; questions: typeof pythonQuestions }[] = [
@@ -110,7 +115,7 @@ function build(): BuildResult {
     idf,
     ids,
     vectors: vectorsBase64,
-    hash: artifactsHash(ids, vectorsBase64, chunks.map(c => c.text)),
+    hash: artifactsHash(ids, vectorsBase64, idf, chunks.map(c => c.text)),
   }
   const vectorsJson = `${JSON.stringify(manifest, null, 1)}\n`
 

@@ -3,7 +3,7 @@
   "questionChunks": 405,
   "overviewChunks": 43,
   "splitChunks": 0,
-  "maxChunkChars": 592,
+  "maxChunkChars": 610,
   "chunkCharsLimit": 600,
   "dim": 256,
   "tagCount": {
@@ -56,8 +56,8 @@
   "skipped": [],
   "skipRatio": 0,
   "sizeBytes": {
-    "chunks": 205960,
-    "vectors": 167041
+    "chunks": 205999,
+    "vectors": 167040
   },
   "idf": {
     "min": 1,
@@ -65,5 +65,5 @@
     "max": 3.4435,
     "discrimination": 3.4435
   },
-  "hash": "b6ff28f8"
+  "hash": "c290b1a5"
 }

@@ -127,11 +127,15 @@ export function scoreAnswer(
   let total: number
   if (cosines) {
     total =
-      points.length > 0
+      // 用 scoredPoints 判权重归属：若要点全是「答题要求」类填充项，
+      // coverage 恒为 0，此时权重应全部归余弦（与下方注释口径一致）
+      scoredPoints.length > 0
         ? 100 * (WEIGHT_WITH_POINTS.semantic * cosines.best + WEIGHT_WITH_POINTS.coverage * coverage)
         : 100 * cosines.best
   } else {
-    // 没有 provider：退化为纯覆盖率（降级链 L4），并明确标记语义分不可用
+    // 没有 provider：退化为纯覆盖率（降级链 L4），并明确标记语义分不可用。
+    // 注意此时若连可用要点都没有，total 会是 0 —— 但语义层不可用时漏斗不会用阈值拦截，
+    // 所以这个 0 不会造成误杀（见 qualityFunnel 的 semanticAvailable 分支）。
     total = 100 * coverage
   }
 

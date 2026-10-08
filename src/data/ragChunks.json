@@ -5896,7 +5896,7 @@
   "tags": [
    "python-oop"
   ],
-  "text": "【知识点概览】Python · 面向对象\n本主题共 12 道题，Python面向对象的典型考点包括：\n- Python 中所有类的方法的第一个参数都代表当前实例，通常命名为 self。\n- 请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。\n- 类是对象的模板，对象是类的实例。\n- __init__ 方法在手动调用类之后才会执行。\n- 类属性只能通过实例对象访问，不能通过类名直接访问。\n- 执行以下代码，输出是？\n\n```python\nclass A:\n    def __init__(self, v): self.v = v\n    def __eq__(self, other): return self.v == other.v\n\nclass B(A):\n    def __init__(self, v): self.v = v\n\na = A(1); b = B(1)\nprint(a == b)\n```\n- 子类无法重写父类已经定义好的方法。\n- 子类不能调用父类中已经重写的方法。\n- Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。\n- 实现多态的前提通常是子类重写父类的方法。\n- 不同子类调用同名重写方法，执行效果完全一致。",
+  "text": "【知识点概览】Python · 面向对象\n本主题共 12 道题，Python面向对象的典型考点包括：\n- Python 中所有类的方法的第一个参数都代表当前实例，通常命名为 self。\n- 请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。\n- 类是对象的模板，对象是类的实例。\n- __init__ 方法在手动调用类之后才会执行。\n- 类属性只能通过实例对象访问，不能通过类名直接访问。\n- 执行以下代码，输出是？\n\n```python\nclass A:\n    def __init__(self, v): self.v = v\n    def __eq__(self, other): return self.v == other.v\n\nclass B(A):\n    def __init__(self, v): self.v = v\n\na = A(1); b = B(1)\nprint(a == b)\n```\n- 子类无法重写父类已经定义好的方法。\n- 子类不能调用父类中已经重写的方法。\n- Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。\n- 实现多态的前提通常是子类重写父类的方法。\n- 不同子类调用同名重写方法，执行效果完全一致。\n- Pytho…（其余条目已省略）",
   "sourceQuestionId": null,
   "partIndex": 0,
   "moduleId": "module-3",

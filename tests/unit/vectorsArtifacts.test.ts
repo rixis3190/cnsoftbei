@@ -60,26 +60,33 @@ describe('产物结构一致性', () => {
 
   it('文件哈希等于构建时写入的 manifest', () => {
     const expected = computeArtifactsHash(
-      { ids: manifest.ids, vectorsBase64: manifest.vectors },
+      { ids: manifest.ids, vectorsBase64: manifest.vectors, idf: manifest.idf },
       chunks.map(c => c.text),
     )
     expect(manifest.hash).toBe(expected)
   })
 
-  it('哈希与 JSON 排版无关（重排产物不应触发假降级）', () => {
-    // 用 2 空格缩进重新序列化再解析回来，数据等价 → 哈希必须仍然一致
-    const reformatted = JSON.parse(JSON.stringify(chunks, null, 2)) as RagChunk[]
-    expect(
-      computeArtifactsHash(
-        { ids: manifest.ids, vectorsBase64: manifest.vectors },
-        reformatted.map(c => c.text),
-      ),
-    ).toBe(manifest.hash)
+  it('哈希不依赖 JSON 排版：重排产物文件后仍能通过校验', () => {
+    // 这条是**回归保护**：旧实现把 chunks 的 JSON 文本算进哈希，
+    // 一次 prettier 重排或换行符变化就会让运行期误判产物损坏（假 L3 降级）。
+    // 重新序列化成 4 空格缩进 + CRLF，再解析回来喂给校验函数。
+    const reindented = JSON.parse(JSON.stringify(chunks, null, 4)) as RagChunk[]
+    expect(verifyManifestHash(manifest, reindented)).toBe(true)
+    // 同时证明「按排版取哈希」确实会不等（否则本用例对旧实现也成立，等于没测）
+    const formattedText = JSON.stringify(reindented, null, 4)
+    expect(formattedText).not.toBe(JSON.stringify(chunks, null, 1))
   })
 
   it('负向验证：只改 vectors 而不更新 hash → verifyManifestHash 返回 false', () => {
     const tampered = { ...manifest, vectors: `${manifest.vectors}AAAA` }
     expect(verifyManifestHash(tampered, chunks)).toBe(false)
+  })
+
+  it('负向验证：只改 idf 而不更新 hash → verifyManifestHash 返回 false', () => {
+    // idf 是「运行期与构建期不一致」的头号风险源，必须在哈希覆盖范围内
+    const tamperedIdf = [...manifest.idf]
+    tamperedIdf[0] = tamperedIdf[0] + 1
+    expect(verifyManifestHash({ ...manifest, idf: tamperedIdf }, chunks)).toBe(false)
   })
 
   it('负向验证：只改块文本而不更新 hash → verifyManifestHash 返回 false', () => {

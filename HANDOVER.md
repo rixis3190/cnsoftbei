@@ -687,16 +687,20 @@ git --no-pager log --oneline -20
 | 开关 | 默认 | 关闭时行为 |
 |---|---|---|
 | `RAG_ENABLED` | `false` | 检索返回 `[]`，不注入上下文，行为 = 改造前 |
-| `SEMANTIC_LAYER_ENABLED` | `true` | 跳过语义层（仍计算并记录），拦截交给规则层 + 模型层 |
-| `MODEL_LAYER_ENABLED` | `true` | 只走规则层 + 语义层；`modelScore=null` |
-| `SEMANTIC_SHADOW_MODE` | `false` | 语义层只记录不拦截（阈值区分度不足时用） |
-| `EVAL_MODE` | `offline` | `live` 才允许真实 LLM 调用 |
+| `SEMANTIC_LAYER_ENABLED` | `false` | 跳过语义层，拦截交给规则层 + 模型层（**默认就是关的**；且 Tutor 生产链路不传 `reference/scorer`，即使打开也恒为 skipped） |
+| `MODEL_LAYER_ENABLED` | `true` | 只走规则层 + 语义层；`modelScore=null`，`layersSkipped` 含 `model` |
+| `SEMANTIC_SHADOW_MODE` | `true` | 语义层只记录不拦截（阈值区分度不足时用；默认即为影子模式） |
+| `EVAL_MODE` | `offline` | `live` 才允许真实 LLM 调用（`liveEvalAllowed()` 目前**尚未接线**到出网入口） |
 | `RETRIEVAL_FLOOR` | 阈值脚本产出 | 全部低于 floor → 判无覆盖，不注入 |
-| `MODEL_DEGRADE_IS_BLOCKING` | `false` | 模型层降级不阻塞用户体验，只计入报告 |
+| `MODEL_DEGRADE_IS_BLOCKING` | `false` | 模型层降级不阻塞用户体验，只计入报告；设 `true` 时降级会 `accepted=false` |
 
-**五级降级链**：L0 正常 → L1 语义层降级（只记录）→ L2 模型层降级（`modelDegraded=true` 不阻塞）→ L3 RAG 降级（不注入上下文，**绝不注入空上下文**）→ L4 纯规则降级（等价于改造前）。
+> 默认值以 `src/config/evalConfig.ts` 为准（上面的表在 2026-10-08 已与代码对齐；
+> 覆盖方式为带 `VITE_` 前缀的环境变量）。改动默认值时必须同步本表 +
+> `实施计划_细化版.md §1.2` + `docs/eval-methodology.md`，三处一起改。
 
-**硬性实现约束**：语义层与模型层必须被 `try/catch` 包住且**绝不向 `Tutor.tsx` 抛异常**；`buildIndex` 捕获导入/解码失败后返回 `null`，检索见到 `null` 返回 `[]` 并打 `ragUnavailable` 标记；任何降级都要能在 `eval-report.html` 里看到。
+**五级降级链**：L0 正常 → L1 语义层降级（只记录）→ L2 模型层降级（`modelDegraded=true`，是否阻塞由 `MODEL_DEGRADE_IS_BLOCKING` 决定）→ L3 RAG 降级（不注入上下文，**绝不注入空上下文**）→ L4 纯规则降级（等价于改造前）。
+
+**硬性实现约束**：语义层与模型层必须被 `try/catch` 包住且**绝不向 `Tutor.tsx` 抛异常**；`buildIndex` 捕获导入/解码失败后返回 `null`，检索见到 `null` 返回 `[]` 并打 `ragUnavailable` 标记；每层是否执行由 `FunnelResult.layersRun` / `layersSkipped` 显式记录（**目前只写 console 日志，`eval-report.html` 侧尚未接线降级卡片** —— 若要按「任何降级都要在报告里看到」执行，先补齐报告再引用本条）。
 
 ---
 

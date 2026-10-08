@@ -179,7 +179,7 @@ describe('第 2 层：语义层', () => {
     expect(result.semanticScore).toBeNull()
   })
 
-  it('语义分不可用（缺 provider）→ 显式计入 layersSkipped 语义外的情况且不伪装拦截', async () => {
+  it('语义分不可用（缺 provider）→ 不伪装拦截，且未执行的模型层被记录', async () => {
     // 不注入 scorer：scoreAnswer 会返回 semanticAvailable=false，
     // 此时阈值判定被短路，必须能从结果里看出「语义层跑了但没有效分数」。
     const result = await runQualityFunnel({
@@ -190,7 +190,56 @@ describe('第 2 层：语义层', () => {
     })
     expect(result.layersRun).toEqual(['rule', 'semantic'])
     expect(result.semanticAvailable).toBe(false)
-    expect(result.blockedBy).not.toBe('semantic')
+    // 明确的放行断言：不是「恰好没被拦」，而是确实接受了
+    expect(result.accepted).toBe(true)
+    expect(result.blockedBy).toBeNull()
+    expect(result.layersSkipped).toEqual(['model'])
+  })
+
+  it('层状态不变量：run ∪ skipped = {rule, semantic, model} 且互不重叠', async () => {
+    const cases = [
+      { name: '规则层拦截', input: { answer: '太短', questionText: QUESTION } },
+      {
+        name: '语义层拦截',
+        input: {
+          answer: RULE_PASSING_LOW_SEMANTIC,
+          questionText: QUESTION,
+          reference: REFERENCE,
+          scorer,
+          switches: STRICT_SWITCHES,
+        },
+      },
+      {
+        name: '语义层不可用',
+        input: {
+          answer: RULE_PASSING_LOW_SEMANTIC,
+          questionText: QUESTION,
+          reference: REFERENCE,
+          switches: { SEMANTIC_LAYER_ENABLED: true, SEMANTIC_SHADOW_MODE: false },
+        },
+      },
+      { name: '模型层未启用', input: { answer: GOOD_ANSWER, questionText: QUESTION, switches: STRICT_SWITCHES } },
+      {
+        name: '模型层异常',
+        input: {
+          answer: GOOD_ANSWER,
+          questionText: QUESTION,
+          enableModel: true,
+          callModel: async () => {
+            throw new Error('评审超时')
+          },
+          switches: STRICT_SWITCHES,
+        },
+      },
+    ]
+    for (const { name, input } of cases) {
+      const result = await runQualityFunnel(input)
+      const union = new Set([...result.layersRun, ...result.layersSkipped])
+      expect(union, `${name}：未覆盖的层`).toEqual(new Set(['rule', 'semantic', 'model']))
+      for (const layer of result.layersRun) {
+        expect(result.layersSkipped, `${name}：${layer} 同时出现在 run 与 skipped`).not.toContain(layer)
+      }
+    }
   })
 
   it('MODEL_DEGRADE_IS_BLOCKING=true 时模型层降级会阻塞（开关真的生效）', async () => {
