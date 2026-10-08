@@ -31,11 +31,11 @@ export interface AgentMessage {
 export interface AgentTask {
   id: string;
   type: string;
-  input: any;
-  output?: any;
+  input: unknown;
+  output?: unknown;
   status: 'pending' | 'running' | 'completed' | 'failed';
   assignedAgent?: AgentRole;
-  result?: any;
+  result?: unknown;
   error?: string;
 }
 
@@ -63,8 +63,8 @@ export type AgentEventType =
   | 'message_received'
   | 'status_changed';
 
-// 事件监听器
-type EventListener = (data: any) => void;
+// 事件监听器（data 为 AgentTask 或状态对象，调用方需自行收窄）
+type EventListener = (data: unknown) => void;
 
 // ==================== 智能体定义 ====================
 
@@ -264,7 +264,7 @@ class MultiAgentScheduler {
     this.eventListeners.get(event)!.push(listener);
   }
 
-  private emit(event: AgentEventType, data: any) {
+  private emit(event: AgentEventType, data: unknown) {
     const listeners = this.eventListeners.get(event) || [];
     listeners.forEach(listener => listener(data));
   }
@@ -300,7 +300,7 @@ class MultiAgentScheduler {
   }
 
   // 创建任务
-  createTask(type: string, input: any, assignedAgent?: AgentRole): AgentTask {
+  createTask(type: string, input: unknown, assignedAgent?: AgentRole): AgentTask {
     const task: AgentTask = {
       id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       type,
@@ -314,7 +314,7 @@ class MultiAgentScheduler {
   }
 
   // 执行单智能体任务（支持流式回调）
-  async executeTask(task: AgentTask, onStream?: StreamCallback, signal?: AbortSignal): Promise<any> {
+  async executeTask(task: AgentTask, onStream?: StreamCallback, signal?: AbortSignal): Promise<string> {
     const agentRole = task.assignedAgent || this.inferAgentRole(task.type);
     const agent = this.agents.get(agentRole);
 
@@ -390,12 +390,13 @@ class MultiAgentScheduler {
       this.emit('task_completed', task);
 
       return fullResponse;
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as Error;
       task.status = 'failed';
-      task.error = error.message;
+      task.error = err.message;
       agent.status = 'error';
       this.emit('status_changed', { role: agentRole, status: 'error' });
-      this.emit('task_failed', { task, error: error.message });
+      this.emit('task_failed', { task, error: err.message });
       throw error;
     }
   }
@@ -413,7 +414,7 @@ class MultiAgentScheduler {
   // 多智能体协作任务
   async executeCollaborativeTask(
     taskType: string,
-    input: any,
+    input: unknown,
     requiredAgents: AgentRole[]
   ): Promise<Record<AgentRole, string>> {
     const results: Record<AgentRole, string> = {} as Record<AgentRole, string>;

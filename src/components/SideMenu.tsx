@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout, Menu } from 'antd';
+import type { MenuProps } from 'antd';
 import {
   UserOutlined,
   FileTextOutlined,
@@ -38,6 +39,8 @@ interface SideMenuProps {
   isTeacher?: boolean;
 }
 
+type MenuItem = NonNullable<MenuProps['items']>[number];
+
 // 管理员不显示的学习菜单 key
 const ADMIN_HIDDEN_KEYS = ['profile', 'resources', 'path', 'practice', 'tutor', 'assessment'];
 
@@ -52,7 +55,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ collapsed, selectedKey, onMenuSelec
     }));
 
   // 根据角色添加管理菜单
-  const extraItems: any[] = [];
+  const extraItems: MenuItem[] = [];
 
   if (isTeacher) {
     extraItems.push({

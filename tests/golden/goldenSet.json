@@ -1,0 +1,3423 @@
+{
+  "meta": {
+    "version": 1,
+    "generatedBy": "scripts/gen-golden-dataset.ts",
+    "anchorSource": "template",
+    "reviewedCount": 0,
+    "goldCount": 83,
+    "smokeCount": 30,
+    "note": "expectedPoints / mustExclude / anchors 为脚本派生初稿，reviewed=false；阈值拟合仅用于验证流程，人工审校（计划 S1-4）后才可作为结论。"
+  },
+  "items": [
+    {
+      "id": "golden-python-q11",
+      "question": "请说明 Python 中 `==` 和 `is` 的区别，并举例说明何时应该使用哪个。",
+      "referenceAnswer": "`==` 比较值相等，`is` 比较引用/身份。a=[1,2];b=[1,2]; a==b 为 True，a is b 为 False。推荐用 `is` 与 None 比较。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "== 比较值相等，is 比较引用/身份",
+        "a=[1,2]",
+        "b=[1,2]",
+        "a==b 为 True",
+        "a is b 为 False"
+      ],
+      "mustExclude": [
+        "语句必须以分号结束",
+        "用 // 表示单行注释",
+        "用 : 包裹代码块"
+      ],
+      "anchors": {
+        "excellent": "`==` 比较值相等，`is` 比较引用/身份。a=[1,2];b=[1,2]; a==b 为 True，a is b 为 False。推荐用 `is` 与 None 比较。。`==` 调 __eq__，`is` 比较内存地址。",
+        "fair": "== 比较值相等，is 比较引用/身份；a=[1,2]",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-syntax",
+        "python-data-types"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "q11",
+      "bank": "python",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-python-q12",
+      "question": "Python 的 for 循环和 while 循环有什么区别？各适合什么场景？",
+      "referenceAnswer": "for 用于遍历可迭代对象，适合已知次数；while 在条件为真时执行，适合不确定次数。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "for 用于遍历可迭代对象，适合已知次数",
+        "while 在条件为真时执行",
+        "适合不确定次数",
+        "for 是确定循环",
+        "while 是不确定循环"
+      ],
+      "mustExclude": [
+        "语句必须以分号结束",
+        "用 // 表示单行注释",
+        "用 : 包裹代码块"
+      ],
+      "anchors": {
+        "excellent": "for 用于遍历可迭代对象，适合已知次数；while 在条件为真时执行，适合不确定次数。。for 是确定循环，while 是不确定循环。",
+        "fair": "for 用于遍历可迭代对象，适合已知次数；while 在条件为真时执行",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-syntax",
+        "python-control-flow"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "q12",
+      "bank": "python",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-python-q46",
+      "question": "请解释 Python 中函数调用时的参数传递机制。它是按值传递还是按引用传递？请结合示例说明。",
+      "referenceAnswer": "Python 采用\"按对象引用传递\"。不可变对象(int,str)函数内修改不影响外部；可变对象(list,dict)在函数内修改会影响外部。示例：def func(lst):lst.append(1) → 会修改外部列表；def func(x):x=5 → 不会修改外部变量。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "Python 采用\"按对象引用传递\"",
+        "不可变对象(int",
+        "str)函数内修改不影响外部",
+        "可变对象(list",
+        "dict)在函数内修改会影响外部"
+      ],
+      "mustExclude": [
+        "默认参数在每次调用时重新求值",
+        "函数内修改任意形参都会影响实参",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "Python 采用\"按对象引用传递\"。不可变对象(int,str)函数内修改不影响外部；可变对象(list,dict)在函数内修改会影响外部。示例：def func(lst):lst.append(1) → 会修改外部列表；def func(x):x=5 → 不会修改外部变量。。Python 既非按值也非按引用，而是按对象引用传递。",
+        "fair": "Python 采用\"按对象引用传递\"；不可变对象(int",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-functions",
+        "python-errorprone"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "q46",
+      "bank": "python",
+      "type": "short",
+      "difficulty": "hard",
+      "reviewed": false
+    },
+    {
+      "id": "golden-python-q58",
+      "question": "请说明 Python 模块的搜索路径顺序，以及如何修改模块搜索路径。",
+      "referenceAnswer": "搜索顺序：1.当前目录 2.PYTHONPATH 3.site-packages 4.标准库。可用 sys.path.append() 动态添加。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "搜索顺序：1.当前目录",
+        "可用",
+        "sys.path[0] 是脚本所在目录"
+      ],
+      "mustExclude": [
+        "包就是普通文件夹，不需要 __init__.py",
+        "import * 会递归导入子包的所有内容",
+        "默认参数在每次调用时重新求值"
+      ],
+      "anchors": {
+        "excellent": "搜索顺序：1.当前目录 2.PYTHONPATH 3.site-packages 4.标准库。可用 sys.path.append() 动态添加。。sys.path[0] 是脚本所在目录。",
+        "fair": "搜索顺序：1.当前目录；可用",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-modules",
+        "python-functions"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "q58",
+      "bank": "python",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-python-q67",
+      "question": "请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。",
+      "referenceAnswer": "__slots__ 声明实例允许的属性名。优势：减少内存、防止动态添加属性、加速访问。限制：子类需单独定义、不能动态添加属性、多继承受限。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "__slots__ 声明实例允许的属性名",
+        "优势：减少内存",
+        "防止动态添加属性",
+        "加速访问",
+        "限制：子类需单独定义"
+      ],
+      "mustExclude": [
+        "self 参数可以省略",
+        "类属性与实例属性完全等价",
+        "property 就是普通的公有数据字段"
+      ],
+      "anchors": {
+        "excellent": "__slots__ 声明实例允许的属性名。优势：减少内存、防止动态添加属性、加速访问。限制：子类需单独定义、不能动态添加属性、多继承受限。。适合大量实例场景（数据类、游戏对象）。",
+        "fair": "__slots__ 声明实例允许的属性名；优势：减少内存",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-oop",
+        "python-classes",
+        "python-errorprone"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "q67",
+      "bank": "python",
+      "type": "short",
+      "difficulty": "hard",
+      "reviewed": false
+    },
+    {
+      "id": "golden-python-q77",
+      "question": "Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。",
+      "referenceAnswer": "静态多态基于继承/接口，需显式声明类型；Python duck typing 只关注对象\"能做什么\"。示例：有 len() 方法的对象就能用 len()，无需继承接口。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "静态多态基于继承/接口，需显式声明类型",
+        "Python duck typing 只",
+        "示例：有 len() 方法的对象就能用",
+        "无需继承接口",
+        "Duck typing 不依赖类型声明"
+      ],
+      "mustExclude": [
+        "实现多态必须先声明接口或抽象类",
+        "重载与重写在 Python 中是同一概念",
+        "self 参数可以省略"
+      ],
+      "anchors": {
+        "excellent": "静态多态基于继承/接口，需显式声明类型；Python duck typing 只关注对象\"能做什么\"。示例：有 len() 方法的对象就能用 len()，无需继承接口。。Duck typing 不依赖类型声明，更灵活但缺编译检查。",
+        "fair": "静态多态基于继承/接口，需显式声明类型；Python duck typing 只",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-polymorphism",
+        "python-oop"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "q77",
+      "bank": "python",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-python-q84",
+      "question": "请说明 Python 中自定义异常类的最佳实践，包括如何命名、是否需要定义额外属性，以及在什么场景下应该创建自定义异常。",
+      "referenceAnswer": "命名以 Error 结尾，继承 Exception，在 __init__ 中添加上下文信息（错误码、字段名）。当需要精确表达业务逻辑错误时使用。示例：class PasswordTooShortError(Exception): def __init__(self, length, min_length): ...",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "命名以 Error 结尾",
+        "继承 Exception",
+        "在 __init__ 中添加上下文信息（",
+        "字段名）",
+        "当需要精确表达业务逻辑错误时使用"
+      ],
+      "mustExclude": [
+        "finally 块一定不会执行",
+        "可以用 return 让 finally 被跳过",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "命名以 Error 结尾，继承 Exception，在 __init__ 中添加上下文信息（错误码、字段名）。当需要精确表达业务逻辑错误时使用。示例：class PasswordTooShortError(Exception): def __init__(self, length, min_length): ...。标准异常不够精确时使用自定义异常，避免过度。",
+        "fair": "命名以 Error 结尾；继承 Exception",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-exceptions",
+        "python-errorprone",
+        "python-studyhabit"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q84",
+      "bank": "python",
+      "type": "short",
+      "difficulty": "hard",
+      "reviewed": false
+    },
+    {
+      "id": "golden-python-q90",
+      "question": "请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。",
+      "referenceAnswer": "r读/w写(覆盖)/a追加/r+读写/w+读写(覆盖)/a+读写(追加)/b二进制/t文本。安全处理：用 with 自动关闭；try...except 捕获 FileNotFoundError、PermissionError。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "r读/w写(覆盖)/a追加/r+读写/",
+        "安全处理：用 with 自动关闭",
+        "try...except 捕获",
+        "PermissionError",
+        "with 语句确保正确关闭"
+      ],
+      "mustExclude": [
+        "open 打开的文件可以不做关闭",
+        "with 语句会独占文件导致无法并发读写",
+        "列表推导式会修改原列表"
+      ],
+      "anchors": {
+        "excellent": "r读/w写(覆盖)/a追加/r+读写/w+读写(覆盖)/a+读写(追加)/b二进制/t文本。安全处理：用 with 自动关闭；try...except 捕获 FileNotFoundError、PermissionError。。with 语句确保正确关闭；针对性捕获异常更安全。",
+        "fair": "r读/w写(覆盖)/a追加/r+读写/；安全处理：用 with 自动关闭",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-files",
+        "python-comprehensions",
+        "python-errorprone",
+        "python-studyhabit"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q90",
+      "bank": "python",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j51",
+      "question": "Java 程序编译后生成的文件扩展名是 ___。",
+      "referenceAnswer": ".class",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        ".class",
+        "javac 编译 .java 源文件得到",
+        "由 JVM 执行"
+      ],
+      "mustExclude": [
+        "用 # 表示单行注释",
+        "语句结束符是换行而无需分号",
+        "标识符可以以数字开头"
+      ],
+      "anchors": {
+        "excellent": ".class。javac 编译 .java 源文件得到字节码文件 .class，由 JVM 执行。",
+        "fair": ".class；javac 编译 .java 源文件得到",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-syntax"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j51",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j52",
+      "question": "main 方法参数列表中的数组类型是 ___[]。",
+      "referenceAnswer": "String",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "String",
+        "main 方法的参数是",
+        "用于接收命令行参数"
+      ],
+      "mustExclude": [
+        "用 # 表示单行注释",
+        "语句结束符是换行而无需分号",
+        "标识符可以以数字开头"
+      ],
+      "anchors": {
+        "excellent": "String。main 方法的参数是 String[] args，用于接收命令行参数。",
+        "fair": "String；main 方法的参数是",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-syntax"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j52",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j79",
+      "question": "Java Development Kit 的缩写是 ___。",
+      "referenceAnswer": "JDK",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "JDK",
+        "JDK 包含 JRE 和开发工具",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "用 # 表示单行注释",
+        "语句结束符是换行而无需分号",
+        "标识符可以以数字开头"
+      ],
+      "anchors": {
+        "excellent": "JDK。JDK 包含 JRE 和开发工具。",
+        "fair": "JDK；JDK 包含 JRE 和开发工具",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-syntax"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j79",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j94",
+      "question": "Java Runtime Environment 的缩写是 ___。",
+      "referenceAnswer": "JRE",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "JRE",
+        "JRE 提供运行 Java 程序所需的环",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "用 # 表示单行注释",
+        "语句结束符是换行而无需分号",
+        "标识符可以以数字开头"
+      ],
+      "anchors": {
+        "excellent": "JRE。JRE 提供运行 Java 程序所需的环境。",
+        "fair": "JRE；JRE 提供运行 Java 程序所需的环",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-syntax"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j94",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j151",
+      "question": "Java 程序入口方法是________。",
+      "referenceAnswer": "main",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "main",
+        "main 方法",
+        "Java 应用程序唯一"
+      ],
+      "mustExclude": [
+        "用 # 表示单行注释",
+        "语句结束符是换行而无需分号",
+        "标识符可以以数字开头"
+      ],
+      "anchors": {
+        "excellent": "main。main 方法是 Java 应用程序唯一执行入口。",
+        "fair": "main；main 方法",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-syntax"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j151",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j152",
+      "question": "Java 单行注释符号为________。",
+      "referenceAnswer": "//",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "//",
+        "// 用于单行代码注释",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "用 # 表示单行注释",
+        "语句结束符是换行而无需分号",
+        "标识符可以以数字开头"
+      ],
+      "anchors": {
+        "excellent": "//。// 用于单行代码注释。",
+        "fair": "//；// 用于单行代码注释",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-syntax"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j152",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j153",
+      "question": "Java 使用________符号划分代码块。",
+      "referenceAnswer": "{}",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "{}",
+        "大括号是 Java 代码块的标志",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "用 # 表示单行注释",
+        "语句结束符是换行而无需分号",
+        "标识符可以以数字开头"
+      ],
+      "anchors": {
+        "excellent": "{}。大括号是 Java 代码块的标志。",
+        "fair": "{}；大括号是 Java 代码块的标志",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-syntax",
+        "java-errorprone"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j153",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j53",
+      "question": "Java 中布尔类型的字面量只有 true 和 ___。",
+      "referenceAnswer": "false",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "false",
+        "boolean 类型只有两个值",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "基本类型与包装类完全相同",
+        "int 溢出后会自动提升为 long",
+        "char 存储的是单个汉字"
+      ],
+      "anchors": {
+        "excellent": "false。boolean 类型只有两个值。",
+        "fair": "false；boolean 类型只有两个值",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-data-types"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j53",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j54",
+      "question": "char 类型在 Java 中占用 ___ 个字节。",
+      "referenceAnswer": "2",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "2",
+        "char 是 16 位无符号整数",
+        "采用 Unicode 编码"
+      ],
+      "mustExclude": [
+        "基本类型与包装类完全相同",
+        "int 溢出后会自动提升为 long",
+        "char 存储的是单个汉字"
+      ],
+      "anchors": {
+        "excellent": "2。char 是 16 位无符号整数，采用 Unicode 编码。",
+        "fair": "2；char 是 16 位无符号整数",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-data-types"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j54",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j80",
+      "question": "Java 为了节省内存，字符串字面量存储在 ___ 池中。",
+      "referenceAnswer": "字符串常量",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "字符串常量",
+        "相同内容",
+        "字符串字面量引用同一个对象"
+      ],
+      "mustExclude": [
+        "基本类型与包装类完全相同",
+        "int 溢出后会自动提升为 long",
+        "char 存储的是单个汉字"
+      ],
+      "anchors": {
+        "excellent": "字符串常量。相同内容的字符串字面量引用同一个对象。",
+        "fair": "字符串常量；相同内容",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-data-types"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j80",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j95",
+      "question": "引用类型变量可以赋值为 ___，表示不指向任何对象。",
+      "referenceAnswer": "null",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "null",
+        "访问 null 引用",
+        "成员会抛出"
+      ],
+      "mustExclude": [
+        "基本类型与包装类完全相同",
+        "int 溢出后会自动提升为 long",
+        "char 存储的是单个汉字"
+      ],
+      "anchors": {
+        "excellent": "null。访问 null 引用的成员会抛出 NullPointerException。",
+        "fair": "null；访问 null 引用",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-data-types"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j95",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j154",
+      "question": "布尔类型的两个取值是 true 和________。",
+      "referenceAnswer": "false",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "false",
+        "boolean 类型只有两个布尔值",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "基本类型与包装类完全相同",
+        "int 溢出后会自动提升为 long",
+        "char 存储的是单个汉字"
+      ],
+      "anchors": {
+        "excellent": "false。boolean 类型只有两个布尔值。",
+        "fair": "false；boolean 类型只有两个布尔值",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-data-types"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j154",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j155",
+      "question": "String 属于________数据类型。",
+      "referenceAnswer": "引用",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "引用",
+        "String 不",
+        "基本类型，属于引用类型"
+      ],
+      "mustExclude": [
+        "基本类型与包装类完全相同",
+        "int 溢出后会自动提升为 long",
+        "char 存储的是单个汉字"
+      ],
+      "anchors": {
+        "excellent": "引用。String 不是基本类型，属于引用类型。",
+        "fair": "引用；String 不",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-data-types",
+        "java-errorprone"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j155",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j156",
+      "question": "Java 数组下标从________开始。",
+      "referenceAnswer": "0",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "0",
+        "数组下标默认从 0 计数",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "基本类型与包装类完全相同",
+        "int 溢出后会自动提升为 long",
+        "char 存储的是单个汉字"
+      ],
+      "anchors": {
+        "excellent": "0。数组下标默认从 0 计数。",
+        "fair": "0；数组下标默认从 0 计数",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-data-types"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j156",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j157",
+      "question": "获取数组长度使用________属性。",
+      "referenceAnswer": "length",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "length",
+        "数组.length 得到数组长度",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "基本类型与包装类完全相同",
+        "int 溢出后会自动提升为 long",
+        "char 存储的是单个汉字"
+      ],
+      "anchors": {
+        "excellent": "length。数组.length 得到数组长度。",
+        "fair": "length；数组.length 得到数组长度",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-data-types",
+        "java-errorprone"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j157",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j55",
+      "question": "Java 中求余运算符是 ___。",
+      "referenceAnswer": "%",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "%",
+        "例如 10 % 3 = 1",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "&& 与 || 一定会对右侧求值",
+        "三元运算符的第二个表达式会被完整求值",
+        "复合赋值运算符没有优先级"
+      ],
+      "anchors": {
+        "excellent": "%。例如 10 % 3 = 1。",
+        "fair": "%；例如 10 % 3 = 1",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-operators"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j55",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j56",
+      "question": "有符号右移运算符是 ___。",
+      "referenceAnswer": ">>",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        ">>",
+        ">> 用符号位填充高位",
+        ">>> 无符号右移补零"
+      ],
+      "mustExclude": [
+        "&& 与 || 一定会对右侧求值",
+        "三元运算符的第二个表达式会被完整求值",
+        "复合赋值运算符没有优先级"
+      ],
+      "anchors": {
+        "excellent": ">>。>> 用符号位填充高位，>>> 无符号右移补零。",
+        "fair": ">>；>> 用符号位填充高位",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-operators"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j56",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j81",
+      "question": "逻辑或的短路运算符是 ___。",
+      "referenceAnswer": "||",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "||",
+        "如果左侧",
+        "true，右侧不再计算"
+      ],
+      "mustExclude": [
+        "&& 与 || 一定会对右侧求值",
+        "三元运算符的第二个表达式会被完整求值",
+        "复合赋值运算符没有优先级"
+      ],
+      "anchors": {
+        "excellent": "||。如果左侧为 true，右侧不再计算。",
+        "fair": "||；如果左侧（其余细节暂不展开）",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-operators"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j81",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j96",
+      "question": "instanceof 运算符用于测试对象是否为某个 ___ 的实例。",
+      "referenceAnswer": "类",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "类",
+        "或接口、数组类型",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "&& 与 || 一定会对右侧求值",
+        "三元运算符的第二个表达式会被完整求值",
+        "复合赋值运算符没有优先级"
+      ],
+      "anchors": {
+        "excellent": "类。或接口、数组类型。",
+        "fair": "类；或接口、数组类型",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-operators"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j96",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j158",
+      "question": "判断基本类型数值相等使用________运算符。",
+      "referenceAnswer": "==",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "==",
+        "== 比较数值，=",
+        "赋值运算符"
+      ],
+      "mustExclude": [
+        "&& 与 || 一定会对右侧求值",
+        "三元运算符的第二个表达式会被完整求值",
+        "复合赋值运算符没有优先级"
+      ],
+      "anchors": {
+        "excellent": "==。== 比较数值，= 为赋值运算符。",
+        "fair": "==；== 比较数值，=",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-operators"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j158",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j159",
+      "question": "具备短路效果的逻辑与运算符是________。",
+      "referenceAnswer": "&&",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "&&",
+        "&& 左边",
+        "false 则右边不执行"
+      ],
+      "mustExclude": [
+        "&& 与 || 一定会对右侧求值",
+        "三元运算符的第二个表达式会被完整求值",
+        "复合赋值运算符没有优先级"
+      ],
+      "anchors": {
+        "excellent": "&&。&& 左边为 false 则右边不执行。",
+        "fair": "&&；&& 左边（其余细节暂不展开）",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-operators",
+        "java-errorprone"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j159",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j57",
+      "question": "switch 语句中的表达式类型可以是 byte, short, int, char, String 以及 ___ 类型（自 Java 5）。",
+      "referenceAnswer": "enum",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "enum",
+        "枚举类型也",
+        "switch"
+      ],
+      "mustExclude": [
+        "switch 会贯穿所有 case 继续执行",
+        "break 会跳出整个程序"
+      ],
+      "anchors": {
+        "excellent": "enum。枚举类型也可以作为 switch 的表达式。",
+        "fair": "enum；枚举类型也",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-control-flow"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j57",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j58",
+      "question": "___ 循环至少执行一次循环体。",
+      "referenceAnswer": "do-while",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "do-while",
+        "do-while 先执行一次循环体",
+        "再判断条件"
+      ],
+      "mustExclude": [
+        "switch 会贯穿所有 case 继续执行",
+        "break 会跳出整个程序"
+      ],
+      "anchors": {
+        "excellent": "do-while。do-while 先执行一次循环体，再判断条件。",
+        "fair": "do-while；do-while 先执行一次循环体",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-control-flow"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j58",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j82",
+      "question": "增强 for 循环的语法是 for (type var : ___)。",
+      "referenceAnswer": "array_or_iterable",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "array_or_iterable",
+        "冒号右边必须是数组或实现了",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "switch 会贯穿所有 case 继续执行",
+        "break 会跳出整个程序"
+      ],
+      "anchors": {
+        "excellent": "array_or_iterable。冒号右边必须是数组或实现了 Iterable 的对象。",
+        "fair": "array_or_iterable；冒号右边必须是数组或实现了",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-control-flow"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j82",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j97",
+      "question": "使用带 ___ 的 break 可以跳出多重循环。",
+      "referenceAnswer": "标签",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "标签",
+        "例如 outer: for(...) {",
+        "}"
+      ],
+      "mustExclude": [
+        "switch 会贯穿所有 case 继续执行",
+        "break 会跳出整个程序"
+      ],
+      "anchors": {
+        "excellent": "标签。例如 outer: for(...) { break outer; }",
+        "fair": "标签；例如 outer: for(...) {",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-control-flow"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j97",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j160",
+      "question": "终止当前循环使用________语句。",
+      "referenceAnswer": "break",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "break",
+        "break 强制退出当前循环体",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "switch 会贯穿所有 case 继续执行",
+        "break 会跳出整个程序"
+      ],
+      "anchors": {
+        "excellent": "break。break 强制退出当前循环体。",
+        "fair": "break；break 强制退出当前循环体",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-control-flow"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "j160",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j59",
+      "question": "方法签名由方法名和 ___ 列表组成。",
+      "referenceAnswer": "参数",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "参数",
+        "返回类型不属于方法签名，仅",
+        "重载区分"
+      ],
+      "mustExclude": [
+        "方法重载可以靠返回类型区分",
+        "可变参数必须放在参数列表最前"
+      ],
+      "anchors": {
+        "excellent": "参数。返回类型不属于方法签名，仅用于重载区分。",
+        "fair": "参数；返回类型不属于方法签名，仅",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-functions"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "j59",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j60",
+      "question": "使用 ___ import 可以导入类的静态成员，直接使用而不需要类名前缀。",
+      "referenceAnswer": "static",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "static",
+        "例如 import static",
+        "然后直接使用 PI"
+      ],
+      "mustExclude": [
+        "方法重载可以靠返回类型区分",
+        "可变参数必须放在参数列表最前"
+      ],
+      "anchors": {
+        "excellent": "static。例如 import static java.lang.Math.PI; 然后直接使用 PI。",
+        "fair": "static；例如 import static",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-functions"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "j60",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j83",
+      "question": "使用 ___ 语句从方法中返回值。",
+      "referenceAnswer": "return",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "return",
+        "return 表达式",
+        "void 方法可以用 return",
+        "提前退出"
+      ],
+      "mustExclude": [
+        "方法重载可以靠返回类型区分",
+        "可变参数必须放在参数列表最前"
+      ],
+      "anchors": {
+        "excellent": "return。return 表达式；void 方法可以用 return; 提前退出。",
+        "fair": "return；return 表达式",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-functions"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "j83",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j98",
+      "question": "方法重载的解析发生在 ___ 时（编译期或运行期）。",
+      "referenceAnswer": "编译期",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "编译期",
+        "静态绑定，重写",
+        "动态绑定"
+      ],
+      "mustExclude": [
+        "方法重载可以靠返回类型区分",
+        "可变参数必须放在参数列表最前"
+      ],
+      "anchors": {
+        "excellent": "编译期。重载是静态绑定，重写是动态绑定。",
+        "fair": "编译期；静态绑定，重写",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-functions"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "j98",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j61",
+      "question": "构造器的名称必须与 ___ 名完全相同。",
+      "referenceAnswer": "类",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "类",
+        "构造器没有返回类型，名字与类名一致",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "构造方法可以被子类直接继承调用",
+        "this 引用可以在静态方法中使用",
+        "内部类无法访问外部类的私有成员"
+      ],
+      "anchors": {
+        "excellent": "类。构造器没有返回类型，名字与类名一致。",
+        "fair": "类；构造器没有返回类型，名字与类名一致",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-oop",
+        "java-classes"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "j61",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j62",
+      "question": "Java 自动内存管理机制称为 ___ 收集。",
+      "referenceAnswer": "垃圾",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "垃圾",
+        "垃圾回收器（Garbage",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "构造方法可以被子类直接继承调用",
+        "this 引用可以在静态方法中使用",
+        "内部类无法访问外部类的私有成员"
+      ],
+      "anchors": {
+        "excellent": "垃圾。垃圾回收器（Garbage Collection）自动回收不再使用的对象。",
+        "fair": "垃圾；垃圾回收器（Garbage",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-oop",
+        "java-classes"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "j62",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j84",
+      "question": "将实例变量声明为 private，然后提供公共的 getter/setter，体现了面向对象的 ___ 特性。",
+      "referenceAnswer": "封装",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "封装",
+        "隐藏内部状态，控制访问",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "构造方法可以被子类直接继承调用",
+        "this 引用可以在静态方法中使用",
+        "内部类无法访问外部类的私有成员"
+      ],
+      "anchors": {
+        "excellent": "封装。隐藏内部状态，控制访问。",
+        "fair": "封装；隐藏内部状态，控制访问",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-oop",
+        "java-classes"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "j84",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j99",
+      "question": "使用 ___ 可以判断对象是否属于某个类。",
+      "referenceAnswer": "instanceof",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "instanceof",
+        "if (obj instanceof",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "构造方法可以被子类直接继承调用",
+        "this 引用可以在静态方法中使用",
+        "&& 与 || 一定会对右侧求值"
+      ],
+      "anchors": {
+        "excellent": "instanceof。if (obj instanceof String) { ... }",
+        "fair": "instanceof；if (obj instanceof",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-oop",
+        "java-operators"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "j99",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j63",
+      "question": "类继承使用 ___ 关键字。",
+      "referenceAnswer": "extends",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "extends",
+        "子类 extends 父类",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "重写方法时必须先调用 super",
+        "Object 类没有任何方法"
+      ],
+      "anchors": {
+        "excellent": "extends。子类 extends 父类。",
+        "fair": "extends；子类 extends 父类",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-inheritance"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "j63",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j64",
+      "question": "包含抽象方法的类必须声明为 ___ 类。",
+      "referenceAnswer": "abstract",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "abstract",
+        "抽象类可以包含具体方法",
+        "但至少有一个抽象方法时必须是"
+      ],
+      "mustExclude": [
+        "重写方法时必须先调用 super",
+        "Object 类没有任何方法"
+      ],
+      "anchors": {
+        "excellent": "abstract。抽象类可以包含具体方法，但至少有一个抽象方法时必须是 abstract。",
+        "fair": "abstract；抽象类可以包含具体方法",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-inheritance"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "j64",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j85",
+      "question": "用 ___ 修饰的方法不能被子类重写。",
+      "referenceAnswer": "final",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "final",
+        "final 方法保证行为不变",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "重写方法时必须先调用 super",
+        "Object 类没有任何方法"
+      ],
+      "anchors": {
+        "excellent": "final。final 方法保证行为不变。",
+        "fair": "final；final 方法保证行为不变",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-inheritance"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "j85",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j65",
+      "question": "Java 中对于重写的方法，调用时采用 ___ 绑定（根据实际对象类型）。",
+      "referenceAnswer": "动态",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "动态",
+        "运行时动态绑定决定调用哪个版本",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "向上转型后仍可访问子类特有方法",
+        "接口不允许有 default 方法"
+      ],
+      "anchors": {
+        "excellent": "动态。运行时动态绑定决定调用哪个版本。",
+        "fair": "动态；运行时动态绑定决定调用哪个版本",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-polymorphism"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "j65",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j86",
+      "question": "将父类引用强制转换为子类类型称为向 ___ 转型。",
+      "referenceAnswer": "下",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "下",
+        "向下转型（downcasting）需要使",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "向上转型后仍可访问子类特有方法",
+        "接口不允许有 default 方法"
+      ],
+      "anchors": {
+        "excellent": "下。向下转型（downcasting）需要使用 instanceof 检查。",
+        "fair": "下；向下转型（downcasting）需要使",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-polymorphism"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "j86",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j66",
+      "question": "类实现接口使用 ___ 关键字。",
+      "referenceAnswer": "implements",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "implements",
+        "一个类可以实现多个接口",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "接口里的字段是每个实现类各自的副本",
+        "接口只能被继承而不能被实现"
+      ],
+      "anchors": {
+        "excellent": "implements。一个类可以实现多个接口。",
+        "fair": "implements；一个类可以实现多个接口",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-interfaces"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "j66",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j67",
+      "question": "手动抛出异常使用 ___ 关键字。",
+      "referenceAnswer": "throw",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "throw",
+        "throw new",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "catch 之后 finally 一定不会执行",
+        "Throwable 只能由 Error 抛出"
+      ],
+      "anchors": {
+        "excellent": "throw。throw new Exception();",
+        "fair": "throw；throw new",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-exceptions"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j67",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j68",
+      "question": "try-catch 块后可以跟一个可选的 ___ 块，用于清理资源。",
+      "referenceAnswer": "finally",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "finally",
+        "finally 总是执行",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "catch 之后 finally 一定不会执行",
+        "Throwable 只能由 Error 抛出"
+      ],
+      "anchors": {
+        "excellent": "finally。finally 总是执行。",
+        "fair": "finally；finally 总是执行",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-exceptions"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j68",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j87",
+      "question": "严重的问题如 OutOfMemoryError 是 ___ 类的子类，通常不捕获。",
+      "referenceAnswer": "Error",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "Error",
+        "Error 和 Exception 都继",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "catch 之后 finally 一定不会执行",
+        "Throwable 只能由 Error 抛出"
+      ],
+      "anchors": {
+        "excellent": "Error。Error 和 Exception 都继承自 Throwable。",
+        "fair": "Error；Error 和 Exception 都继",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-exceptions"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j87",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j69",
+      "question": "Java 传统 IO 流的核心包是 java.___。",
+      "referenceAnswer": "io",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "io",
+        "java.io 提供",
+        "OutputStream 等类"
+      ],
+      "mustExclude": [
+        "字节流与字符流可以混用而无需转换",
+        "BufferedReader 读完后不需要关闭"
+      ],
+      "anchors": {
+        "excellent": "io。java.io 提供 InputStream, OutputStream 等类。",
+        "fair": "io；java.io 提供",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-io"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j69",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j70",
+      "question": "对象序列化需要实现 ___ 接口。",
+      "referenceAnswer": "Serializable",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "Serializable",
+        "标记接口",
+        "告诉 JVM 可以将对象转化为字节流"
+      ],
+      "mustExclude": [
+        "字节流与字符流可以混用而无需转换",
+        "BufferedReader 读完后不需要关闭"
+      ],
+      "anchors": {
+        "excellent": "Serializable。标记接口，告诉 JVM 可以将对象转化为字节流。",
+        "fair": "Serializable；标记接口",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-io"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j70",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j88",
+      "question": "Java NIO 的核心包是 java.___。",
+      "referenceAnswer": "nio",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "nio",
+        "java.nio 提供非阻塞 IO 和选",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "字节流与字符流可以混用而无需转换",
+        "BufferedReader 读完后不需要关闭"
+      ],
+      "anchors": {
+        "excellent": "nio。java.nio 提供非阻塞 IO 和选择器等。",
+        "fair": "nio；java.nio 提供非阻塞 IO 和选",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-io"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j88",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j71",
+      "question": "键值对存储的顶级接口是 ___。",
+      "referenceAnswer": "Map",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "Map",
+        "Map 不是 Collection 的子",
+        "但也是集合框架的一部分"
+      ],
+      "mustExclude": [
+        "HashMap 允许存放 null 键并自动扩容",
+        "用增强 for 循环删除元素不会抛异常"
+      ],
+      "anchors": {
+        "excellent": "Map。Map 不是 Collection 的子接口，但也是集合框架的一部分。",
+        "fair": "Map；Map 不是 Collection 的子",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-collections"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j71",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j72",
+      "question": "遍历集合的标准设计模式是 ___。",
+      "referenceAnswer": "迭代器",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "迭代器",
+        "Iterator 接口提供",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "HashMap 允许存放 null 键并自动扩容",
+        "用增强 for 循环删除元素不会抛异常"
+      ],
+      "anchors": {
+        "excellent": "迭代器。Iterator 接口提供 hasNext() 和 next() 方法。",
+        "fair": "迭代器；Iterator 接口提供",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-collections"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j72",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j89",
+      "question": "先进先出（FIFO）的集合接口是 ___。",
+      "referenceAnswer": "Queue",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "Queue",
+        "Queue 通常由",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "HashMap 允许存放 null 键并自动扩容",
+        "用增强 for 循环删除元素不会抛异常"
+      ],
+      "anchors": {
+        "excellent": "Queue。Queue 通常由 LinkedList 实现。",
+        "fair": "Queue；Queue 通常由",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-collections"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j89",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j100",
+      "question": "List 接口保证元素的 ___ 顺序。",
+      "referenceAnswer": "插入",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "插入",
+        "List",
+        "有序集合，允许重复"
+      ],
+      "mustExclude": [
+        "HashMap 允许存放 null 键并自动扩容",
+        "用增强 for 循环删除元素不会抛异常"
+      ],
+      "anchors": {
+        "excellent": "插入。List 是有序集合，允许重复。",
+        "fair": "插入；List（其余细节暂不展开）",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-collections"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j100",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j73",
+      "question": "泛型类型参数通常使用单个大写字母，如 T 表示 Type，E 表示 ___。",
+      "referenceAnswer": "Element",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "Element",
+        "E 用于集合元素，K 键，V 值",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "泛型在运行时仍会检查实际类型",
+        "List<Object> 可以直接赋值给 List<String>"
+      ],
+      "anchors": {
+        "excellent": "Element。E 用于集合元素，K 键，V 值。",
+        "fair": "Element；E 用于集合元素，K 键，V 值",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-generics"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j73",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j90",
+      "question": "无限制通配符是 ___。",
+      "referenceAnswer": "?",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "例如 List<",
+        "> 表示未知类型的列表",
+        "?"
+      ],
+      "mustExclude": [
+        "泛型在运行时仍会检查实际类型",
+        "List<Object> 可以直接赋值给 List<String>"
+      ],
+      "anchors": {
+        "excellent": "?。例如 List<?> 表示未知类型的列表。",
+        "fair": "例如 List<；> 表示未知类型的列表",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-generics"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j90",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j75",
+      "question": "启动新线程应调用 Thread 对象的 ___ 方法，而不是直接调用 run()。",
+      "referenceAnswer": "start",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "start",
+        "start() 创建新线程并执行",
+        "直接调用 run() 只是普通方法调用"
+      ],
+      "mustExclude": [
+        "start 与 run 的效果完全相同",
+        "volatile 可以保证复合操作的原子性"
+      ],
+      "anchors": {
+        "excellent": "start。start() 创建新线程并执行 run()，直接调用 run() 只是普通方法调用。",
+        "fair": "start；start() 创建新线程并执行",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-multithreading"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j75",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j76",
+      "question": "等待一个线程结束的方法是 ___。",
+      "referenceAnswer": "join",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "join",
+        "t.join() 使当前线程阻塞直到",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "start 与 run 的效果完全相同",
+        "volatile 可以保证复合操作的原子性"
+      ],
+      "anchors": {
+        "excellent": "join。t.join() 使当前线程阻塞直到 t 结束。",
+        "fair": "join；t.join() 使当前线程阻塞直到",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-multithreading"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j76",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j92",
+      "question": "synchronized 代码块中使用的锁对象可以是任何 ___ 对象。",
+      "referenceAnswer": "Java",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "Java",
+        "任意对象都可作为内置锁",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "start 与 run 的效果完全相同",
+        "volatile 可以保证复合操作的原子性"
+      ],
+      "anchors": {
+        "excellent": "Java。任意对象都可作为内置锁。",
+        "fair": "Java；任意对象都可作为内置锁",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-multithreading"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j92",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j77",
+      "question": "如果一个接口只有一个抽象方法，则称为 ___ 接口。",
+      "referenceAnswer": "函数式",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "函数式",
+        "可以使用 @",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "Lambda 捕获的局部变量必须是常量",
+        "Lambda 创建的匿名内部类可以被外部随意修改"
+      ],
+      "anchors": {
+        "excellent": "函数式。可以使用 @FunctionalInterface 注解检查。",
+        "fair": "函数式；可以使用 @",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-lambda"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j77",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j78",
+      "question": "Stream API 中用于将流元素收集到集合的终端操作是 ___。",
+      "referenceAnswer": "collect",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "collect",
+        "collect(Collectors.t",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "Lambda 捕获的局部变量必须是常量",
+        "Lambda 创建的匿名内部类可以被外部随意修改"
+      ],
+      "anchors": {
+        "excellent": "collect。collect(Collectors.toList()) 等。",
+        "fair": "collect；collect(Collectors.t",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-lambda"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j78",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j93",
+      "question": "将 Stream 转换为并行流可以使用 ___() 方法。",
+      "referenceAnswer": "parallel",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "parallel",
+        "stream.parallel() 或",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "Lambda 捕获的局部变量必须是常量",
+        "Lambda 创建的匿名内部类可以被外部随意修改"
+      ],
+      "anchors": {
+        "excellent": "parallel。stream.parallel() 或 Collection.parallelStream()。",
+        "fair": "parallel；stream.parallel() 或",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-lambda"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j93",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "hard",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j74",
+      "question": "@Deprecated 注解用于标记已过时的程序元素，编译器会生成 ___ 警告。",
+      "referenceAnswer": "弃用",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "弃用",
+        "提示开发者应避免使用该元素",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "@Override 只是注释，可以省略",
+        "@Retention 只影响文档，不影响运行期行为"
+      ],
+      "anchors": {
+        "excellent": "弃用。提示开发者应避免使用该元素。",
+        "fair": "弃用；提示开发者应避免使用该元素",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-annotations"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j74",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-java-j91",
+      "question": "@Target 注解用于指定自定义注解可以应用的 ___ 元素类型。",
+      "referenceAnswer": "Java",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "Java",
+        "例如 METHOD",
+        "FIELD",
+        "TYPE 等"
+      ],
+      "mustExclude": [
+        "@Override 只是注释，可以省略",
+        "@Retention 只影响文档，不影响运行期行为"
+      ],
+      "anchors": {
+        "excellent": "Java。例如 METHOD, FIELD, TYPE 等。",
+        "fair": "Java；例如 METHOD",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "java-annotations"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "j91",
+      "bank": "java",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q30",
+      "question": "简述SQL中DELETE和TRUNCATE的区别。",
+      "referenceAnswer": "1.执行方式：DELETE逐行删除数据，TRUNCATE直接清空数据页；2.事务支持：DELETE记录日志可回滚，TRUNCATE不记录日志不可回滚；3.效率：TRUNCATE远快于DELETE；4.约束：DELETE可触发触发器，TRUNCATE不触发；5.自增列：TRUNCATE会重置自增主键，DELETE不会。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.执行方式：DELETE逐行删除数据",
+        "TRUNCATE直接清空数据页",
+        "2.事务支持：DELETE记录日志可回滚",
+        "TRUNCATE不记录日志不可回滚",
+        "3.效率：TRUNCATE远快于"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.执行方式：DELETE逐行删除数据，TRUNCATE直接清空数据页；2.事务支持：DELETE记录日志可回滚，TRUNCATE不记录日志不可回滚；3.效率：TRUNCATE远快于DELETE；4.约束：DELETE可触发触发器，TRUNCATE不触发；5.自增列：TRUNCATE会重置自增主键，DELETE不会。。二者核心差异为执行机制、日志记录、性能和自增列处理。",
+        "fair": "1.执行方式：DELETE逐行删除数据；TRUNCATE直接清空数据页",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-sql-basics"
+      ],
+      "moduleId": "module-db-1",
+      "sourceQuestionId": "db-q30",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q31",
+      "question": "简述WHERE和HAVING子句的区别。",
+      "referenceAnswer": "1.筛选时机：WHERE是分组前筛选原始数据，HAVING是分组后筛选分组结果；2.使用范围：WHERE无需分组，HAVING必须搭配GROUP BY；3.聚合函数：WHERE不能使用聚合函数，HAVING支持聚合函数筛选。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.筛选时机：WHERE是分组前筛选原始",
+        "HAVING是分组后筛选分组结果",
+        "2.使用范围：WHERE无需分组",
+        "HAVING必须搭配GROUP BY",
+        "3.聚合函数：WHERE不能使用聚合函数"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.筛选时机：WHERE是分组前筛选原始数据，HAVING是分组后筛选分组结果；2.使用范围：WHERE无需分组，HAVING必须搭配GROUP BY；3.聚合函数：WHERE不能使用聚合函数，HAVING支持聚合函数筛选。。核心区别为筛选阶段和聚合函数支持性不同。",
+        "fair": "1.筛选时机：WHERE是分组前筛选原始；HAVING是分组后筛选分组结果",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-sql-basics"
+      ],
+      "moduleId": "module-db-1",
+      "sourceQuestionId": "db-q31",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q32",
+      "question": "简述常用的SQL聚合函数及功能。",
+      "referenceAnswer": "1.COUNT()：统计数据行数；2.SUM()：计算数值字段总和；3.AVG()：计算数值字段平均值；4.MAX()：获取字段最大值；5.MIN()：获取字段最小值。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.COUNT()：统计数据行数",
+        "2.SUM()：计算数值字段总和",
+        "3.AVG()：计算数值字段平均值",
+        "4.MAX()：获取字段最大值",
+        "5.MIN()：获取字段最小值"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.COUNT()：统计数据行数；2.SUM()：计算数值字段总和；3.AVG()：计算数值字段平均值；4.MAX()：获取字段最大值；5.MIN()：获取字段最小值。。聚合函数常与GROUP BY分组语句搭配使用，实现数据统计分析。",
+        "fair": "1.COUNT()：统计数据行数；2.SUM()：计算数值字段总和",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-sql-basics"
+      ],
+      "moduleId": "module-db-1",
+      "sourceQuestionId": "db-q32",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q33",
+      "question": "简述数据库、数据库管理系统、数据库系统的区别。",
+      "referenceAnswer": "1.数据库（DB）：存储数据的容器，是结构化数据的集合；2.数据库管理系统（DBMS）：管理数据库的软件，提供增删改查、事务、索引等功能；3.数据库系统（DBS）：由数据库、DBMS、管理员、硬件、应用程序组成的完整系统，范围最广。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.数据库（DB）：存储数据的容器",
+        "是结构化数据的集合",
+        "2.数据库管理系统（DBMS）：管理数据",
+        "提供增删改查",
+        "事务"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.数据库（DB）：存储数据的容器，是结构化数据的集合；2.数据库管理系统（DBMS）：管理数据库的软件，提供增删改查、事务、索引等功能；3.数据库系统（DBS）：由数据库、DBMS、管理员、硬件、应用程序组成的完整系统，范围最广。。三者为包含关系，DBS包含DB和DBMS，是完整的运行体系。",
+        "fair": "1.数据库（DB）：存储数据的容器；是结构化数据的集合",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-fundamentals"
+      ],
+      "moduleId": "module-db-1",
+      "sourceQuestionId": "db-q33",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q53",
+      "question": "简述数据库五大常用约束及作用。",
+      "referenceAnswer": "1.主键约束（PRIMARY KEY）：唯一标识记录，非空且唯一；2.外键约束（FOREIGN KEY）：关联多表，保证数据参照完整性；3.非空约束（NOT NULL）：限制字段不能为空；4.唯一约束（UNIQUE）：保证字段值唯一，允许单个空值；5.默认约束（DEFAULT）：为字段设置默认填充值。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.主键约束（PRIMARY KEY）：",
+        "非空且唯一",
+        "2.外键约束（FOREIGN KEY）：",
+        "保证数据参照完整性",
+        "3.非空约束（NOT NULL）：限制字"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.主键约束（PRIMARY KEY）：唯一标识记录，非空且唯一；2.外键约束（FOREIGN KEY）：关联多表，保证数据参照完整性；3.非空约束（NOT NULL）：限制字段不能为空；4.唯一约束（UNIQUE）：保证字段值唯一，允许单个空值；5.默认约束（DEFAULT）：为字段设置默认填充值。。五大约束用于规范数据表数据，保证数据完整性、唯一性、有效性。",
+        "fair": "1.主键约束（PRIMARY KEY）：；非空且唯一",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-constraints"
+      ],
+      "moduleId": "module-db-2",
+      "sourceQuestionId": "db-q53",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q54",
+      "question": "简述索引的优缺点。",
+      "referenceAnswer": "优点：1.大幅提升数据查询效率；2.加速多表联表查询速度；3.通过唯一索引保证数据唯一性。缺点：1.占用额外存储空间；2.降低增、删、改数据的执行效率；3.增加数据库维护开销。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "优点：1.大幅提升数据查询效率",
+        "2.加速多表联表查询速度",
+        "3.通过唯一索引保证数据唯一性",
+        "缺点：1.占用额外存储空间",
+        "2.降低增、删、改数据的执行效率"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "优点：1.大幅提升数据查询效率；2.加速多表联表查询速度；3.通过唯一索引保证数据唯一性。缺点：1.占用额外存储空间；2.降低增、删、改数据的执行效率；3.增加数据库维护开销。。索引适用于查询多、更新少的业务场景，需合理创建避免冗余。",
+        "fair": "优点：1.大幅提升数据查询效率；2.加速多表联表查询速度",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-index"
+      ],
+      "moduleId": "module-db-2",
+      "sourceQuestionId": "db-q54",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q55",
+      "question": "简述哪些场景不适合建立索引。",
+      "referenceAnswer": "1.数据量极少的数据表，索引开销大于查询收益；2.高频增删改的字段，索引会大幅降低写入效率；3.重复度极高的字段，索引无法有效筛选数据；4.频繁为空的字段，索引利用率极低；5.短时间临时使用的字段。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.数据量极少的数据表",
+        "索引开销大于查询收益",
+        "2.高频增删改的字段",
+        "索引会大幅降低写入效率",
+        "3.重复度极高的字段"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.数据量极少的数据表，索引开销大于查询收益；2.高频增删改的字段，索引会大幅降低写入效率；3.重复度极高的字段，索引无法有效筛选数据；4.频繁为空的字段，索引利用率极低；5.短时间临时使用的字段。。索引需结合业务读写比例合理创建，避免无效索引。",
+        "fair": "1.数据量极少的数据表；索引开销大于查询收益",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-index"
+      ],
+      "moduleId": "module-db-2",
+      "sourceQuestionId": "db-q55",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q71",
+      "question": "简述事务ACID四大特性。",
+      "referenceAnswer": "1.原子性（Atomicity）：事务操作不可分割，要么全成功、要么全回滚；2.一致性（Consistency）：事务执行前后，数据库数据完整性约束不变；3.隔离性（Isolation）：多个事务并发执行互不干扰，相互隔离；4.持久性（Durability）：事务提交后，数据修改永久生效，断电不丢失。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.原子性（Atomicity）：事务操",
+        "要么全成功",
+        "要么全回滚",
+        "2.一致性（Consistency）：事",
+        "数据库数据完整性约束不变"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.原子性（Atomicity）：事务操作不可分割，要么全成功、要么全回滚；2.一致性（Consistency）：事务执行前后，数据库数据完整性约束不变；3.隔离性（Isolation）：多个事务并发执行互不干扰，相互隔离；4.持久性（Durability）：事务提交后，数据修改永久生效，断电不丢失。。ACID是关系型数据库事务的核心标准，保障并发数据安全。",
+        "fair": "1.原子性（Atomicity）：事务操；要么全成功",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-transaction"
+      ],
+      "moduleId": "module-db-3",
+      "sourceQuestionId": "db-q71",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q72",
+      "question": "简述数据库事务的三种并发问题。",
+      "referenceAnswer": "1.脏读：一个事务读取到另一个事务未提交的脏数据；2.不可重复读：同一事务内，多次读取同一数据，结果被其他已提交事务修改，读取结果不一致；3.幻读：同一事务内，其他事务新增或删除数据，导致当前事务查询结果出现数据行数变化。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.脏读：一个事务读取到另一个事务未提交",
+        "2.不可重复读：同一事务内",
+        "多次读取同一数据",
+        "结果被其他已提交事务修改",
+        "读取结果不一致"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.脏读：一个事务读取到另一个事务未提交的脏数据；2.不可重复读：同一事务内，多次读取同一数据，结果被其他已提交事务修改，读取结果不一致；3.幻读：同一事务内，其他事务新增或删除数据，导致当前事务查询结果出现数据行数变化。。可通过调整事务隔离级别解决三种并发问题。",
+        "fair": "1.脏读：一个事务读取到另一个事务未提交；2.不可重复读：同一事务内",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-transaction"
+      ],
+      "moduleId": "module-db-3",
+      "sourceQuestionId": "db-q72",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q73",
+      "question": "简述MySQL四种事务隔离级别。",
+      "referenceAnswer": "1.读未提交：最低级别，允许读取未提交数据，存在脏读、不可重复读、幻读；2.读已提交：只能读取已提交数据，解决脏读，存在不可重复读、幻读；3.可重复读：同一事务多次读取结果一致，解决脏读、不可重复读，存在幻读（MySQL默认级别）；4.串行化：最高级别，事务串行执行，解决所有并发问题，性能最低。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.读未提交：最低级别",
+        "允许读取未提交数据",
+        "存在脏读",
+        "不可重复读",
+        "幻读"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.读未提交：最低级别，允许读取未提交数据，存在脏读、不可重复读、幻读；2.读已提交：只能读取已提交数据，解决脏读，存在不可重复读、幻读；3.可重复读：同一事务多次读取结果一致，解决脏读、不可重复读，存在幻读（MySQL默认级别）；4.串行化：最高级别，事务串行执行，解决所有并发问题，性能最低。。隔离级别越高，数据一致性越强，并发性能越低。",
+        "fair": "1.读未提交：最低级别；允许读取未提交数据",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-transaction"
+      ],
+      "moduleId": "module-db-3",
+      "sourceQuestionId": "db-q73",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q74",
+      "question": "简述内连接、左连接、右连接的区别。",
+      "referenceAnswer": "1.内连接（INNER JOIN）：只返回两张表中匹配成功的交集数据，无匹配则不展示；2.左连接（LEFT JOIN）：保留左表所有数据，匹配右表数据，无匹配则右表字段为NULL；3.右连接（RIGHT JOIN）：保留右表所有数据，匹配左表数据，无匹配则左表字段为NULL。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.内连接（INNER JOIN）：只返",
+        "无匹配则不展示",
+        "2.左连接（LEFT JOIN）：保留左",
+        "匹配右表数据",
+        "无匹配则右表字段为NULL"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.内连接（INNER JOIN）：只返回两张表中匹配成功的交集数据，无匹配则不展示；2.左连接（LEFT JOIN）：保留左表所有数据，匹配右表数据，无匹配则右表字段为NULL；3.右连接（RIGHT JOIN）：保留右表所有数据，匹配左表数据，无匹配则左表字段为NULL。。三者核心差异为保留数据范围，适用于不同联表查询场景。",
+        "fair": "1.内连接（INNER JOIN）：只返；无匹配则不展示",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-multi-table-query"
+      ],
+      "moduleId": "module-db-3",
+      "sourceQuestionId": "db-q74",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q92",
+      "question": "简述数据库三大范式的核心规则。",
+      "referenceAnswer": "1.第一范式（1NF）：字段具有原子性，不可拆分，无复合数据；2.第二范式（2NF）：满足1NF，消除非主键字段对主键的部分函数依赖；3.第三范式（3NF）：满足2NF，消除非主键字段对主键的传递函数依赖。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.第一范式（1NF）：字段具有原子性",
+        "不可拆分",
+        "无复合数据",
+        "2.第二范式（2NF）：满足1NF",
+        "消除非主键字段对主键的部分函数依赖"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.第一范式（1NF）：字段具有原子性，不可拆分，无复合数据；2.第二范式（2NF）：满足1NF，消除非主键字段对主键的部分函数依赖；3.第三范式（3NF）：满足2NF，消除非主键字段对主键的传递函数依赖。。三大范式逐级优化表结构，减少数据冗余和更新异常。",
+        "fair": "1.第一范式（1NF）：字段具有原子性；不可拆分",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-design"
+      ],
+      "moduleId": "module-db-4",
+      "sourceQuestionId": "db-q92",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q93",
+      "question": "简述E-R模型的三大组成要素。",
+      "referenceAnswer": "1.实体：现实中独立存在的事物，对应数据表，E-R图用矩形表示；2.属性：实体的特征和参数，对应表字段，E-R图用椭圆形表示；3.联系：不同实体之间的关联关系，分为一对一、一对多、多对多，E-R图用菱形表示。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.实体：现实中独立存在的事物",
+        "对应数据表",
+        "E-R图用矩形表示",
+        "2.属性：实体的特征和参数",
+        "对应表字段"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.实体：现实中独立存在的事物，对应数据表，E-R图用矩形表示；2.属性：实体的特征和参数，对应表字段，E-R图用椭圆形表示；3.联系：不同实体之间的关联关系，分为一对一、一对多、多对多，E-R图用菱形表示。。E-R三要素是数据库概念设计的基础，可快速梳理业务数据关系。",
+        "fair": "1.实体：现实中独立存在的事物；对应数据表",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-design"
+      ],
+      "moduleId": "module-db-4",
+      "sourceQuestionId": "db-q93",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q94",
+      "question": "简述数据库常用优化方式。",
+      "referenceAnswer": "1.SQL优化：避免SELECT *、合理使用索引、优化JOIN和子查询；2.索引优化：为高频查询字段建索引、删除无效索引；3.表结构优化：遵循三大范式、合理拆分大表、优化字段数据类型；4.配置优化：调整数据库连接数、缓存参数；5.架构优化：主从分离、读写分离、分库分表。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.SQL优化：避免SELECT *",
+        "合理使用索引",
+        "优化JOIN和子查询",
+        "2.索引优化：为高频查询字段建索引",
+        "删除无效索引"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.SQL优化：避免SELECT *、合理使用索引、优化JOIN和子查询；2.索引优化：为高频查询字段建索引、删除无效索引；3.表结构优化：遵循三大范式、合理拆分大表、优化字段数据类型；4.配置优化：调整数据库连接数、缓存参数；5.架构优化：主从分离、读写分离、分库分表。。数据库优化从SQL、索引、结构、配置、架构多维度落地。",
+        "fair": "1.SQL优化：避免SELECT *；合理使用索引",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-ops"
+      ],
+      "moduleId": "module-db-4",
+      "sourceQuestionId": "db-q94",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "golden-database-db-q95",
+      "question": "简述关系型数据库和非关系型数据库的区别。",
+      "referenceAnswer": "1.存储结构：关系型基于二维表存储，结构固定；非关系型基于键值、文档、图等结构，灵活松散；2.事务支持：关系型完整支持ACID事务，非关系型事务能力薄弱；3.扩展性：关系型横向扩展弱，非关系型分布式扩展能力强；4.适用场景：关系型适用于金融、订单等强一致性场景，非关系型适用于海量数据、高并发场景。",
+      "referenceSource": "sampleAnswer",
+      "expectedPoints": [
+        "1.存储结构：关系型基于二维表存储",
+        "结构固定",
+        "非关系型基于键值",
+        "文档",
+        "图等结构"
+      ],
+      "mustExclude": [
+        "与本题无关的其他技术名词",
+        "明显偏离题意的实现方式"
+      ],
+      "anchors": {
+        "excellent": "1.存储结构：关系型基于二维表存储，结构固定；非关系型基于键值、文档、图等结构，灵活松散；2.事务支持：关系型完整支持ACID事务，非关系型事务能力薄弱；3.扩展性：关系型横向扩展弱，非关系型分布式扩展能力强；4.适用场景：关系型适用于金融、订单等强一致性场景，非关系型适用于海量数据、高并发场景。。两类数据库互补，企业业务常组合使用。",
+        "fair": "1.存储结构：关系型基于二维表存储；结构固定",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "database-db-types"
+      ],
+      "moduleId": "module-db-4",
+      "sourceQuestionId": "db-q95",
+      "bank": "database",
+      "type": "short",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q1",
+      "question": "Python 中变量在使用前必须先声明类型。",
+      "referenceAnswer": "正确答案：错误 Python 是动态类型语言，变量无需声明类型。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：错误 Python",
+        "动态类型",
+        "变量无需声明类型"
+      ],
+      "mustExclude": [
+        "语句必须以分号结束",
+        "用 // 表示单行注释",
+        "用 : 包裹代码块"
+      ],
+      "anchors": {
+        "excellent": "正确答案：错误 Python 是动态类型语言，变量无需声明类型。。Python 是动态类型语言，变量无需声明类型。",
+        "fair": "正确答案：错误 Python；动态类型",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-syntax"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "q1",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q10",
+      "question": "pass 语句是空语句，仅用于占位，不会执行任何操作。",
+      "referenceAnswer": "正确答案：正确 pass 常用来补全语法结构。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 pass 常用来补全语法",
+        "（答题要求）结论要与参考答案一致",
+        "（答题要求）需结合题目条件判断"
+      ],
+      "mustExclude": [
+        "语句必须以分号结束",
+        "用 // 表示单行注释",
+        "用 : 包裹代码块"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 pass 常用来补全语法结构。。pass 常用来补全语法结构。",
+        "fair": "正确答案：正确 pass 常用来补全语法；（答题要求）结论要与参考答案一致",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-syntax"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "q10",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q100",
+      "question": "多个装饰器可以同时装饰同一个函数。",
+      "referenceAnswer": "正确答案：正确 支持叠加装饰器，由近及远依次生效。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 支持叠加装饰器",
+        "由近及远依次生效",
+        "正确答案：正确 支持叠加装饰器，由近及远"
+      ],
+      "mustExclude": [
+        "装饰器只是把函数换个名字",
+        "被装饰的函数引用会指向原函数"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 支持叠加装饰器，由近及远依次生效。。支持叠加装饰器，由近及远依次生效。",
+        "fair": "正确答案：正确 支持叠加装饰器；由近及远依次生效",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-decorators"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q100",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q101",
+      "question": "装饰器无法为函数添加额外的日志记录功能。",
+      "referenceAnswer": "正确答案：错误 日志统计是装饰器最常用的场景之一。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：错误 日志统计",
+        "装饰器最常用",
+        "正确答案：错误 日志统计是装饰器最常用的"
+      ],
+      "mustExclude": [
+        "装饰器只是把函数换个名字",
+        "被装饰的函数引用会指向原函数",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "正确答案：错误 日志统计是装饰器最常用的场景之一。。日志统计是装饰器最常用的场景之一。",
+        "fair": "正确答案：错误 日志统计；装饰器最常用",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-decorators",
+        "python-errorprone"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q101",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q102",
+      "question": "列表推导式 `[x for x in range(5)]` 与生成器表达式 `(x for x in range(5))` 完全等效。",
+      "referenceAnswer": "正确答案：错误 列表推导式返回列表可迭代多次；生成器只可迭代一次。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：错误 列表推导式返回列表可迭代",
+        "生成器只可迭代一次",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "列表推导式会修改原列表",
+        "推导式无法表达带 if 的筛选逻辑",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "正确答案：错误 列表推导式返回列表可迭代多次；生成器只可迭代一次。。列表推导式返回列表可迭代多次；生成器只可迭代一次。",
+        "fair": "正确答案：错误 列表推导式返回列表可迭代；生成器只可迭代一次",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-comprehensions",
+        "python-errorprone"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q102",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q103",
+      "question": "`{x: x**2 for x in range(5)}` 创建的对象类型是？",
+      "referenceAnswer": "正确答案：dict {key: value for ...} 是字典推导式。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：dict {key:",
+        "正确答案：dict {key: valu",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "列表推导式会修改原列表",
+        "推导式无法表达带 if 的筛选逻辑"
+      ],
+      "anchors": {
+        "excellent": "正确答案：dict {key: value for ...} 是字典推导式。。{key: value for ...} 是字典推导式。",
+        "fair": "正确答案：dict {key:；正确答案：dict {key: valu",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-comprehensions"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q103",
+      "bank": "python",
+      "type": "choice",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q105",
+      "question": "集合推导式和列表推导式的语法符号完全相同。",
+      "referenceAnswer": "正确答案：错误 列表用 []，集合用 {}。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：错误 列表用 []",
+        "集合用 {}",
+        "正确答案：错误 列表用 []，集合用 {"
+      ],
+      "mustExclude": [
+        "列表推导式会修改原列表",
+        "推导式无法表达带 if 的筛选逻辑",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "正确答案：错误 列表用 []，集合用 {}。。列表用 []，集合用 {}。",
+        "fair": "正确答案：错误 列表用 []；集合用 {}",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-comprehensions",
+        "python-errorprone"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q105",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q108",
+      "question": "代码出现报错时，直接忽略报错继续编写即可。",
+      "referenceAnswer": "正确答案：错误 需先排查并修复错误再继续。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：错误 需先排查并修复错误再继续",
+        "（答题要求）结论要与参考答案一致",
+        "（答题要求）需结合题目条件判断"
+      ],
+      "mustExclude": [
+        "单字母变量名更便于阅读",
+        "IDE 自动补全可以替代规范的命名",
+        "语句必须以分号结束"
+      ],
+      "anchors": {
+        "excellent": "正确答案：错误 需先排查并修复错误再继续；（答题要求）结论要与参考答案一致。正确答案：错误 需先排查并修复错误再继续。。需先排查并修复错误再继续。",
+        "fair": "正确答案：错误 需先排查并修复错误再继续；（答题要求）结论要与参考答案一致",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-studyhabit",
+        "python-syntax"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q108",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q109",
+      "question": "编写代码前梳理思路、简单注释，有助于减少出错概率。",
+      "referenceAnswer": "正确答案：正确 良好的编码习惯提升代码质量。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 良好",
+        "编码习惯提升代码质",
+        "正确答案：正确 良好的编码习惯提升代码质"
+      ],
+      "mustExclude": [
+        "单字母变量名更便于阅读",
+        "IDE 自动补全可以替代规范的命名"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 良好的编码习惯提升代码质量。。良好的编码习惯提升代码质量。",
+        "fair": "正确答案：正确 良好；编码习惯提升代码质",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-studyhabit"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q109",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q13",
+      "question": "在 Python 中，list 是可变类型，tuple 是不可变类型。",
+      "referenceAnswer": "正确答案：正确 list 支持修改操作，tuple 创建后不能修改。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 list 支持修改操作",
+        "tuple 创建后不能修改",
+        "正确答案：正确 list 支持修改操作，"
+      ],
+      "mustExclude": [
+        "变量使用前必须声明类型",
+        "元组可以像列表一样原地修改",
+        "set 内部按插入顺序稳定遍历"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 list 支持修改操作，tuple 创建后不能修改。。list 支持修改操作，tuple 创建后不能修改。",
+        "fair": "正确答案：正确 list 支持修改操作；tuple 创建后不能修改",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-data-types"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "q13",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q14",
+      "question": "以下哪个不是 Python 的基本数据类型？",
+      "referenceAnswer": "正确答案：array array 非内置基本类型，需用 list 或 numpy。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：array array 非内置",
+        "需用 list 或 numpy",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "变量使用前必须声明类型",
+        "元组可以像列表一样原地修改",
+        "set 内部按插入顺序稳定遍历"
+      ],
+      "anchors": {
+        "excellent": "正确答案：array array 非内置基本类型，需用 list 或 numpy。。array 非内置基本类型，需用 list 或 numpy。",
+        "fair": "正确答案：array array 非内置；需用 list 或 numpy",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-data-types"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "q14",
+      "bank": "python",
+      "type": "choice",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q28",
+      "question": "表达式 `3 ** 2 ** 2` 的结果是？",
+      "referenceAnswer": "正确答案：81 ** 右结合：3**(2**2)=3**4=81。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：81 ** 右结合：3**",
+        "正确答案：81 ** 右结合：3**(2",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "& 和 | 表示逻辑与或",
+        "三元运算符的第二个分支一定会被求值",
+        "赋值运算符没有优先级"
+      ],
+      "anchors": {
+        "excellent": "正确答案：81 ** 右结合：3**(2**2)=3**4=81。。** 右结合：3**(2**2)=3**4=81。",
+        "fair": "正确答案：81 ** 右结合：3**；正确答案：81 ** 右结合：3**(2",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-operators"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "q28",
+      "bank": "python",
+      "type": "choice",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q29",
+      "question": "`print(1 or 2)` 的输出是？",
+      "referenceAnswer": "正确答案：1 or 短路返回第一个真值 1。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：1 or 短路返回第一个真值",
+        "正确答案：1 or 短路返回第一个真值 ",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "& 和 | 表示逻辑与或",
+        "三元运算符的第二个分支一定会被求值",
+        "赋值运算符没有优先级"
+      ],
+      "anchors": {
+        "excellent": "正确答案：1 or 短路返回第一个真值；正确答案：1 or 短路返回第一个真值 。正确答案：1 or 短路返回第一个真值 1。。or 短路返回第一个真值 1。",
+        "fair": "正确答案：1 or 短路返回第一个真值；正确答案：1 or 短路返回第一个真值 ",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-operators"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "q29",
+      "bank": "python",
+      "type": "choice",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q35",
+      "question": "if...elif...else 语句中，多个分支会同时执行。",
+      "referenceAnswer": "正确答案：错误 只执行第一个条件成立的分支。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：错误 只执行第一个条件成立的分",
+        "（答题要求）结论要与参考答案一致",
+        "（答题要求）需结合题目条件判断"
+      ],
+      "mustExclude": [
+        "break 只能跳出最内层循环",
+        "continue 会跳过本次循环的剩余全部逻辑"
+      ],
+      "anchors": {
+        "excellent": "正确答案：错误 只执行第一个条件成立的分；（答题要求）结论要与参考答案一致。正确答案：错误 只执行第一个条件成立的分支。。只执行第一个条件成立的分支。",
+        "fair": "正确答案：错误 只执行第一个条件成立的分；（答题要求）结论要与参考答案一致",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-control-flow"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "q35",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q36",
+      "question": "for...else 结构中，循环正常结束没有触发 break 时，会执行 else 代码块。",
+      "referenceAnswer": "正确答案：正确 Python 特有语法：break 中断不执行 else，正常完毕则执行。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 Python 特有语法：",
+        "正常完毕则执行",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "break 只能跳出最内层循环",
+        "continue 会跳过本次循环的剩余全部逻辑",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 Python 特有语法：break 中断不执行 else，正常完毕则执行。。Python 特有语法：break 中断不执行 else，正常完毕则执行。",
+        "fair": "正确答案：正确 Python 特有语法：；正常完毕则执行",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-control-flow",
+        "python-errorprone"
+      ],
+      "moduleId": "module-1",
+      "sourceQuestionId": "q36",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q41",
+      "question": "Python 函数可以返回多个值。",
+      "referenceAnswer": "正确答案：正确 return a,b,c 实际返回一个 tuple。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 return a",
+        "b",
+        "c 实际返回一个 tuple"
+      ],
+      "mustExclude": [
+        "默认参数在每次调用时重新求值",
+        "函数内修改任意形参都会影响实参"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 return a,b,c 实际返回一个 tuple。。return a,b,c 实际返回一个 tuple。",
+        "fair": "正确答案：正确 return a；b",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-functions"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "q41",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q42",
+      "question": "函数的默认参数值可以是可变对象（如 list），且行为总是安全的。",
+      "referenceAnswer": "正确答案：错误 可变默认参数在多次调用间共享，使用 None 作为默认值是最佳实践。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：错误 可变默认参数在多次调用间",
+        "使用 None 作为默认值是最佳实践",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "默认参数在每次调用时重新求值",
+        "函数内修改任意形参都会影响实参",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "正确答案：错误 可变默认参数在多次调用间共享，使用 None 作为默认值是最佳实践。。可变默认参数在多次调用间共享，使用 None 作为默认值是最佳实践。",
+        "fair": "正确答案：错误 可变默认参数在多次调用间；使用 None 作为默认值是最佳实践",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-functions",
+        "python-errorprone"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "q42",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q52",
+      "question": "在 Python 中，可以在函数内部修改全局变量的值而不使用 global 关键字。",
+      "referenceAnswer": "正确答案：错误 函数内赋值会创建局部变量，必须用 global。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：错误 函数内赋值会创建局部变量",
+        "必须用 global",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "函数内未声明的变量会自动成为全局变量",
+        "global 声明后变量会跨模块共享",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "正确答案：错误 函数内赋值会创建局部变量，必须用 global。。函数内赋值会创建局部变量，必须用 global。",
+        "fair": "正确答案：错误 函数内赋值会创建局部变量；必须用 global",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-scope",
+        "python-errorprone"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "q52",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q53",
+      "question": "使用 global 关键字可以在函数内部修改全局变量。",
+      "referenceAnswer": "正确答案：正确 global 声明变量为全局变量。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 global 声明变量为",
+        "（答题要求）结论要与参考答案一致",
+        "（答题要求）需结合题目条件判断"
+      ],
+      "mustExclude": [
+        "函数内未声明的变量会自动成为全局变量",
+        "global 声明后变量会跨模块共享",
+        "默认参数在每次调用时重新求值"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 global 声明变量为全局变量。。global 声明变量为全局变量。",
+        "fair": "正确答案：正确 global 声明变量为；（答题要求）结论要与参考答案一致",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-scope",
+        "python-functions"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "q53",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q55",
+      "question": "以下哪个命令可以将模块 my_module 中的 func 函数导入到当前命名空间？",
+      "referenceAnswer": "正确答案：from my_module import func from...import... 是导入模块成员的标准语法。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：from my_module",
+        "正确答案：from my_module ",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "包就是普通文件夹，不需要 __init__.py",
+        "import * 会递归导入子包的所有内容"
+      ],
+      "anchors": {
+        "excellent": "正确答案：from my_module import func from...import... 是导入模块成员的标准语法。。from...import... 是导入模块成员的标准语法。",
+        "fair": "正确答案：from my_module；正确答案：from my_module ",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-modules"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "q55",
+      "bank": "python",
+      "type": "choice",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q56",
+      "question": "`__all__` 变量在 Python 模块中的作用是？",
+      "referenceAnswer": "正确答案：控制 from module import * 导入内容 __all__ 列表定义 * 导入时的名称集合。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：控制 from module",
+        "正确答案：控制 from module ",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "包就是普通文件夹，不需要 __init__.py",
+        "import * 会递归导入子包的所有内容"
+      ],
+      "anchors": {
+        "excellent": "正确答案：控制 from module import * 导入内容 __all__ 列表定义 * 导入时的名称集合。。__all__ 列表定义 * 导入时的名称集合。",
+        "fair": "正确答案：控制 from module；正确答案：控制 from module ",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-modules"
+      ],
+      "moduleId": "module-2",
+      "sourceQuestionId": "q56",
+      "bank": "python",
+      "type": "choice",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q61",
+      "question": "Python 中所有类的方法的第一个参数都代表当前实例，通常命名为 self。",
+      "referenceAnswer": "正确答案：正确 self 指向实例本身。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 self 指向实例本身",
+        "正确答案：正确 self 指向实例本身。",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "self 参数可以省略",
+        "类属性与实例属性完全等价"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 self 指向实例本身；正确答案：正确 self 指向实例本身。。正确答案：正确 self 指向实例本身。。self 指向实例本身。",
+        "fair": "正确答案：正确 self 指向实例本身；正确答案：正确 self 指向实例本身。",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-oop"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "q61",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q62",
+      "question": "以下哪个不是 Python 的魔术方法（dunder method）？",
+      "referenceAnswer": "正确答案：__main__ __main__ 是模块运行标识，不是类的方法。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：__main__",
+        "不是类的方法",
+        "正确答案：__main__ __main"
+      ],
+      "mustExclude": [
+        "property 就是普通的公有数据字段",
+        "静态方法内部可以使用 this",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "正确答案：__main__ __main__ 是模块运行标识，不是类的方法。。__main__ 是模块运行标识，不是类的方法。",
+        "fair": "正确答案：__main__；不是类的方法",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-classes",
+        "python-errorprone"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "q62",
+      "bank": "python",
+      "type": "choice",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q63",
+      "question": "Python 中使用 `@property` 装饰器可以让一个方法像属性一样被访问。",
+      "referenceAnswer": "正确答案：正确 @property 将方法转为 Getter 属性。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 @property 将方",
+        "（答题要求）结论要与参考答案一致",
+        "（答题要求）需结合题目条件判断"
+      ],
+      "mustExclude": [
+        "property 就是普通的公有数据字段",
+        "静态方法内部可以使用 this",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 @property 将方法转为 Getter 属性。。@property 将方法转为 Getter 属性。",
+        "fair": "正确答案：正确 @property 将方；（答题要求）结论要与参考答案一致",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-classes",
+        "python-errorprone"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "q63",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q68",
+      "question": "类是对象的模板，对象是类的实例。",
+      "referenceAnswer": "正确答案：正确 类定义属性和行为，基于类创建实例对象。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 类定义属性和行为",
+        "基于类创建实例对象",
+        "正确答案：正确 类定义属性和行为，基于类"
+      ],
+      "mustExclude": [
+        "self 参数可以省略",
+        "类属性与实例属性完全等价",
+        "property 就是普通的公有数据字段"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 类定义属性和行为，基于类创建实例对象。。类定义属性和行为，基于类创建实例对象。",
+        "fair": "正确答案：正确 类定义属性和行为；基于类创建实例对象",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-oop",
+        "python-classes"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "q68",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q71",
+      "question": "Python 支持多继承，一个子类可以有多个父类。",
+      "referenceAnswer": "正确答案：正确 支持多继承，需要注意 MRO。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 支持多继承",
+        "需要注意 MRO",
+        "正确答案：正确 支持多继承，需要注意 M"
+      ],
+      "mustExclude": [
+        "子类会自动继承父类的所有私有方法",
+        "super() 会按声明顺序调用所有父类构造",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 支持多继承，需要注意 MRO。。支持多继承，需要注意 MRO。",
+        "fair": "正确答案：正确 支持多继承；需要注意 MRO",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-inheritance",
+        "python-errorprone"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "q71",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q72",
+      "question": "在 Python 中，以下哪种方式最符合『面向对象设计原则』中的『里氏替换原则』？",
+      "referenceAnswer": "正确答案：子类扩展父类但不改变父类行为 里氏替换：子类可替代父类而不改变程序正确性。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：子类扩展父类但不改变父类行为",
+        "正确答案：子类扩展父类但不改变父类行为 ",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "子类会自动继承父类的所有私有方法",
+        "super() 会按声明顺序调用所有父类构造",
+        "实现多态必须先声明接口或抽象类"
+      ],
+      "anchors": {
+        "excellent": "正确答案：子类扩展父类但不改变父类行为 里氏替换：子类可替代父类而不改变程序正确性。。里氏替换：子类可替代父类而不改变程序正确性。",
+        "fair": "正确答案：子类扩展父类但不改变父类行为；正确答案：子类扩展父类但不改变父类行为 ",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-inheritance",
+        "python-polymorphism"
+      ],
+      "moduleId": "module-3",
+      "sourceQuestionId": "q72",
+      "bank": "python",
+      "type": "choice",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q81",
+      "question": "在 Python 中，`try...except...finally` 语句中，`finally` 块无论是否发生异常都会执行。",
+      "referenceAnswer": "正确答案：正确 finally 用于清理资源，始终执行。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 finally 用于清理",
+        "始终执行",
+        "（答题要求）结论要与参考答案一致"
+      ],
+      "mustExclude": [
+        "finally 块一定不会执行",
+        "可以用 return 让 finally 被跳过"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 finally 用于清理资源，始终执行。。finally 用于清理资源，始终执行。",
+        "fair": "正确答案：正确 finally 用于清理；始终执行",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-exceptions"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q81",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "easy",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q88",
+      "question": "使用 `with open('file.txt') as f:` 打开文件时，文件会在 with 块结束时自动关闭。",
+      "referenceAnswer": "正确答案：正确 with 利用上下文管理器自动关闭文件。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：正确 with 利用上下文管理",
+        "（答题要求）结论要与参考答案一致",
+        "（答题要求）需结合题目条件判断"
+      ],
+      "mustExclude": [
+        "open 打开的文件可以不做关闭",
+        "with 语句会独占文件导致无法并发读写",
+        "可变对象作为默认参数是安全的写法"
+      ],
+      "anchors": {
+        "excellent": "正确答案：正确 with 利用上下文管理器自动关闭文件。。with 利用上下文管理器自动关闭文件。",
+        "fair": "正确答案：正确 with 利用上下文管理；（答题要求）结论要与参考答案一致",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-files",
+        "python-errorprone"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q88",
+      "bank": "python",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "reviewed": false
+    },
+    {
+      "id": "smoke-python-q96",
+      "question": "执行以下代码，输出是？\n\n```python\ndef decorator(func):\n    return func\n\n@decorator\ndef foo():\n    return 'hello'\n\nprint(foo())\n```",
+      "referenceAnswer": "正确答案：'hello' decorator 直接返回 func，foo() 调用原始函数。",
+      "referenceSource": "synthesized",
+      "expectedPoints": [
+        "正确答案：'hello'",
+        "foo() 调用原始函数",
+        "正确答案：'hello' decorat"
+      ],
+      "mustExclude": [
+        "装饰器只是把函数换个名字",
+        "被装饰的函数引用会指向原函数"
+      ],
+      "anchors": {
+        "excellent": "正确答案：'hello' decorator 直接返回 func，foo() 调用原始函数。。decorator 直接返回 func，foo() 调用原始函数。",
+        "fair": "正确答案：'hello'；foo() 调用原始函数",
+        "poor": "不知道。"
+      },
+      "tags": [
+        "python-decorators"
+      ],
+      "moduleId": "module-4",
+      "sourceQuestionId": "q96",
+      "bank": "python",
+      "type": "choice",
+      "difficulty": "medium",
+      "reviewed": false
+    }
+  ]
+}

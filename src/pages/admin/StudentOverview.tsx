@@ -4,10 +4,11 @@
  * 功能：查看所有学生的画像、练习进度、学习路径
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Card, Table, Tag, Button, Modal, Descriptions, Typography, Space, Progress, Row, Col, Statistic, Empty } from 'antd'
 import { EyeOutlined, TeamOutlined } from '@ant-design/icons'
-import { useAuth, type User } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
+import type { User } from '../../context/AuthContextObject'
 import type { StudentProfile, PracticeState, LearningPathPlan } from '../../types'
 
 const { Title, Text } = Typography
@@ -38,15 +39,12 @@ function loadStudentData(user: User): StudentData {
 
 const StudentOverview: React.FC = () => {
   const { getAllUsers } = useAuth()
-  const [students, setStudents] = useState<StudentData[]>([])
+  // 初始列表在首帧同步读取（与原先 mount 后同步加载的结果一致）
+  const [students] = useState<StudentData[]>(() =>
+    getAllUsers().filter(u => u.role === 'student').map(loadStudentData)
+  )
   const [detailOpen, setDetailOpen] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<StudentData | null>(null)
-
-  useEffect(() => {
-    const allUsers = getAllUsers()
-    const studentUsers = allUsers.filter(u => u.role === 'student')
-    setStudents(studentUsers.map(loadStudentData))
-  }, [])
 
   const handleViewDetail = (student: StudentData) => {
     setSelectedStudent(student)
@@ -68,13 +66,13 @@ const StudentOverview: React.FC = () => {
     {
       title: '画像状态',
       key: 'profile',
-      render: (_: any, record: StudentData) =>
+      render: (_: unknown, record: StudentData) =>
         record.profile ? <Tag color="green">已构建</Tag> : <Tag color="default">未构建</Tag>,
     },
     {
       title: '练习题数',
       key: 'practice',
-      render: (_: any, record: StudentData) => {
+      render: (_: unknown, record: StudentData) => {
         const count = record.practice?.results?.length || 0
         return count > 0 ? <Tag color="blue">{count} 题</Tag> : <Tag color="default">未练习</Tag>
       },
@@ -82,13 +80,13 @@ const StudentOverview: React.FC = () => {
     {
       title: '学习路径',
       key: 'path',
-      render: (_: any, record: StudentData) =>
+      render: (_: unknown, record: StudentData) =>
         record.pathPlan ? <Tag color="purple">{record.pathPlan.stages.length} 阶段</Tag> : <Tag color="default">未生成</Tag>,
     },
     {
       title: '操作',
       key: 'actions',
-      render: (_: any, record: StudentData) => (
+      render: (_: unknown, record: StudentData) => (
         <Button
           size="small"
           icon={<EyeOutlined />}

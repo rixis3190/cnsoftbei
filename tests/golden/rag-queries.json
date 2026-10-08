@@ -1,0 +1,1642 @@
+{
+  "meta": {
+    "generatedBy": "scripts/gen-rag-queries.ts",
+    "reviewed": false,
+    "counts": {
+      "stem": 83,
+      "paraphrase": 22,
+      "overview": 43,
+      "total": 148
+    },
+    "note": "stem 类查询与块文本高度重合，召回率天然虚高，只用于「管道是否接通」的健康检查；paraphrase 类是手写口语化查询，量少但才是检索质量的真实样本；报告必须分开统计，不许合并成一个数字。",
+    "minTagOverviewQuestions": 3
+  },
+  "queries": [
+    {
+      "id": "stem-python-q11",
+      "query": "请说明 Python 中 `==` 和 `is` 的区别，并举例说明何时应该使用哪个。",
+      "goldChunkIds": [
+        "python-q11"
+      ],
+      "kind": "stem",
+      "tags": [
+        "python-syntax",
+        "python-data-types"
+      ]
+    },
+    {
+      "id": "stem-python-q12",
+      "query": "Python 的 for 循环和 while 循环有什么区别？各适合什么场景？",
+      "goldChunkIds": [
+        "python-q12"
+      ],
+      "kind": "stem",
+      "tags": [
+        "python-syntax",
+        "python-control-flow"
+      ]
+    },
+    {
+      "id": "stem-python-q46",
+      "query": "请解释 Python 中函数调用时的参数传递机制。它是按值传递还是按引用传递？请结合示例说明。",
+      "goldChunkIds": [
+        "python-q46"
+      ],
+      "kind": "stem",
+      "tags": [
+        "python-functions",
+        "python-errorprone"
+      ]
+    },
+    {
+      "id": "stem-python-q58",
+      "query": "请说明 Python 模块的搜索路径顺序，以及如何修改模块搜索路径。",
+      "goldChunkIds": [
+        "python-q58"
+      ],
+      "kind": "stem",
+      "tags": [
+        "python-modules",
+        "python-functions"
+      ]
+    },
+    {
+      "id": "stem-python-q67",
+      "query": "请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。",
+      "goldChunkIds": [
+        "python-q67"
+      ],
+      "kind": "stem",
+      "tags": [
+        "python-oop",
+        "python-classes",
+        "python-errorprone"
+      ]
+    },
+    {
+      "id": "stem-python-q77",
+      "query": "Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。",
+      "goldChunkIds": [
+        "python-q77"
+      ],
+      "kind": "stem",
+      "tags": [
+        "python-polymorphism",
+        "python-oop"
+      ]
+    },
+    {
+      "id": "stem-python-q84",
+      "query": "请说明 Python 中自定义异常类的最佳实践，包括如何命名、是否需要定义额外属性，以及在什么场景下应该创建自定义异常。",
+      "goldChunkIds": [
+        "python-q84"
+      ],
+      "kind": "stem",
+      "tags": [
+        "python-exceptions",
+        "python-errorprone",
+        "python-studyhabit"
+      ]
+    },
+    {
+      "id": "stem-python-q90",
+      "query": "请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。",
+      "goldChunkIds": [
+        "python-q90"
+      ],
+      "kind": "stem",
+      "tags": [
+        "python-files",
+        "python-comprehensions",
+        "python-errorprone",
+        "python-studyhabit"
+      ]
+    },
+    {
+      "id": "stem-java-j51",
+      "query": "Java 程序编译后生成的文件扩展名是 ___。",
+      "goldChunkIds": [
+        "java-j51"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-syntax"
+      ]
+    },
+    {
+      "id": "stem-java-j52",
+      "query": "main 方法参数列表中的数组类型是 ___[]。",
+      "goldChunkIds": [
+        "java-j52"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-syntax"
+      ]
+    },
+    {
+      "id": "stem-java-j79",
+      "query": "Java Development Kit 的缩写是 ___。",
+      "goldChunkIds": [
+        "java-j79"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-syntax"
+      ]
+    },
+    {
+      "id": "stem-java-j94",
+      "query": "Java Runtime Environment 的缩写是 ___。",
+      "goldChunkIds": [
+        "java-j94"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-syntax"
+      ]
+    },
+    {
+      "id": "stem-java-j151",
+      "query": "Java 程序入口方法是________。",
+      "goldChunkIds": [
+        "java-j151"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-syntax"
+      ]
+    },
+    {
+      "id": "stem-java-j152",
+      "query": "Java 单行注释符号为________。",
+      "goldChunkIds": [
+        "java-j152"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-syntax"
+      ]
+    },
+    {
+      "id": "stem-java-j153",
+      "query": "Java 使用________符号划分代码块。",
+      "goldChunkIds": [
+        "java-j153"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-syntax",
+        "java-errorprone"
+      ]
+    },
+    {
+      "id": "stem-java-j53",
+      "query": "Java 中布尔类型的字面量只有 true 和 ___。",
+      "goldChunkIds": [
+        "java-j53"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-data-types"
+      ]
+    },
+    {
+      "id": "stem-java-j54",
+      "query": "char 类型在 Java 中占用 ___ 个字节。",
+      "goldChunkIds": [
+        "java-j54"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-data-types"
+      ]
+    },
+    {
+      "id": "stem-java-j80",
+      "query": "Java 为了节省内存，字符串字面量存储在 ___ 池中。",
+      "goldChunkIds": [
+        "java-j80"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-data-types"
+      ]
+    },
+    {
+      "id": "stem-java-j95",
+      "query": "引用类型变量可以赋值为 ___，表示不指向任何对象。",
+      "goldChunkIds": [
+        "java-j95"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-data-types"
+      ]
+    },
+    {
+      "id": "stem-java-j154",
+      "query": "布尔类型的两个取值是 true 和________。",
+      "goldChunkIds": [
+        "java-j154"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-data-types"
+      ]
+    },
+    {
+      "id": "stem-java-j155",
+      "query": "String 属于________数据类型。",
+      "goldChunkIds": [
+        "java-j155"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-data-types",
+        "java-errorprone"
+      ]
+    },
+    {
+      "id": "stem-java-j156",
+      "query": "Java 数组下标从________开始。",
+      "goldChunkIds": [
+        "java-j156"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-data-types"
+      ]
+    },
+    {
+      "id": "stem-java-j157",
+      "query": "获取数组长度使用________属性。",
+      "goldChunkIds": [
+        "java-j157"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-data-types",
+        "java-errorprone"
+      ]
+    },
+    {
+      "id": "stem-java-j55",
+      "query": "Java 中求余运算符是 ___。",
+      "goldChunkIds": [
+        "java-j55"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-operators"
+      ]
+    },
+    {
+      "id": "stem-java-j56",
+      "query": "有符号右移运算符是 ___。",
+      "goldChunkIds": [
+        "java-j56"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-operators"
+      ]
+    },
+    {
+      "id": "stem-java-j81",
+      "query": "逻辑或的短路运算符是 ___。",
+      "goldChunkIds": [
+        "java-j81"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-operators"
+      ]
+    },
+    {
+      "id": "stem-java-j96",
+      "query": "instanceof 运算符用于测试对象是否为某个 ___ 的实例。",
+      "goldChunkIds": [
+        "java-j96"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-operators"
+      ]
+    },
+    {
+      "id": "stem-java-j158",
+      "query": "判断基本类型数值相等使用________运算符。",
+      "goldChunkIds": [
+        "java-j158"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-operators"
+      ]
+    },
+    {
+      "id": "stem-java-j159",
+      "query": "具备短路效果的逻辑与运算符是________。",
+      "goldChunkIds": [
+        "java-j159"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-operators",
+        "java-errorprone"
+      ]
+    },
+    {
+      "id": "stem-java-j57",
+      "query": "switch 语句中的表达式类型可以是 byte, short, int, char, String 以及 ___ 类型（自 Java 5）。",
+      "goldChunkIds": [
+        "java-j57"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-control-flow"
+      ]
+    },
+    {
+      "id": "stem-java-j58",
+      "query": "___ 循环至少执行一次循环体。",
+      "goldChunkIds": [
+        "java-j58"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-control-flow"
+      ]
+    },
+    {
+      "id": "stem-java-j82",
+      "query": "增强 for 循环的语法是 for (type var : ___)。",
+      "goldChunkIds": [
+        "java-j82"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-control-flow"
+      ]
+    },
+    {
+      "id": "stem-java-j97",
+      "query": "使用带 ___ 的 break 可以跳出多重循环。",
+      "goldChunkIds": [
+        "java-j97"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-control-flow"
+      ]
+    },
+    {
+      "id": "stem-java-j160",
+      "query": "终止当前循环使用________语句。",
+      "goldChunkIds": [
+        "java-j160"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-control-flow"
+      ]
+    },
+    {
+      "id": "stem-java-j59",
+      "query": "方法签名由方法名和 ___ 列表组成。",
+      "goldChunkIds": [
+        "java-j59"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-functions"
+      ]
+    },
+    {
+      "id": "stem-java-j60",
+      "query": "使用 ___ import 可以导入类的静态成员，直接使用而不需要类名前缀。",
+      "goldChunkIds": [
+        "java-j60"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-functions"
+      ]
+    },
+    {
+      "id": "stem-java-j83",
+      "query": "使用 ___ 语句从方法中返回值。",
+      "goldChunkIds": [
+        "java-j83"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-functions"
+      ]
+    },
+    {
+      "id": "stem-java-j98",
+      "query": "方法重载的解析发生在 ___ 时（编译期或运行期）。",
+      "goldChunkIds": [
+        "java-j98"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-functions"
+      ]
+    },
+    {
+      "id": "stem-java-j61",
+      "query": "构造器的名称必须与 ___ 名完全相同。",
+      "goldChunkIds": [
+        "java-j61"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-oop",
+        "java-classes"
+      ]
+    },
+    {
+      "id": "stem-java-j62",
+      "query": "Java 自动内存管理机制称为 ___ 收集。",
+      "goldChunkIds": [
+        "java-j62"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-oop",
+        "java-classes"
+      ]
+    },
+    {
+      "id": "stem-java-j84",
+      "query": "将实例变量声明为 private，然后提供公共的 getter/setter，体现了面向对象的 ___ 特性。",
+      "goldChunkIds": [
+        "java-j84"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-oop",
+        "java-classes"
+      ]
+    },
+    {
+      "id": "stem-java-j99",
+      "query": "使用 ___ 可以判断对象是否属于某个类。",
+      "goldChunkIds": [
+        "java-j99"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-oop",
+        "java-operators"
+      ]
+    },
+    {
+      "id": "stem-java-j63",
+      "query": "类继承使用 ___ 关键字。",
+      "goldChunkIds": [
+        "java-j63"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-inheritance"
+      ]
+    },
+    {
+      "id": "stem-java-j64",
+      "query": "包含抽象方法的类必须声明为 ___ 类。",
+      "goldChunkIds": [
+        "java-j64"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-inheritance"
+      ]
+    },
+    {
+      "id": "stem-java-j85",
+      "query": "用 ___ 修饰的方法不能被子类重写。",
+      "goldChunkIds": [
+        "java-j85"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-inheritance"
+      ]
+    },
+    {
+      "id": "stem-java-j65",
+      "query": "Java 中对于重写的方法，调用时采用 ___ 绑定（根据实际对象类型）。",
+      "goldChunkIds": [
+        "java-j65"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-polymorphism"
+      ]
+    },
+    {
+      "id": "stem-java-j86",
+      "query": "将父类引用强制转换为子类类型称为向 ___ 转型。",
+      "goldChunkIds": [
+        "java-j86"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-polymorphism"
+      ]
+    },
+    {
+      "id": "stem-java-j66",
+      "query": "类实现接口使用 ___ 关键字。",
+      "goldChunkIds": [
+        "java-j66"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-interfaces"
+      ]
+    },
+    {
+      "id": "stem-java-j67",
+      "query": "手动抛出异常使用 ___ 关键字。",
+      "goldChunkIds": [
+        "java-j67"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-exceptions"
+      ]
+    },
+    {
+      "id": "stem-java-j68",
+      "query": "try-catch 块后可以跟一个可选的 ___ 块，用于清理资源。",
+      "goldChunkIds": [
+        "java-j68"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-exceptions"
+      ]
+    },
+    {
+      "id": "stem-java-j87",
+      "query": "严重的问题如 OutOfMemoryError 是 ___ 类的子类，通常不捕获。",
+      "goldChunkIds": [
+        "java-j87"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-exceptions"
+      ]
+    },
+    {
+      "id": "stem-java-j69",
+      "query": "Java 传统 IO 流的核心包是 java.___。",
+      "goldChunkIds": [
+        "java-j69"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-io"
+      ]
+    },
+    {
+      "id": "stem-java-j70",
+      "query": "对象序列化需要实现 ___ 接口。",
+      "goldChunkIds": [
+        "java-j70"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-io"
+      ]
+    },
+    {
+      "id": "stem-java-j88",
+      "query": "Java NIO 的核心包是 java.___。",
+      "goldChunkIds": [
+        "java-j88"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-io"
+      ]
+    },
+    {
+      "id": "stem-java-j71",
+      "query": "键值对存储的顶级接口是 ___。",
+      "goldChunkIds": [
+        "java-j71"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-collections"
+      ]
+    },
+    {
+      "id": "stem-java-j72",
+      "query": "遍历集合的标准设计模式是 ___。",
+      "goldChunkIds": [
+        "java-j72"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-collections"
+      ]
+    },
+    {
+      "id": "stem-java-j89",
+      "query": "先进先出（FIFO）的集合接口是 ___。",
+      "goldChunkIds": [
+        "java-j89"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-collections"
+      ]
+    },
+    {
+      "id": "stem-java-j100",
+      "query": "List 接口保证元素的 ___ 顺序。",
+      "goldChunkIds": [
+        "java-j100"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-collections"
+      ]
+    },
+    {
+      "id": "stem-java-j73",
+      "query": "泛型类型参数通常使用单个大写字母，如 T 表示 Type，E 表示 ___。",
+      "goldChunkIds": [
+        "java-j73"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-generics"
+      ]
+    },
+    {
+      "id": "stem-java-j90",
+      "query": "无限制通配符是 ___。",
+      "goldChunkIds": [
+        "java-j90"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-generics"
+      ]
+    },
+    {
+      "id": "stem-java-j75",
+      "query": "启动新线程应调用 Thread 对象的 ___ 方法，而不是直接调用 run()。",
+      "goldChunkIds": [
+        "java-j75"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-multithreading"
+      ]
+    },
+    {
+      "id": "stem-java-j76",
+      "query": "等待一个线程结束的方法是 ___。",
+      "goldChunkIds": [
+        "java-j76"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-multithreading"
+      ]
+    },
+    {
+      "id": "stem-java-j92",
+      "query": "synchronized 代码块中使用的锁对象可以是任何 ___ 对象。",
+      "goldChunkIds": [
+        "java-j92"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-multithreading"
+      ]
+    },
+    {
+      "id": "stem-java-j77",
+      "query": "如果一个接口只有一个抽象方法，则称为 ___ 接口。",
+      "goldChunkIds": [
+        "java-j77"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-lambda"
+      ]
+    },
+    {
+      "id": "stem-java-j78",
+      "query": "Stream API 中用于将流元素收集到集合的终端操作是 ___。",
+      "goldChunkIds": [
+        "java-j78"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-lambda"
+      ]
+    },
+    {
+      "id": "stem-java-j93",
+      "query": "将 Stream 转换为并行流可以使用 ___() 方法。",
+      "goldChunkIds": [
+        "java-j93"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-lambda"
+      ]
+    },
+    {
+      "id": "stem-java-j74",
+      "query": "@Deprecated 注解用于标记已过时的程序元素，编译器会生成 ___ 警告。",
+      "goldChunkIds": [
+        "java-j74"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-annotations"
+      ]
+    },
+    {
+      "id": "stem-java-j91",
+      "query": "@Target 注解用于指定自定义注解可以应用的 ___ 元素类型。",
+      "goldChunkIds": [
+        "java-j91"
+      ],
+      "kind": "stem",
+      "tags": [
+        "java-annotations"
+      ]
+    },
+    {
+      "id": "stem-database-db-q30",
+      "query": "简述SQL中DELETE和TRUNCATE的区别。",
+      "goldChunkIds": [
+        "database-db-q30"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-sql-basics"
+      ]
+    },
+    {
+      "id": "stem-database-db-q31",
+      "query": "简述WHERE和HAVING子句的区别。",
+      "goldChunkIds": [
+        "database-db-q31"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-sql-basics"
+      ]
+    },
+    {
+      "id": "stem-database-db-q32",
+      "query": "简述常用的SQL聚合函数及功能。",
+      "goldChunkIds": [
+        "database-db-q32"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-sql-basics"
+      ]
+    },
+    {
+      "id": "stem-database-db-q33",
+      "query": "简述数据库、数据库管理系统、数据库系统的区别。",
+      "goldChunkIds": [
+        "database-db-q33"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-fundamentals"
+      ]
+    },
+    {
+      "id": "stem-database-db-q53",
+      "query": "简述数据库五大常用约束及作用。",
+      "goldChunkIds": [
+        "database-db-q53"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-constraints"
+      ]
+    },
+    {
+      "id": "stem-database-db-q54",
+      "query": "简述索引的优缺点。",
+      "goldChunkIds": [
+        "database-db-q54"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-index"
+      ]
+    },
+    {
+      "id": "stem-database-db-q55",
+      "query": "简述哪些场景不适合建立索引。",
+      "goldChunkIds": [
+        "database-db-q55"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-index"
+      ]
+    },
+    {
+      "id": "stem-database-db-q71",
+      "query": "简述事务ACID四大特性。",
+      "goldChunkIds": [
+        "database-db-q71"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-transaction"
+      ]
+    },
+    {
+      "id": "stem-database-db-q72",
+      "query": "简述数据库事务的三种并发问题。",
+      "goldChunkIds": [
+        "database-db-q72"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-transaction"
+      ]
+    },
+    {
+      "id": "stem-database-db-q73",
+      "query": "简述MySQL四种事务隔离级别。",
+      "goldChunkIds": [
+        "database-db-q73"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-transaction"
+      ]
+    },
+    {
+      "id": "stem-database-db-q74",
+      "query": "简述内连接、左连接、右连接的区别。",
+      "goldChunkIds": [
+        "database-db-q74"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-multi-table-query"
+      ]
+    },
+    {
+      "id": "stem-database-db-q92",
+      "query": "简述数据库三大范式的核心规则。",
+      "goldChunkIds": [
+        "database-db-q92"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-design"
+      ]
+    },
+    {
+      "id": "stem-database-db-q93",
+      "query": "简述E-R模型的三大组成要素。",
+      "goldChunkIds": [
+        "database-db-q93"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-design"
+      ]
+    },
+    {
+      "id": "stem-database-db-q94",
+      "query": "简述数据库常用优化方式。",
+      "goldChunkIds": [
+        "database-db-q94"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-ops"
+      ]
+    },
+    {
+      "id": "stem-database-db-q95",
+      "query": "简述关系型数据库和非关系型数据库的区别。",
+      "goldChunkIds": [
+        "database-db-q95"
+      ],
+      "kind": "stem",
+      "tags": [
+        "database-db-types"
+      ]
+    },
+    {
+      "id": "paraphrase-1",
+      "query": "python 里两个等于号和一个等于号到底差在哪",
+      "goldChunkIds": [],
+      "goldTag": "python-operators",
+      "kind": "paraphrase",
+      "tags": [
+        "python-operators"
+      ]
+    },
+    {
+      "id": "paraphrase-2",
+      "query": "为什么 list 传进函数后外面也跟着变了",
+      "goldChunkIds": [],
+      "goldTag": "python-functions",
+      "kind": "paraphrase",
+      "tags": [
+        "python-functions"
+      ]
+    },
+    {
+      "id": "paraphrase-3",
+      "query": "装饰器到底是怎么把函数包起来的",
+      "goldChunkIds": [],
+      "goldTag": "python-decorators",
+      "kind": "paraphrase",
+      "tags": [
+        "python-decorators"
+      ]
+    },
+    {
+      "id": "paraphrase-4",
+      "query": "多继承的时候方法到底按什么顺序找",
+      "goldChunkIds": [],
+      "goldTag": "python-inheritance",
+      "kind": "paraphrase",
+      "tags": [
+        "python-inheritance"
+      ]
+    },
+    {
+      "id": "paraphrase-5",
+      "query": "try 里面的 finally 会被跳过吗",
+      "goldChunkIds": [],
+      "goldTag": "python-exceptions",
+      "kind": "paraphrase",
+      "tags": [
+        "python-exceptions"
+      ]
+    },
+    {
+      "id": "paraphrase-6",
+      "query": "打开文件忘记 close 会出什么问题",
+      "goldChunkIds": [],
+      "goldTag": "python-files",
+      "kind": "paraphrase",
+      "tags": [
+        "python-files"
+      ]
+    },
+    {
+      "id": "paraphrase-7",
+      "query": "可变对象当默认参数有什么坑",
+      "goldChunkIds": [],
+      "goldTag": "python-errorprone",
+      "kind": "paraphrase",
+      "tags": [
+        "python-errorprone"
+      ]
+    },
+    {
+      "id": "paraphrase-8",
+      "query": "推导式能不能代替普通的 for 循环",
+      "goldChunkIds": [],
+      "goldTag": "python-comprehensions",
+      "kind": "paraphrase",
+      "tags": [
+        "python-comprehensions"
+      ]
+    },
+    {
+      "id": "paraphrase-9",
+      "query": "java 的 hashmap 什么时候会变成红黑树",
+      "goldChunkIds": [],
+      "goldTag": "java-collections",
+      "kind": "paraphrase",
+      "tags": [
+        "java-collections"
+      ]
+    },
+    {
+      "id": "paraphrase-10",
+      "query": "arraylist 和 linkedlist 怎么选",
+      "goldChunkIds": [],
+      "goldTag": "java-collections",
+      "kind": "paraphrase",
+      "tags": [
+        "java-collections"
+      ]
+    },
+    {
+      "id": "paraphrase-11",
+      "query": "接口和抽象类到底差在哪",
+      "goldChunkIds": [],
+      "goldTag": "java-interfaces",
+      "kind": "paraphrase",
+      "tags": [
+        "java-interfaces"
+      ]
+    },
+    {
+      "id": "paraphrase-12",
+      "query": "泛型会不会在运行期被擦掉",
+      "goldChunkIds": [],
+      "goldTag": "java-generics",
+      "kind": "paraphrase",
+      "tags": [
+        "java-generics"
+      ]
+    },
+    {
+      "id": "paraphrase-13",
+      "query": "线程里 start 和 run 有什么不一样",
+      "goldChunkIds": [],
+      "goldTag": "java-multithreading",
+      "kind": "paraphrase",
+      "tags": [
+        "java-multithreading"
+      ]
+    },
+    {
+      "id": "paraphrase-14",
+      "query": "volatile 能不能保证 i++ 是原子的",
+      "goldChunkIds": [],
+      "goldTag": "java-multithreading",
+      "kind": "paraphrase",
+      "tags": [
+        "java-multithreading"
+      ]
+    },
+    {
+      "id": "paraphrase-15",
+      "query": "try catch 后面 finally 一定执行吗",
+      "goldChunkIds": [],
+      "goldTag": "java-exceptions",
+      "kind": "paraphrase",
+      "tags": [
+        "java-exceptions"
+      ]
+    },
+    {
+      "id": "paraphrase-16",
+      "query": "string 驻留和常量池是什么关系",
+      "goldChunkIds": [],
+      "goldTag": "java-data-types",
+      "kind": "paraphrase",
+      "tags": [
+        "java-data-types"
+      ]
+    },
+    {
+      "id": "paraphrase-17",
+      "query": "数据库四个隔离级别分别解决什么问题",
+      "goldChunkIds": [],
+      "goldTag": "database-transaction",
+      "kind": "paraphrase",
+      "tags": [
+        "database-transaction"
+      ]
+    },
+    {
+      "id": "paraphrase-18",
+      "query": "索引为什么有时候反而让写入变慢",
+      "goldChunkIds": [],
+      "goldTag": "database-index",
+      "kind": "paraphrase",
+      "tags": [
+        "database-index"
+      ]
+    },
+    {
+      "id": "paraphrase-19",
+      "query": "外键约束到底有什么代价",
+      "goldChunkIds": [],
+      "goldTag": "database-constraints",
+      "kind": "paraphrase",
+      "tags": [
+        "database-constraints"
+      ]
+    },
+    {
+      "id": "paraphrase-20",
+      "query": "内连接和左连接的结果差在哪",
+      "goldChunkIds": [],
+      "goldTag": "database-multi-table-query",
+      "kind": "paraphrase",
+      "tags": [
+        "database-multi-table-query"
+      ]
+    },
+    {
+      "id": "paraphrase-21",
+      "query": "第三范式是不是越符合越好",
+      "goldChunkIds": [],
+      "goldTag": "database-design",
+      "kind": "paraphrase",
+      "tags": [
+        "database-design"
+      ]
+    },
+    {
+      "id": "paraphrase-22",
+      "query": "备份和恢复需要考虑哪些东西",
+      "goldChunkIds": [],
+      "goldTag": "database-ops",
+      "kind": "paraphrase",
+      "tags": [
+        "database-ops"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-syntax",
+      "query": "Python syntax这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-syntax"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-syntax"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-errorprone",
+      "query": "Python 易错点这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-errorprone"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-errorprone"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-data-types",
+      "query": "Python data-types这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-data-types"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-data-types"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-control-flow",
+      "query": "Python control-flow这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-control-flow"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-control-flow"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-operators",
+      "query": "Python operators这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-operators"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-operators"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-functions",
+      "query": "Python functions这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-functions"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-functions"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-scope",
+      "query": "Python scope这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-scope"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-scope"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-modules",
+      "query": "Python modules这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-modules"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-modules"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-oop",
+      "query": "Python 面向对象这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-oop"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-oop"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-classes",
+      "query": "Python classes这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-classes"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-classes"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-inheritance",
+      "query": "Python inheritance这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-inheritance"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-inheritance"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-polymorphism",
+      "query": "Python polymorphism这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-polymorphism"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-polymorphism"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-exceptions",
+      "query": "Python exceptions这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-exceptions"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-exceptions"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-studyhabit",
+      "query": "Python studyhabit这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-studyhabit"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-studyhabit"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-files",
+      "query": "Python files这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-files"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-files"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-comprehensions",
+      "query": "Python comprehensions这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-comprehensions"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-comprehensions"
+      ]
+    },
+    {
+      "id": "overview-query-overview-python-python-decorators",
+      "query": "Python decorators这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-python-python-decorators"
+      ],
+      "kind": "overview",
+      "tags": [
+        "python-decorators"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-syntax",
+      "query": "Java syntax这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-syntax"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-syntax"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-errorprone",
+      "query": "Java 易错点这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-errorprone"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-errorprone"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-data-types",
+      "query": "Java data-types这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-data-types"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-data-types"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-operators",
+      "query": "Java operators这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-operators"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-operators"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-control-flow",
+      "query": "Java control-flow这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-control-flow"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-control-flow"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-functions",
+      "query": "Java functions这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-functions"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-functions"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-oop",
+      "query": "Java 面向对象这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-oop"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-oop"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-classes",
+      "query": "Java classes这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-classes"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-classes"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-inheritance",
+      "query": "Java inheritance这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-inheritance"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-inheritance"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-polymorphism",
+      "query": "Java polymorphism这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-polymorphism"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-polymorphism"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-exceptions",
+      "query": "Java exceptions这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-exceptions"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-exceptions"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-io",
+      "query": "Java IO 流这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-io"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-io"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-collections",
+      "query": "Java collections这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-collections"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-collections"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-generics",
+      "query": "Java generics这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-generics"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-generics"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-multithreading",
+      "query": "Java multithreading这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-multithreading"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-multithreading"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-lambda",
+      "query": "Java lambda这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-lambda"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-lambda"
+      ]
+    },
+    {
+      "id": "overview-query-overview-java-java-annotations",
+      "query": "Java annotations这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-java-java-annotations"
+      ],
+      "kind": "overview",
+      "tags": [
+        "java-annotations"
+      ]
+    },
+    {
+      "id": "overview-query-overview-database-database-fundamentals",
+      "query": "数据库 数据库基础这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-database-database-fundamentals"
+      ],
+      "kind": "overview",
+      "tags": [
+        "database-fundamentals"
+      ]
+    },
+    {
+      "id": "overview-query-overview-database-database-sql-basics",
+      "query": "数据库 SQL 基础这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-database-database-sql-basics"
+      ],
+      "kind": "overview",
+      "tags": [
+        "database-sql-basics"
+      ]
+    },
+    {
+      "id": "overview-query-overview-database-database-constraints",
+      "query": "数据库 数据库约束这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-database-database-constraints"
+      ],
+      "kind": "overview",
+      "tags": [
+        "database-constraints"
+      ]
+    },
+    {
+      "id": "overview-query-overview-database-database-index",
+      "query": "数据库 数据库索引这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-database-database-index"
+      ],
+      "kind": "overview",
+      "tags": [
+        "database-index"
+      ]
+    },
+    {
+      "id": "overview-query-overview-database-database-transaction",
+      "query": "数据库 数据库事务这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-database-database-transaction"
+      ],
+      "kind": "overview",
+      "tags": [
+        "database-transaction"
+      ]
+    },
+    {
+      "id": "overview-query-overview-database-database-multi-table-query",
+      "query": "数据库 多表查询这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-database-database-multi-table-query"
+      ],
+      "kind": "overview",
+      "tags": [
+        "database-multi-table-query"
+      ]
+    },
+    {
+      "id": "overview-query-overview-database-database-design",
+      "query": "数据库 数据库设计这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-database-database-design"
+      ],
+      "kind": "overview",
+      "tags": [
+        "database-design"
+      ]
+    },
+    {
+      "id": "overview-query-overview-database-database-ops",
+      "query": "数据库 数据库运维这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-database-database-ops"
+      ],
+      "kind": "overview",
+      "tags": [
+        "database-ops"
+      ]
+    },
+    {
+      "id": "overview-query-overview-database-database-db-types",
+      "query": "数据库 数据库类型这个主题整体讲了什么，有哪些常考点？",
+      "goldChunkIds": [
+        "overview-database-database-db-types"
+      ],
+      "kind": "overview",
+      "tags": [
+        "database-db-types"
+      ]
+    }
+  ]
+}

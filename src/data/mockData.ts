@@ -1,4 +1,4 @@
-import type { Agent, StudentProfile, LearningResource, LearningPath, LearningAssessment } from '../types';
+import type { Agent, StudentProfile, LearningResource, LearningPath, LearningAssessment, QAItem } from '../types';
 import rawData from './mockData.json';
 
 const now = new Date().toISOString();
@@ -54,10 +54,10 @@ export const resourceAgentDisplay = rawData.resourceAgentDisplay as {
 
 // ============ 辅导页数据 ============
 
-export const defaultTutorHistory = rawData.defaultTutorHistory.map(h => ({
+export const defaultTutorHistory: QAItem[] = rawData.defaultTutorHistory.map(h => ({
   ...h,
   createdAt: now,
-}));
+})) as QAItem[];
 
 export const tutorQuickQuestions: string[] = rawData.tutorQuickQuestions;
 

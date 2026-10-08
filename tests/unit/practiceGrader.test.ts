@@ -82,6 +82,7 @@ import {
 } from '../../src/services/practiceGrader'
 
 import { streamChatCompletion } from '../../src/services/api'
+import { jaccardText } from '../../src/services/tutorQuality'
 import type { PracticeQuestion, PracticeResult, TagScore } from '../../src/types'
 
 // ==================== 测试数据工厂 ====================
@@ -786,6 +787,63 @@ describe('assertScoreReasonable', () => {
   it('两个空字符串 — 相似度为 1，正常', () => {
     const result = assertScoreReasonable(0, '', '')
     expect(result.reasonable).toBe(true)
+  })
+})
+
+// ==================== 相似度口径回归（防阈值语义静默漂移） ====================
+
+/**
+ * 相似度实现曾被从「中文单字 + 英文整词」换成「中文 2-gram + 英文整词」，
+ * 两种口径的数值分布在**中低相似区间相差 0.02~0.10**，会移动 0.6 / 0.2 两个判定边界。
+ * 这里把关键区间的实际数值钉住：任何再次更换实现都会让本用例立刻失败，
+ * 迫使改动者显式重新评估阈值，而不是静默漂移（评审 MAJOR-1）。
+ */
+describe('相似度口径回归（assertScoreReasonable 的判定边界）', () => {
+  /**
+   * 关键：直接断言 `jaccardText` 的**数值**，而不是绕道 `reasonable`。
+   * 绕道的写法是无效的 —— 例如 score=70 时三条分支全都不触发（分支 1 要 score<40、
+   * 分支 2 要 score>80、分支 3 要答案 <5 字），无论相似度是 0.207 还是 0.308 都会「通过」。
+   * 直接钉数值后，任何更换切词/相似度实现的改动都会立刻失败。
+   */
+  const PAIR_NEAR = ['Python 是一种解释型编程语言', 'Python 是一种解释型编程语言，支持面向对象'] as const
+  const PAIR_PARTIAL = [
+    '事务的隔离级别包括读未提交和读已提交',
+    '隔离级别共有四种，其中读未提交可能出现脏读',
+  ] as const
+
+  it('仅差一个从句 → 相似度实测 0.625（旧口径 0.647）', () => {
+    expect(jaccardText(...PAIR_NEAR)).toBeCloseTo(0.625, 3)
+  })
+
+  it('同主题部分覆盖 → 相似度实测 0.207（旧口径 0.308，离 0.2 边界只剩 0.007）', () => {
+    expect(jaccardText(...PAIR_PARTIAL)).toBeCloseTo(0.207, 3)
+  })
+
+  it('完全相同 → 相似度 1.0，低分必判不合理', () => {
+    const text = 'HashMap 在 JDK8 之后用红黑树处理长链表'
+    expect(jaccardText(text, text)).toBe(1)
+    expect(assertScoreReasonable(20, text, text).reasonable).toBe(false)
+  })
+
+  it('相似度 > 0.6 + 低分 → 判定不合理（分支 1 真的会被触发）', () => {
+    const result = assertScoreReasonable(20, ...PAIR_NEAR)
+    expect(jaccardText(...PAIR_NEAR)).toBeGreaterThan(0.6)
+    expect(result.reasonable).toBe(false)
+    expect(result.reason).toContain('相似度')
+  })
+
+  it('相似度 < 0.2 + 高分 → 判定不合理（分支 2 真的会被触发）', () => {
+    const pair = ['事务的隔离级别包括读未提交和读已提交', '今天天气不错'] as const
+    expect(jaccardText(...pair)).toBeLessThan(0.2)
+    const result = assertScoreReasonable(90, ...pair)
+    expect(result.reasonable).toBe(false)
+    expect(result.reason).toContain('相似度')
+  })
+
+  it('同主题部分覆盖 + 高分 → 相似度仍高于 0.2，不触发分支 2（边界方向明确）', () => {
+    // 该样本在新口径下**没有**跌破 0.2，所以不会额外触发 gradeByAIVerified 的 3 次评审。
+    expect(jaccardText(...PAIR_PARTIAL)).toBeGreaterThan(0.2)
+    expect(assertScoreReasonable(85, ...PAIR_PARTIAL).reasonable).toBe(true)
   })
 })
 

@@ -4,10 +4,11 @@
  * 功能：查看所有用户、修改角色、重置密码、删除用户
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Card, Table, Tag, Button, Modal, Form, Input, Select, message, Popconfirm, Space, Typography } from 'antd'
 import { DeleteOutlined, EditOutlined, KeyOutlined, UserOutlined } from '@ant-design/icons'
-import { useAuth, type User, type UserRole } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
+import type { User, UserRole } from '../../context/AuthContextObject'
 import { useDebounce } from '../../hooks/useDebounce'
 
 const { Title } = Typography
@@ -20,7 +21,8 @@ const ROLE_CONFIG: Record<UserRole, { label: string; color: string }> = {
 
 const UserManage: React.FC = () => {
   const { getAllUsers, deleteUser, updateUserRole, resetPassword, currentUser } = useAuth()
-  const [users, setUsers] = useState<User[]>([])
+  // 初始列表在首帧同步读取，后续操作后由 refresh 重新拉取
+  const [users, setUsers] = useState<User[]>(() => getAllUsers())
   const [roleModalOpen, setRoleModalOpen] = useState(false)
   const [pwdModalOpen, setPwdModalOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
@@ -28,8 +30,6 @@ const UserManage: React.FC = () => {
   const [pwdForm] = Form.useForm()
 
   const refresh = () => setUsers(getAllUsers())
-
-  useEffect(() => { refresh() }, [])
 
   const handleRoleChange = (user: User) => {
     setEditingUser(user)
@@ -102,7 +102,7 @@ const UserManage: React.FC = () => {
     {
       title: '操作',
       key: 'actions',
-      render: (_: any, record: User) => (
+      render: (_: unknown, record: User) => (
         <Space>
           <Button
             size="small"

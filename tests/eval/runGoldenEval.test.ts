@@ -1,0 +1,184 @@
+/**
+ * runGoldenEval.test — 基准集零额度跑批入口（S1-7）
+ *
+ * 两种跑批模式，都不消耗任何 API 额度：
+ * - anchor 模式（默认）：用每条基准集自己的三档锚点当候选回答，
+ *   检验评分管线是否具备区分度（excellent 应高于 fair 高于 poor）。
+ * - llm 模式：走 msw 固定响应，验证「基准集 → 提示词 → 模型层 → 打分 → 报告」
+ *   这条链路在离线环境下可跑通。
+ *
+ * 口径声明：基准集目前 reviewed=false、锚点为模板派生，
+ * 因此这里产出的是**管线可用性证据**，不是模型质量结论。
+ */
+
+import { describe, it, expect } from 'vitest'
+import { writeFileSync, mkdirSync } from 'node:fs'
+import path from 'node:path'
+
+import { getGoldSet, getSmokeSet, loadGoldenSet, type GoldenItem } from '../golden/goldenSet'
+import { coverageRatio, hitsMustExclude, scorablePoints } from '../../src/services/textMatch'
+
+export interface GoldenEvalRow {
+  id: string
+  bank: string
+  tags: string[]
+  difficulty: string
+  referenceSource: string
+  answer: string
+  /** 要点覆盖率 0~1 */
+  coverage: number
+  /** 命中的禁止项 */
+  excludeHits: string[]
+  /** 规则层是否通过（无禁止项命中且覆盖率 ≥ 阈值） */
+  rulePassed: boolean
+  /** 规则层得分 0~100 */
+  ruleScore: number
+}
+
+/** 规则层覆盖率门槛（步骤 3 会用 ROC 校准后替换为固化阈值） */
+export const RULE_COVERAGE_THRESHOLD = 0.6
+
+/** 规则层打分：覆盖率为主，禁止项命中为硬扣分 */
+export function scoreRule(answer: string, item: GoldenItem): number {
+  const coverage = coverageRatio(item.expectedPoints, answer)
+  const excludeHits = hitsMustExclude(answer, item.mustExclude)
+  const score = coverage * 100 - excludeHits.length * 30
+  return Math.max(0, Math.min(100, score))
+}
+
+function evalOne(item: GoldenItem, answer: string): GoldenEvalRow {
+  const coverage = coverageRatio(item.expectedPoints, answer)
+  const excludeHits = hitsMustExclude(answer, item.mustExclude)
+  return {
+    id: item.id,
+    bank: item.bank,
+    tags: item.tags,
+    difficulty: item.difficulty,
+    referenceSource: item.referenceSource,
+    answer,
+    coverage,
+    excludeHits,
+    rulePassed: excludeHits.length === 0 && coverage >= RULE_COVERAGE_THRESHOLD,
+    ruleScore: scoreRule(answer, item),
+  }
+}
+
+/** msw 固定响应：与 tests/mocks/handlers.ts 的默认分支保持一致（零额度的「模型输出」） */
+const MOCK_LLM_ANSWER = '这是一个模拟的 AI 回答，用于测试目的。'
+
+export interface GoldenEvalSummary {
+  mode: 'anchor' | 'llm'
+  sampleSize: number
+  passRate: number
+  avgScore: number
+  /** anchor 模式下的区分度：excellent 均分 − poor 均分 */
+  separation: number | null
+  confidence: 'low' | 'medium' | 'high'
+  /** 参数量全部是「答题要求」类填充项的条目数（这些条目的覆盖率无意义） */
+  fillerOnlyItems: number
+  note: string
+}
+
+/** 跑批：逐条打分 + 汇总，写出 test-results/golden-eval.json */
+export function runGoldenEval(
+  items: readonly GoldenItem[],
+  pick: (item: GoldenItem) => string,
+  mode: 'anchor' | 'llm',
+): { rows: GoldenEvalRow[]; summary: GoldenEvalSummary } {
+  const rows = items.map(item => evalOne(item, pick(item)))
+  const passed = rows.filter(r => r.rulePassed).length
+  const avgScore = rows.reduce((sum, r) => sum + r.ruleScore, 0) / rows.length
+
+  let separation: number | null = null
+  if (mode === 'anchor') {
+    const excellentAvg =
+      rows.reduce((sum, r) => sum + scoreRule(items.find(i => i.id === r.id)!.anchors.excellent, items.find(i => i.id === r.id)!), 0) /
+      rows.length
+    const poorAvg =
+      rows.reduce((sum, r) => sum + scoreRule(items.find(i => i.id === r.id)!.anchors.poor, items.find(i => i.id === r.id)!), 0) /
+      rows.length
+    separation = Number((excellentAvg - poorAvg).toFixed(2))
+  }
+
+  // 降级可观测（评审 MINOR-5）：把「覆盖率无意义的条目」数出来，
+  // 报告侧据此显示标注质量的边界，而不是让读者以为 100% 覆盖等于标注很好。
+  const fillerOnlyItems = items.filter(
+    item => item.expectedPoints.length > 0 && scorablePoints(item.expectedPoints).length === 0,
+  ).length
+
+  const summary: GoldenEvalSummary = {
+    mode,
+    sampleSize: rows.length,
+    passRate: Number((passed / rows.length).toFixed(4)),
+    avgScore: Number(avgScore.toFixed(2)),
+    separation,
+    confidence: rows.length >= 100 ? 'high' : rows.length >= 50 ? 'medium' : 'low',
+    fillerOnlyItems,
+    note:
+      '锚点为脚本派生初稿（reviewed=false），本报告只证明评测管线可用，' +
+      '不代表模型真实质量；阈值固化前不得作为最终指标引用。' +
+      `其中 ${fillerOnlyItems} 条的要点全部为「答题要求」类填充项，其覆盖率不参与打分分母。`,
+  }
+
+  const outDir = path.resolve(process.cwd(), 'test-results')
+  mkdirSync(outDir, { recursive: true })
+  writeFileSync(
+    path.join(outDir, 'golden-eval.json'),
+    `${JSON.stringify({ summary, rows }, null, 2)}\n`,
+    'utf8',
+  )
+  return { rows, summary }
+}
+
+const dataset = loadGoldenSet()
+const gold = getGoldSet(dataset.items)
+const smoke = getSmokeSet(dataset.items)
+
+describe('基准集跑批（零额度）', () => {
+  it('anchor 模式：excellent 得分必须高于 poor（评分管线具备区分度）', () => {
+    const { rows, summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor')
+    expect(rows.length).toBe(gold.length)
+    expect(summary.separation).not.toBeNull()
+    expect(summary.separation!).toBeGreaterThan(20)
+
+    // 逐条检查：优秀锚点与差锚点的得分必须严格有序
+    const notOrdered = gold.filter(item => {
+      const excellent = scoreRule(item.anchors.excellent, item)
+      const poor = scoreRule(item.anchors.poor, item)
+      return !(excellent > poor)
+    })
+    expect(notOrdered.map(i => i.id)).toEqual([])
+  })
+
+  it('anchor 模式：报告含样本量与置信度标注', () => {
+    const { summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor')
+    expect(summary.sampleSize).toBe(83)
+    expect(['low', 'medium', 'high']).toContain(summary.confidence)
+    expect(summary.note).toContain('管线可用')
+  })
+
+  it('llm 模式：msw 固定响应下链路可跑通且不消耗额度', () => {
+    const { rows, summary } = runGoldenEval(smoke, () => MOCK_LLM_ANSWER, 'llm')
+    expect(rows.length).toBe(smoke.length)
+    expect(summary.mode).toBe('llm')
+    // 固定 mock 回答与任何基准集都不相关，通过率应显著低于 anchor 模式
+    expect(summary.passRate).toBeLessThan(0.5)
+  })
+
+  it('产出 test-results/golden-eval.json', async () => {
+    const { readFileSync } = await import('node:fs')
+    runGoldenEval(gold, item => item.anchors.excellent, 'anchor')
+    const report = JSON.parse(
+      readFileSync(path.resolve(process.cwd(), 'test-results', 'golden-eval.json'), 'utf8'),
+    )
+    expect(report.rows.length).toBe(83)
+    expect(report.summary.mode).toBe('anchor')
+  })
+
+  it('禁止项命中会被扣分（负向验证）', () => {
+    const item = gold.find(i => i.mustExclude.length > 0)!
+    const withExclude = scoreRule(`我的答案里写了${item.mustExclude[0]}`, item)
+    const withoutExclude = scoreRule(item.referenceAnswer, item)
+    expect(withExclude).toBeLessThan(withoutExclude)
+  })
+})

@@ -1,0 +1,6382 @@
+[
+ {
+  "id": "python-q1",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax"
+  ],
+  "text": "Python 中变量在使用前必须先声明类型。\n答案：错误\n解析：Python 是动态类型语言，变量无需声明类型。",
+  "sourceQuestionId": "q1",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q2",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax"
+  ],
+  "text": "Python 中的 `elif` 可以替代 `else if` 使用，效果完全相同。\n答案：错误\n解析：Python 使用 `elif` 关键字，而非 `else if`。",
+  "sourceQuestionId": "q2",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q3",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax"
+  ],
+  "text": "Python 使用缩进（indentation）来标识代码块。\n答案：正确\n解析：Python 的代码块由缩进层级决定。",
+  "sourceQuestionId": "q3",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q4",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax"
+  ],
+  "text": "Python 中多条语句可以写在同一行，语句之间使用分号分隔。\n答案：正确\n解析：Python 允许单行书写多条语句，用分号隔开，不推荐大量使用。",
+  "sourceQuestionId": "q4",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q5",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax",
+   "python-errorprone"
+  ],
+  "text": "Python 关键字可以被用作自定义变量名。\n答案：错误\n解析：关键字是语言预留词汇，不能作为变量名。",
+  "sourceQuestionId": "q5",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q6",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax"
+  ],
+  "text": "Python 多行注释可以使用三个单引号 ''' 或者三个双引号 \"\"\"。\n答案：正确\n解析：三引号是 Python 标准的多行注释写法。",
+  "sourceQuestionId": "q6",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q7",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax",
+   "python-errorprone"
+  ],
+  "text": "变量名可以以数字作为开头。\n答案：错误\n解析：变量名首字符只能是字母或下划线。",
+  "sourceQuestionId": "q7",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q8",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax"
+  ],
+  "text": "Python 区分大小写，变量 name 和 Name 是两个不同变量。\n答案：正确\n解析：Python 是大小写敏感语言。",
+  "sourceQuestionId": "q8",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q9",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax",
+   "python-errorprone"
+  ],
+  "text": "Python 中括号、引号可以不配对使用。\n答案：错误\n解析：括号和引号必须成对出现，否则报语法错误。",
+  "sourceQuestionId": "q9",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q10",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax"
+  ],
+  "text": "pass 语句是空语句，仅用于占位，不会执行任何操作。\n答案：正确\n解析：pass 常用来补全语法结构。",
+  "sourceQuestionId": "q10",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q11",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax",
+   "python-data-types"
+  ],
+  "text": "请说明 Python 中 `==` 和 `is` 的区别，并举例说明何时应该使用哪个。\n答案：`==` 比较值相等，`is` 比较引用/身份。a=[1,2];b=[1,2]; a==b 为 True，a is b 为 False。推荐用 `is` 与 None 比较。\n解析：`==` 调 __eq__，`is` 比较内存地址。",
+  "sourceQuestionId": "q11",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q12",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-syntax",
+   "python-control-flow"
+  ],
+  "text": "Python 的 for 循环和 while 循环有什么区别？各适合什么场景？\n答案：for 用于遍历可迭代对象，适合已知次数；while 在条件为真时执行，适合不确定次数。\n解析：for 是确定循环，while 是不确定循环。",
+  "sourceQuestionId": "q12",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q13",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "在 Python 中，list 是可变类型，tuple 是不可变类型。\n答案：正确\n解析：list 支持修改操作，tuple 创建后不能修改。",
+  "sourceQuestionId": "q13",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q14",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "以下哪个不是 Python 的基本数据类型？\n答案：array\n解析：array 非内置基本类型，需用 list 或 numpy。",
+  "sourceQuestionId": "q14",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q15",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "以下哪个表达式的结果为 True？\n答案：以上全部\n解析：单双引号等价；3>2>1 是链式比较。",
+  "sourceQuestionId": "q15",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q16",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "`type({})` 的返回值是？\n答案：<class 'dict'>\n解析：{} 创建空字典，空集合用 set()。",
+  "sourceQuestionId": "q16",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q17",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "执行 `a = [1, 2, 3]; b = a; b.append(4)` 后，a 的值是？\n答案：[1, 2, 3, 4]\n解析：b=a 是引用赋值，指向同一列表对象。",
+  "sourceQuestionId": "q17",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "hard"
+ },
+ {
+  "id": "python-q18",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "元组 tuple 创建完成后，内部元素可以直接修改。\n答案：错误\n解析：元组是不可变类型。",
+  "sourceQuestionId": "q18",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q19",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "集合（set）中允许存放重复的元素。\n答案：错误\n解析：集合的元素具有唯一性。",
+  "sourceQuestionId": "q19",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q20",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types",
+   "python-errorprone"
+  ],
+  "text": "字典（dict）的键（key）可以使用列表类型。\n答案：错误\n解析：字典的键必须是不可变类型。",
+  "sourceQuestionId": "q20",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q21",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types",
+   "python-errorprone"
+  ],
+  "text": "字典中的值（value）不可以为列表类型。\n答案：错误\n解析：字典的值支持任意类型。",
+  "sourceQuestionId": "q21",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q22",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "Python 中布尔类型只有 True 和 False 两个取值。\n答案：正确\n解析：bool 仅含 True 和 False 两种状态。",
+  "sourceQuestionId": "q22",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q23",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types",
+   "python-errorprone"
+  ],
+  "text": "空字符串 '' 参与逻辑判断时，等价于 False。\n答案：正确\n解析：空字符串、0、空容器在布尔判断中均为假。",
+  "sourceQuestionId": "q23",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q24",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "Python 中 None 表示空对象，它不等于数字 0 和空字符串。\n答案：正确\n解析：None 是独立的空类型。",
+  "sourceQuestionId": "q24",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q25",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types",
+   "python-errorprone"
+  ],
+  "text": "字符串属于可变数据类型，可以直接修改其中单个字符。\n答案：错误\n解析：字符串是不可变类型。",
+  "sourceQuestionId": "q25",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q26",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "Python 中 1 == True 的运算结果为 True。\n答案：正确\n解析：布尔是整型子类，True 等价于 1。",
+  "sourceQuestionId": "q26",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q27",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-data-types",
+   "python-errorprone"
+  ],
+  "text": "空列表 [] 在逻辑判断中会被判定为 True。\n答案：错误\n解析：空容器逻辑判断为 False。",
+  "sourceQuestionId": "q27",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q28",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-operators"
+  ],
+  "text": "表达式 `3 ** 2 ** 2` 的结果是？\n答案：81\n解析：** 右结合：3**(2**2)=3**4=81。",
+  "sourceQuestionId": "q28",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q29",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-operators"
+  ],
+  "text": "`print(1 or 2)` 的输出是？\n答案：1\n解析：or 短路返回第一个真值 1。",
+  "sourceQuestionId": "q29",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q30",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-operators"
+  ],
+  "text": "Python 中 % 运算符的作用是求取两个数字的余数。\n答案：正确\n解析：% 是取模运算符，也可用于字符串格式化。",
+  "sourceQuestionId": "q30",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q31",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-operators"
+  ],
+  "text": "逻辑运算符 and 表示两边条件同时成立，整体结果才为真。\n答案：正确\n解析：and 是逻辑与，所有条件满足才为 True。",
+  "sourceQuestionId": "q31",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q32",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-operators",
+   "python-errorprone"
+  ],
+  "text": "+= 属于 Python 中的复合赋值运算符。\n答案：正确\n解析：+=、-= 等都是复合赋值运算符。",
+  "sourceQuestionId": "q32",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q33",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-operators"
+  ],
+  "text": "逻辑运算符 or 只要一侧条件为真，整体结果就为真。\n答案：正确\n解析：or 是逻辑或，满足任一即可。",
+  "sourceQuestionId": "q33",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q34",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-operators",
+   "python-errorprone"
+  ],
+  "text": "运算符优先级：算术运算符高于比较运算符。\n答案：正确\n解析：优先级：算术 > 比较 > 逻辑。",
+  "sourceQuestionId": "q34",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q35",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-control-flow"
+  ],
+  "text": "if...elif...else 语句中，多个分支会同时执行。\n答案：错误\n解析：只执行第一个条件成立的分支。",
+  "sourceQuestionId": "q35",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q36",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-control-flow",
+   "python-errorprone"
+  ],
+  "text": "for...else 结构中，循环正常结束没有触发 break 时，会执行 else 代码块。\n答案：正确\n解析：Python 特有语法：break 中断不执行 else，正常完毕则执行。",
+  "sourceQuestionId": "q36",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q37",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-control-flow"
+  ],
+  "text": "break 语句可以终止当前所在的循环，跳出循环体。\n答案：正确\n解析：break 强制结束循环。",
+  "sourceQuestionId": "q37",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q38",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-control-flow",
+   "python-errorprone"
+  ],
+  "text": "continue 语句会直接终止整个循环的执行。\n答案：错误\n解析：continue 仅跳过当次循环。",
+  "sourceQuestionId": "q38",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q39",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-control-flow",
+   "python-errorprone"
+  ],
+  "text": "continue 语句可以跳出多层嵌套循环。\n答案：错误\n解析：continue 仅作用于当前单层循环。",
+  "sourceQuestionId": "q39",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q40",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-control-flow"
+  ],
+  "text": "while 循环的条件表达式结果必须是布尔类型。\n答案：错误\n解析：数字、字符串等会自动隐式转为布尔值。",
+  "sourceQuestionId": "q40",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q41",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions"
+  ],
+  "text": "Python 函数可以返回多个值。\n答案：正确\n解析：return a,b,c 实际返回一个 tuple。",
+  "sourceQuestionId": "q41",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q42",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions",
+   "python-errorprone"
+  ],
+  "text": "函数的默认参数值可以是可变对象（如 list），且行为总是安全的。\n答案：错误\n解析：可变默认参数在多次调用间共享，使用 None 作为默认值是最佳实践。",
+  "sourceQuestionId": "q42",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q43",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions",
+   "python-errorprone"
+  ],
+  "text": "以下哪个是正确的装饰器语法？\n答案：@decorator\n解析：@decorator 是无参装饰器标准写法。",
+  "sourceQuestionId": "q43",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q44",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions",
+   "python-errorprone"
+  ],
+  "text": "执行以下代码，`y` 的值是？\n\n```python\ndef foo(x, lst=[]):\n    lst.append(x)\n    return lst\n\ny = foo(1)\ny = foo(2)\n```\n答案：[1, 2]\n解析：默认参数 lst 定义时创建一次，多次调用共享同一列表。",
+  "sourceQuestionId": "q44",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "hard"
+ },
+ {
+  "id": "python-q45",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions"
+  ],
+  "text": "函数参数中 `*args` 和 `**kwargs` 的作用是？\n答案：*args 接收位置元组，**kwargs 接收关键字字典\n解析：*args 收集位置参数为元组，**kwargs 收集关键字参数为字典。",
+  "sourceQuestionId": "q45",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q46",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions",
+   "python-errorprone"
+  ],
+  "text": "请解释 Python 中函数调用时的参数传递机制。它是按值传递还是按引用传递？请结合示例说明。\n答案：Python 采用\"按对象引用传递\"。不可变对象(int,str)函数内修改不影响外部；可变对象(list,dict)在函数内修改会影响外部。示例：def func(lst):lst.append(1) → 会修改外部列表；def func(x):x=5 → 不会修改外部变量。\n解析：Python 既非按值也非按引用，而是按对象引用传递。",
+  "sourceQuestionId": "q46",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "short",
+  "difficulty": "hard"
+ },
+ {
+  "id": "python-q47",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions"
+  ],
+  "text": "以下哪个是 Python 中合法的 lambda 函数？\n答案：lambda x, y: x + y\n解析：lambda 语法：lambda 参数: 表达式，不能含 return。",
+  "sourceQuestionId": "q47",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q48",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions"
+  ],
+  "text": "函数必须设置返回值，不能省略 return 语句。\n答案：错误\n解析：无 return 时默认返回 None。",
+  "sourceQuestionId": "q48",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q49",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions"
+  ],
+  "text": "函数的形参可以设置默认值，有默认值的参数必须放在参数列表末尾。\n答案：正确\n解析：带默认值的形参不能放在无默认值参数前面。",
+  "sourceQuestionId": "q49",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q50",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions",
+   "python-errorprone"
+  ],
+  "text": "调用函数时，传入的实参数量必须匹配无默认值的形参数量。\n答案：正确\n解析：实参不足会触发参数缺失错误。",
+  "sourceQuestionId": "q50",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q51",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-functions"
+  ],
+  "text": "函数可以作为另一个函数的参数进行传递。\n答案：正确\n解析：Python 中函数是一等对象。",
+  "sourceQuestionId": "q51",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q52",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-scope",
+   "python-errorprone"
+  ],
+  "text": "在 Python 中，可以在函数内部修改全局变量的值而不使用 global 关键字。\n答案：错误\n解析：函数内赋值会创建局部变量，必须用 global。",
+  "sourceQuestionId": "q52",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q53",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-scope",
+   "python-functions"
+  ],
+  "text": "使用 global 关键字可以在函数内部修改全局变量。\n答案：正确\n解析：global 声明变量为全局变量。",
+  "sourceQuestionId": "q53",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q54",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-scope"
+  ],
+  "text": "全局变量在整个代码文件内都可以被访问。\n答案：正确\n解析：全局变量作用域覆盖当前整个文件。",
+  "sourceQuestionId": "q54",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q55",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-modules"
+  ],
+  "text": "以下哪个命令可以将模块 my_module 中的 func 函数导入到当前命名空间？\n答案：from my_module import func\n解析：from...import... 是导入模块成员的标准语法。",
+  "sourceQuestionId": "q55",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q56",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-modules"
+  ],
+  "text": "`__all__` 变量在 Python 模块中的作用是？\n答案：控制 from module import * 导入内容\n解析：__all__ 列表定义 * 导入时的名称集合。",
+  "sourceQuestionId": "q56",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q57",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-modules"
+  ],
+  "text": "使用 `from math import *` 会导入 math 模块中的所有公开属性。\n答案：正确\n解析：导入所有未以下划线开头的名称。",
+  "sourceQuestionId": "q57",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q58",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-modules",
+   "python-functions"
+  ],
+  "text": "请说明 Python 模块的搜索路径顺序，以及如何修改模块搜索路径。\n答案：搜索顺序：1.当前目录 2.PYTHONPATH 3.site-packages 4.标准库。可用 sys.path.append() 动态添加。\n解析：sys.path[0] 是脚本所在目录。",
+  "sourceQuestionId": "q58",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q59",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-modules"
+  ],
+  "text": "导入模块后，可以直接使用 模块名.功能名 的方式调用内部功能。\n答案：正确\n解析：标准调用格式：模块名.成员名。",
+  "sourceQuestionId": "q59",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q60",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-modules"
+  ],
+  "text": "导入模块后，模块内部的私有变量可以被外部直接访问。\n答案：错误\n解析：下划线开头的变量约定为私有。",
+  "sourceQuestionId": "q60",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q61",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop"
+  ],
+  "text": "Python 中所有类的方法的第一个参数都代表当前实例，通常命名为 self。\n答案：正确\n解析：self 指向实例本身。",
+  "sourceQuestionId": "q61",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q62",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-classes",
+   "python-errorprone"
+  ],
+  "text": "以下哪个不是 Python 的魔术方法（dunder method）？\n答案：__main__\n解析：__main__ 是模块运行标识，不是类的方法。",
+  "sourceQuestionId": "q62",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q63",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-classes",
+   "python-errorprone"
+  ],
+  "text": "Python 中使用 `@property` 装饰器可以让一个方法像属性一样被访问。\n答案：正确\n解析：@property 将方法转为 Getter 属性。",
+  "sourceQuestionId": "q63",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q64",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-classes"
+  ],
+  "text": "以下哪种方法最适合实现类的『单例模式』？\n答案：以上都可以\n解析：三种方式均可实现单例。",
+  "sourceQuestionId": "q64",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q65",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-classes"
+  ],
+  "text": "私有属性（如 `self.__x`）在 Python 中是完全无法从类外部访问的。\n答案：错误\n解析：名字改写为 _ClassName__x，仍可访问。",
+  "sourceQuestionId": "q65",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q66",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-classes"
+  ],
+  "text": "下面代码的输出是？\n\n```python\nclass A:\n    x = 1\nclass B(A): pass\nclass C(A): pass\nA.x = 2\nprint(B.x, C.x)\n```\n答案：2 2\n解析：类属性共享，B 和 C 向上查找到 A.x=2。",
+  "sourceQuestionId": "q66",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q67",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop",
+   "python-classes",
+   "python-errorprone"
+  ],
+  "text": "请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。\n答案：__slots__ 声明实例允许的属性名。优势：减少内存、防止动态添加属性、加速访问。限制：子类需单独定义、不能动态添加属性、多继承受限。\n解析：适合大量实例场景（数据类、游戏对象）。",
+  "sourceQuestionId": "q67",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "hard"
+ },
+ {
+  "id": "python-q68",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop",
+   "python-classes"
+  ],
+  "text": "类是对象的模板，对象是类的实例。\n答案：正确\n解析：类定义属性和行为，基于类创建实例对象。",
+  "sourceQuestionId": "q68",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q69",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop",
+   "python-classes"
+  ],
+  "text": "__init__ 方法在手动调用类之后才会执行。\n答案：错误\n解析：创建实例时 __init__ 自动触发。",
+  "sourceQuestionId": "q69",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q70",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop",
+   "python-classes",
+   "python-errorprone"
+  ],
+  "text": "类属性只能通过实例对象访问，不能通过类名直接访问。\n答案：错误\n解析：类属性可通过类名或实例访问。",
+  "sourceQuestionId": "q70",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q71",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-inheritance",
+   "python-errorprone"
+  ],
+  "text": "Python 支持多继承，一个子类可以有多个父类。\n答案：正确\n解析：支持多继承，需要注意 MRO。",
+  "sourceQuestionId": "q71",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q72",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-inheritance",
+   "python-polymorphism"
+  ],
+  "text": "在 Python 中，以下哪种方式最符合『面向对象设计原则』中的『里氏替换原则』？\n答案：子类扩展父类但不改变父类行为\n解析：里氏替换：子类可替代父类而不改变程序正确性。",
+  "sourceQuestionId": "q72",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q73",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop",
+   "python-polymorphism"
+  ],
+  "text": "执行以下代码，输出是？\n\n```python\nclass A:\n    def __init__(self, v): self.v = v\n    def __eq__(self, other): return self.v == other.v\n\nclass B(A):\n    def __init__(self, v): self.v = v\n\na = A(1); b = B(1)\nprint(a == b)\n```\n答案：True\n解析：a.__eq__(b) 调用 A 的 __eq__，self.v=1, other.v=1 返回 True。",
+  "sourceQuestionId": "q73",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "hard"
+ },
+ {
+  "id": "python-q74",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-inheritance"
+  ],
+  "text": "使用 `class Child(Parent1, Parent2)` 定义类时，Child 类的方法解析顺序（MRO）是？\n答案：由 C3 线性化算法决定\n解析：Python 用 C3 算法计算 MRO。ClassName.__mro__ 可查看。",
+  "sourceQuestionId": "q74",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q75",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop",
+   "python-inheritance"
+  ],
+  "text": "子类无法重写父类已经定义好的方法。\n答案：错误\n解析：子类可重写父类同名方法。",
+  "sourceQuestionId": "q75",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q76",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop",
+   "python-inheritance",
+   "python-errorprone"
+  ],
+  "text": "子类不能调用父类中已经重写的方法。\n答案：错误\n解析：可通过 super() 调用父类方法。",
+  "sourceQuestionId": "q76",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q77",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-polymorphism",
+   "python-oop"
+  ],
+  "text": "Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。\n答案：静态多态基于继承/接口，需显式声明类型；Python duck typing 只关注对象\"能做什么\"。示例：有 len() 方法的对象就能用 len()，无需继承接口。\n解析：Duck typing 不依赖类型声明，更灵活但缺编译检查。",
+  "sourceQuestionId": "q77",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q78",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop",
+   "python-polymorphism"
+  ],
+  "text": "实现多态的前提通常是子类重写父类的方法。\n答案：正确\n解析：重写使不同子类呈现不同执行效果。",
+  "sourceQuestionId": "q78",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q79",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop",
+   "python-polymorphism",
+   "python-errorprone"
+  ],
+  "text": "不同子类调用同名重写方法，执行效果完全一致。\n答案：错误\n解析：多态就是不同子类同名方法不同效果。",
+  "sourceQuestionId": "q79",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q80",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-oop",
+   "python-polymorphism"
+  ],
+  "text": "Python 实现多态不需要严格定义父类抽象方法。\n答案：正确\n解析：动态语言特性使 Python 无需抽象类即可多态。",
+  "sourceQuestionId": "q80",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q81",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-exceptions"
+  ],
+  "text": "在 Python 中，`try...except...finally` 语句中，`finally` 块无论是否发生异常都会执行。\n答案：正确\n解析：finally 用于清理资源，始终执行。",
+  "sourceQuestionId": "q81",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q82",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-exceptions",
+   "python-errorprone"
+  ],
+  "text": "以下哪个语法可以正确捕获所有类型的异常？\n答案：以上都可以\n解析：最安全的做法是 except Exception:。",
+  "sourceQuestionId": "q82",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q83",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-exceptions",
+   "python-errorprone"
+  ],
+  "text": "执行以下代码，会输出什么？\n\n```python\ntry:\n    raise ValueError('error1')\nexcept ValueError as e:\n    print('caught')\n    raise TypeError('error2')\nfinally:\n    print('finally')\n```\n答案：caught/finally 并抛出 TypeError\n解析：except 捕获后打印 caught，raise TypeError，finally 执行，TypeError 向上传播。",
+  "sourceQuestionId": "q83",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "hard"
+ },
+ {
+  "id": "python-q84",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-exceptions",
+   "python-errorprone",
+   "python-studyhabit"
+  ],
+  "text": "请说明 Python 中自定义异常类的最佳实践，包括如何命名、是否需要定义额外属性，以及在什么场景下应该创建自定义异常。\n答案：命名以 Error 结尾，继承 Exception，在 __init__ 中添加上下文信息（错误码、字段名）。当需要精确表达业务逻辑错误时使用。示例：class PasswordTooShortError(Exception): def __init__(self, length, min_length): ...\n解析：标准异常不够精确时使用自定义异常，避免过度。",
+  "sourceQuestionId": "q84",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "hard"
+ },
+ {
+  "id": "python-q85",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-exceptions"
+  ],
+  "text": "except 语句可以单独使用，不需要搭配 try 语句。\n答案：错误\n解析：except 必须依附于 try。",
+  "sourceQuestionId": "q85",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q86",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-exceptions",
+   "python-errorprone"
+  ],
+  "text": "可以针对不同类型的异常，设置多个 except 分支分别处理。\n答案：正确\n解析：多 except 分支精准捕获不同异常。",
+  "sourceQuestionId": "q86",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q87",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-exceptions",
+   "python-errorprone"
+  ],
+  "text": "try 代码块中出现异常，后续代码依然会继续执行。\n答案：错误\n解析：触发异常后立即跳出 try 块。",
+  "sourceQuestionId": "q87",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q88",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-files",
+   "python-errorprone"
+  ],
+  "text": "使用 `with open('file.txt') as f:` 打开文件时，文件会在 with 块结束时自动关闭。\n答案：正确\n解析：with 利用上下文管理器自动关闭文件。",
+  "sourceQuestionId": "q88",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q89",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-files"
+  ],
+  "text": "以二进制模式写入二进制数据，正确的打开方式是？\n答案：open('file', 'wb')\n解析：'wb' 是二进制写入模式。'bw' 无效。",
+  "sourceQuestionId": "q89",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q90",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-files",
+   "python-comprehensions",
+   "python-errorprone",
+   "python-studyhabit"
+  ],
+  "text": "请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。\n答案：r读/w写(覆盖)/a追加/r+读写/w+读写(覆盖)/a+读写(追加)/b二进制/t文本。安全处理：用 with 自动关闭；try...except 捕获 FileNotFoundError、PermissionError。\n解析：with 语句确保正确关闭；针对性捕获异常更安全。",
+  "sourceQuestionId": "q90",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q91",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-files"
+  ],
+  "text": "以 r 模式打开文件时，可以向文件中写入新内容。\n答案：错误\n解析：r 是只读模式。",
+  "sourceQuestionId": "q91",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q92",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-files",
+   "python-errorprone"
+  ],
+  "text": "以 w 模式打开文件，会清空文件原有内容再写入新数据。\n答案：正确\n解析：w 先清空，a 在末尾追加。",
+  "sourceQuestionId": "q92",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q93",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-files"
+  ],
+  "text": "readline() 方法每次只会读取文件中的一行内容。\n答案：正确\n解析：readline() 逐行读取，read() 一次性读全部。",
+  "sourceQuestionId": "q93",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q94",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-files",
+   "python-errorprone"
+  ],
+  "text": "使用 a+ 模式打开文件，既可以读取内容也可以追加写入内容。\n答案：正确\n解析：a+ 为追加读写模式。",
+  "sourceQuestionId": "q94",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q95",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-files"
+  ],
+  "text": "readlines() 方法会将文件所有行读取为一个列表返回。\n答案：正确\n解析：readlines() 按行读取返回列表。",
+  "sourceQuestionId": "q95",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q96",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-decorators"
+  ],
+  "text": "执行以下代码，输出是？\n\n```python\ndef decorator(func):\n    return func\n\n@decorator\ndef foo():\n    return 'hello'\n\nprint(foo())\n```\n答案：'hello'\n解析：decorator 直接返回 func，foo() 调用原始函数。",
+  "sourceQuestionId": "q96",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q97",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-decorators",
+   "python-errorprone"
+  ],
+  "text": "装饰器 `@functools.wraps(func)` 的主要作用是？\n答案：保留元信息（名称、文档字符串等）\n解析：@wraps 复制 __name__、__doc__ 等到包装函数。",
+  "sourceQuestionId": "q97",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q98",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-decorators",
+   "python-errorprone"
+  ],
+  "text": "带参数的装饰器 `@decorator(arg)` 本质上是一个返回装饰器的函数。\n答案：正确\n解析：decorator(arg) 返回装饰器函数，再作用于被装饰函数。",
+  "sourceQuestionId": "q98",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q99",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-decorators"
+  ],
+  "text": "使用装饰器会直接修改原函数内部的代码逻辑。\n答案：错误\n解析：装饰器在不改原函数代码前提下拓展功能。",
+  "sourceQuestionId": "q99",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q100",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-decorators"
+  ],
+  "text": "多个装饰器可以同时装饰同一个函数。\n答案：正确\n解析：支持叠加装饰器，由近及远依次生效。",
+  "sourceQuestionId": "q100",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q101",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-decorators",
+   "python-errorprone"
+  ],
+  "text": "装饰器无法为函数添加额外的日志记录功能。\n答案：错误\n解析：日志统计是装饰器最常用的场景之一。",
+  "sourceQuestionId": "q101",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q102",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-comprehensions",
+   "python-errorprone"
+  ],
+  "text": "列表推导式 `[x for x in range(5)]` 与生成器表达式 `(x for x in range(5))` 完全等效。\n答案：错误\n解析：列表推导式返回列表可迭代多次；生成器只可迭代一次。",
+  "sourceQuestionId": "q102",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q103",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-comprehensions"
+  ],
+  "text": "`{x: x**2 for x in range(5)}` 创建的对象类型是？\n答案：dict\n解析：{key: value for ...} 是字典推导式。",
+  "sourceQuestionId": "q103",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q104",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-comprehensions"
+  ],
+  "text": "字典也可以使用推导式语法快速生成。\n答案：正确\n解析：Python 支持字典推导式和集合推导式。",
+  "sourceQuestionId": "q104",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q105",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-comprehensions",
+   "python-errorprone"
+  ],
+  "text": "集合推导式和列表推导式的语法符号完全相同。\n答案：错误\n解析：列表用 []，集合用 {}。",
+  "sourceQuestionId": "q105",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q106",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-comprehensions",
+   "python-errorprone"
+  ],
+  "text": "嵌套循环逻辑也可以使用列表推导式简化编写。\n答案：正确\n解析：列表推导式支持多层循环嵌套。",
+  "sourceQuestionId": "q106",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "python-q107",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-comprehensions"
+  ],
+  "text": "推导式语法只能简化循环，不能搭配条件判断。\n答案：错误\n解析：推导式支持结合 if 条件筛选。",
+  "sourceQuestionId": "q107",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q108",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-studyhabit",
+   "python-syntax"
+  ],
+  "text": "代码出现报错时，直接忽略报错继续编写即可。\n答案：错误\n解析：需先排查并修复错误再继续。",
+  "sourceQuestionId": "q108",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q109",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-studyhabit"
+  ],
+  "text": "编写代码前梳理思路、简单注释，有助于减少出错概率。\n答案：正确\n解析：良好的编码习惯提升代码质量。",
+  "sourceQuestionId": "q109",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "python-q110",
+  "kind": "question",
+  "bank": "python",
+  "tags": [
+   "python-studyhabit",
+   "python-syntax"
+  ],
+  "text": "编写代码时统一缩进格式，是良好的 Python 编码习惯。\n答案：正确\n解析：规范缩进规避语法错误，提升可读性。",
+  "sourceQuestionId": "q110",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j1",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "包（package）的作用是什么？\n答案：组织类和接口，避免命名冲突\n解析：包用于分类管理类，类似文件目录。",
+  "sourceQuestionId": "j1",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j2",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "导入一个包中所有类的正确语法是？\n答案：import java.util.*;\n解析：使用 * 导入包中所有类，但不会导入子包。",
+  "sourceQuestionId": "j2",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j30",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "Java 中多行注释以 /* 开始，以什么结束？\n答案：*/\n解析：多行注释是 /* */，不能嵌套。",
+  "sourceQuestionId": "j30",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j45",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "以下哪个是合法的 Java 标识符？\n答案：_name\n解析：标识符可以字母、下划线、美元符开头，不能数字开头，不能是关键字。",
+  "sourceQuestionId": "j45",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j51",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "Java 程序编译后生成的文件扩展名是 ___。\n答案：.class\n解析：javac 编译 .java 源文件得到字节码文件 .class，由 JVM 执行。",
+  "sourceQuestionId": "j51",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j52",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "main 方法参数列表中的数组类型是 ___[]。\n答案：String\n解析：main 方法的参数是 String[] args，用于接收命令行参数。",
+  "sourceQuestionId": "j52",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j79",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "Java Development Kit 的缩写是 ___。\n答案：JDK\n解析：JDK 包含 JRE 和开发工具。",
+  "sourceQuestionId": "j79",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j94",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "Java Runtime Environment 的缩写是 ___。\n答案：JRE\n解析：JRE 提供运行 Java 程序所需的环境。",
+  "sourceQuestionId": "j94",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j101",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "Java 程序的执行入口方法是？\n答案：main()\n解析：public static void main(String[] args) 是 Java 固定入口方法。",
+  "sourceQuestionId": "j101",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j102",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "Java 单行注释使用哪个符号？\n答案：//\n解析：// 用于单行注释，/* */ 用于多行注释。",
+  "sourceQuestionId": "j102",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j103",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax",
+   "java-errorprone"
+  ],
+  "text": "Java 用来划分代码块的符号是？\n答案：{}\n解析：大括号 {} 是 Java 划分代码块的标准符号。",
+  "sourceQuestionId": "j103",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j130",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax",
+   "java-errorprone"
+  ],
+  "text": "Java 语句结束标志是？\n答案：;\n解析：分号 ; 是 Java 单行语句结束符。",
+  "sourceQuestionId": "j130",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j143",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "多行注释的格式是？\n答案：/* 内容 */\n解析：/* */ 包裹多行注释内容。",
+  "sourceQuestionId": "j143",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j151",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "Java 程序入口方法是________。\n答案：main\n解析：main 方法是 Java 应用程序唯一执行入口。",
+  "sourceQuestionId": "j151",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j152",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "Java 单行注释符号为________。\n答案：//\n解析：// 用于单行代码注释。",
+  "sourceQuestionId": "j152",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j153",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-syntax",
+   "java-errorprone"
+  ],
+  "text": "Java 使用________符号划分代码块。\n答案：{}\n解析：大括号是 Java 代码块的标志。",
+  "sourceQuestionId": "j153",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j3",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "以下哪个是正确的数组声明？\n答案：int[] a = new int[5];\n解析：标准语法：类型[] 变量名 = new 类型[长度];",
+  "sourceQuestionId": "j3",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j4",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "将 int 转换为 Integer 的过程称为？\n答案：装箱\n解析：基本类型到包装类的转换称为自动装箱（autoboxing）。",
+  "sourceQuestionId": "j4",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j31",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "以下哪个字面量表示 float 类型？\n答案：3.14f\n解析：默认浮点数是 double，加 f 或 F 表示 float。",
+  "sourceQuestionId": "j31",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j46",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "将 double 赋值给 int 会发生什么？\n答案：编译错误，需要强制转换\n解析：double 到 int 是窄化转换，必须显式强制类型转换，可能丢失精度。",
+  "sourceQuestionId": "j46",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j53",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "Java 中布尔类型的字面量只有 true 和 ___。\n答案：false\n解析：boolean 类型只有两个值。",
+  "sourceQuestionId": "j53",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j54",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "char 类型在 Java 中占用 ___ 个字节。\n答案：2\n解析：char 是 16 位无符号整数，采用 Unicode 编码。",
+  "sourceQuestionId": "j54",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j80",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "Java 为了节省内存，字符串字面量存储在 ___ 池中。\n答案：字符串常量\n解析：相同内容的字符串字面量引用同一个对象。",
+  "sourceQuestionId": "j80",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j95",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "引用类型变量可以赋值为 ___，表示不指向任何对象。\n答案：null\n解析：访问 null 引用的成员会抛出 NullPointerException。",
+  "sourceQuestionId": "j95",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j104",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "以下不属于 Java 基本数据类型的是？\n答案：String\n解析：String 是引用类型，其余三项为基本数据类型。",
+  "sourceQuestionId": "j104",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j105",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types",
+   "java-errorprone"
+  ],
+  "text": "布尔类型的取值个数是？\n答案：2\n解析：boolean 只有 true、false 两个取值。",
+  "sourceQuestionId": "j105",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j106",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "Java 数组下标起始位置是？\n答案：0\n解析：数组下标从 0 开始，最大下标为 数组长度-1。",
+  "sourceQuestionId": "j106",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j107",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types",
+   "java-errorprone"
+  ],
+  "text": "获取数组长度使用以下哪项？\n答案：length\n解析：数组用 length 属性，集合用 size() 方法。",
+  "sourceQuestionId": "j107",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j131",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "以下哪项是字符类型？\n答案：char\n解析：char 为字符类型，用于存储单个字符。",
+  "sourceQuestionId": "j131",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j132",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "数组访问下标越界会抛出？\n答案：数组下标越界异常\n解析：数组访问超出下标范围，抛出 ArrayIndexOutOfBoundsException。",
+  "sourceQuestionId": "j132",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j144",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types",
+   "java-errorprone"
+  ],
+  "text": "以下浮点类型是？\n答案：float\n解析：float、double 为浮点型，存储小数。",
+  "sourceQuestionId": "j144",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j145",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "数组创建后，长度是否可以改变？\n答案：不可以\n解析：Java 数组长度固定，创建后无法修改。",
+  "sourceQuestionId": "j145",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j154",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "布尔类型的两个取值是 true 和________。\n答案：false\n解析：boolean 类型只有两个布尔值。",
+  "sourceQuestionId": "j154",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j155",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types",
+   "java-errorprone"
+  ],
+  "text": "String 属于________数据类型。\n答案：引用\n解析：String 不是基本类型，属于引用类型。",
+  "sourceQuestionId": "j155",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j156",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "Java 数组下标从________开始。\n答案：0\n解析：数组下标默认从 0 计数。",
+  "sourceQuestionId": "j156",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j157",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-data-types",
+   "java-errorprone"
+  ],
+  "text": "获取数组长度使用________属性。\n答案：length\n解析：数组.length 得到数组长度。",
+  "sourceQuestionId": "j157",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j5",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "表达式 int a = 5; int b = a++; 执行后 a 和 b 的值分别是？\n答案：a=6, b=5\n解析：a++ 先返回原值再自增，所以 b=5, a=6。",
+  "sourceQuestionId": "j5",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j6",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "三元运算符 ?: 的语法是 condition ? expr1 : expr2，expr1 和 expr2 的类型必须？\n答案：可以不同，会自动转换\n解析：Java 会尝试进行类型提升，如果不能兼容则编译错误。",
+  "sourceQuestionId": "j6",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j32",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "以下哪个是复合赋值运算符？\n答案：+=\n解析：+=、-=、*=、/= 等都是复合赋值。",
+  "sourceQuestionId": "j32",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j55",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "Java 中求余运算符是 ___。\n答案：%\n解析：例如 10 % 3 = 1。",
+  "sourceQuestionId": "j55",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j56",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "有符号右移运算符是 ___。\n答案：>>\n解析：>> 用符号位填充高位，>>> 无符号右移补零。",
+  "sourceQuestionId": "j56",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j81",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "逻辑或的短路运算符是 ___。\n答案：||\n解析：如果左侧为 true，右侧不再计算。",
+  "sourceQuestionId": "j81",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j96",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "instanceof 运算符用于测试对象是否为某个 ___ 的实例。\n答案：类\n解析：或接口、数组类型。",
+  "sourceQuestionId": "j96",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j108",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "判断两个基本类型数值是否相等使用？\n答案：==\n解析：== 比较基本类型数值，= 是赋值运算符。",
+  "sourceQuestionId": "j108",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j109",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators",
+   "java-errorprone"
+  ],
+  "text": "具备短路效果的逻辑与运算符是？\n答案：&&\n解析：&& 短路与，|| 短路或，& 和 | 无短路特性。",
+  "sourceQuestionId": "j109",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j133",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "赋值运算符是？\n答案：=\n解析：= 用于赋值，== 用于判断相等。",
+  "sourceQuestionId": "j133",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j146",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators",
+   "java-errorprone"
+  ],
+  "text": "三元运算符的表达式个数是？\n答案：3个\n解析：三元运算符：条件 ? 表达式1 : 表达式2，共三部分。",
+  "sourceQuestionId": "j146",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j158",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "判断基本类型数值相等使用________运算符。\n答案：==\n解析：== 比较数值，= 为赋值运算符。",
+  "sourceQuestionId": "j158",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j159",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-operators",
+   "java-errorprone"
+  ],
+  "text": "具备短路效果的逻辑与运算符是________。\n答案：&&\n解析：&& 左边为 false 则右边不执行。",
+  "sourceQuestionId": "j159",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j7",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "增强 for 循环（for-each）的语法是？\n答案：for (var item : arr)\n解析：增强 for 循环：for (类型 变量名 : 数组或集合)",
+  "sourceQuestionId": "j7",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j8",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "continue 语句的作用是？\n答案：跳过本次循环剩余代码，继续下一次迭代\n解析：continue 忽略本次循环后续语句，进入下一次循环。",
+  "sourceQuestionId": "j8",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j33",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "if (condition) { } else { } 中，if 后面的条件必须是？\n答案：boolean 类型\n解析：条件必须是布尔表达式，不同于 C/C++ 非零为真。",
+  "sourceQuestionId": "j33",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j47",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "Java 中带标签的 break 用于？\n答案：跳出多层循环\n解析：break outer; 可以跳出外层循环。",
+  "sourceQuestionId": "j47",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j57",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "switch 语句中的表达式类型可以是 byte, short, int, char, String 以及 ___ 类型（自 Java 5）。\n答案：enum\n解析：枚举类型也可以作为 switch 的表达式。",
+  "sourceQuestionId": "j57",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j58",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "___ 循环至少执行一次循环体。\n答案：do-while\n解析：do-while 先执行一次循环体，再判断条件。",
+  "sourceQuestionId": "j58",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j82",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "增强 for 循环的语法是 for (type var : ___)。\n答案：array_or_iterable\n解析：冒号右边必须是数组或实现了 Iterable 的对象。",
+  "sourceQuestionId": "j82",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j97",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "使用带 ___ 的 break 可以跳出多重循环。\n答案：标签\n解析：例如 outer: for(...) { break outer; }",
+  "sourceQuestionId": "j97",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j110",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "跳出当前循环的语句是？\n答案：break\n解析：break 终止循环，continue 跳过本轮循环。",
+  "sourceQuestionId": "j110",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j111",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow",
+   "java-errorprone"
+  ],
+  "text": "以下哪项不是循环语句？\n答案：switch\n解析：switch 是分支语句，不属于循环结构。",
+  "sourceQuestionId": "j111",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j134",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "do...while 循环的特点是？\n答案：先执行后判断\n解析：do...while 至少执行一次循环体。",
+  "sourceQuestionId": "j134",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j147",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "多选一分支语句是？\n答案：switch\n解析：switch 适用于多分支等值判断场景。",
+  "sourceQuestionId": "j147",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j160",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "终止当前循环使用________语句。\n答案：break\n解析：break 强制退出当前循环体。",
+  "sourceQuestionId": "j160",
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j9",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "如果一个方法声明返回类型为 void，可以省略 return 语句吗？\n答案：可以没有 return\n解析：void 方法不需要 return，但可以使用 return; 提前退出。",
+  "sourceQuestionId": "j9",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j10",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "可变参数（varargs）的语法是？\n答案：void method(int... args)\n解析：类型后跟三个点，表示可变长度参数，必须放在参数列表最后。",
+  "sourceQuestionId": "j10",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "hard"
+ },
+ {
+  "id": "java-j34",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "递归函数必须包含？\n答案：终止条件\n解析：没有终止条件的递归会导致栈溢出。",
+  "sourceQuestionId": "j34",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j48",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "方法重写时，子类方法的返回类型可以是父类方法返回类型的子类吗？\n答案：可以是子类（协变返回类型）\n解析：Java 支持协变返回类型，即子类重写时返回更具体的类型。",
+  "sourceQuestionId": "j48",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j59",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "方法签名由方法名和 ___ 列表组成。\n答案：参数\n解析：返回类型不属于方法签名，仅用于重载区分。",
+  "sourceQuestionId": "j59",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j60",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "使用 ___ import 可以导入类的静态成员，直接使用而不需要类名前缀。\n答案：static\n解析：例如 import static java.lang.Math.PI; 然后直接使用 PI。",
+  "sourceQuestionId": "j60",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j83",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "使用 ___ 语句从方法中返回值。\n答案：return\n解析：return 表达式；void 方法可以用 return; 提前退出。",
+  "sourceQuestionId": "j83",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j98",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "方法重载的解析发生在 ___ 时（编译期或运行期）。\n答案：编译期\n解析：重载是静态绑定，重写是动态绑定。",
+  "sourceQuestionId": "j98",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j112",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "表示方法无返回值的关键字是？\n答案：void\n解析：void 修饰无返回值方法。",
+  "sourceQuestionId": "j112",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j113",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions",
+   "java-errorprone"
+  ],
+  "text": "方法重载的要求不包括？\n答案：返回值不同\n解析：重载与返回值无关，只看方法名和参数列表。",
+  "sourceQuestionId": "j113",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j135",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "方法返回数据使用的关键字是？\n答案：return\n解析：return 实现方法数据返回。",
+  "sourceQuestionId": "j135",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j148",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-functions",
+   "java-errorprone"
+  ],
+  "text": "构造方法是否存在返回值？\n答案：无返回值\n解析：构造方法没有任何返回值类型。",
+  "sourceQuestionId": "j148",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j114",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-scope"
+  ],
+  "text": "定义在方法内部的变量称为？\n答案：局部变量\n解析：方法内为局部变量，类中方法外为成员变量。",
+  "sourceQuestionId": "j114",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j115",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-scope",
+   "java-errorprone"
+  ],
+  "text": "局部变量默认初始值为？\n答案：无默认值\n解析：局部变量必须手动赋值，没有默认初始值。",
+  "sourceQuestionId": "j115",
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j11",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes"
+  ],
+  "text": "创建一个对象使用的关键字是？\n答案：new\n解析：new 关键字用于实例化对象，分配内存并调用构造器。",
+  "sourceQuestionId": "j11",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j12",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes"
+  ],
+  "text": "以下哪个访问修饰符的可见性范围最大？\n答案：public\n解析：public 对所有类可见，private 仅对当前类可见。",
+  "sourceQuestionId": "j12",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j35",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes"
+  ],
+  "text": "静态变量存储在内存的哪个区域？\n答案：方法区（或元空间）\n解析：静态变量属于类，存储在方法区（JDK 8 后元空间）。",
+  "sourceQuestionId": "j35",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j49",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes"
+  ],
+  "text": "关键字 this 在构造器中可以用来调用另一个重载构造器，语法是？\n答案：this(param)\n解析：this() 调用本类其他构造器，且必须是第一行语句。注意：this(param) 才是带参数调用重载构造器的语法。",
+  "sourceQuestionId": "j49",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j61",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes"
+  ],
+  "text": "构造器的名称必须与 ___ 名完全相同。\n答案：类\n解析：构造器没有返回类型，名字与类名一致。",
+  "sourceQuestionId": "j61",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j62",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes"
+  ],
+  "text": "Java 自动内存管理机制称为 ___ 收集。\n答案：垃圾\n解析：垃圾回收器（Garbage Collection）自动回收不再使用的对象。",
+  "sourceQuestionId": "j62",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j84",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes"
+  ],
+  "text": "将实例变量声明为 private，然后提供公共的 getter/setter，体现了面向对象的 ___ 特性。\n答案：封装\n解析：隐藏内部状态，控制访问。",
+  "sourceQuestionId": "j84",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j99",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-operators"
+  ],
+  "text": "使用 ___ 可以判断对象是否属于某个类。\n答案：instanceof\n解析：if (obj instanceof String) { ... }",
+  "sourceQuestionId": "j99",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j116",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes"
+  ],
+  "text": "定义类使用的关键字是？\n答案：class\n解析：class 是 Java 定义类的关键字。",
+  "sourceQuestionId": "j116",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j117",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes",
+   "java-errorprone"
+  ],
+  "text": "创建对象使用哪个关键字？\n答案：new\n解析：new 关键字调用构造方法创建实例对象。",
+  "sourceQuestionId": "j117",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j118",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-inheritance"
+  ],
+  "text": "实现类继承的关键字是？\n答案：extends\n解析：extends 实现类继承，implements 实现接口。",
+  "sourceQuestionId": "j118",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j119",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-inheritance",
+   "java-errorprone"
+  ],
+  "text": "Java 类的继承形式是？\n答案：单继承\n解析：Java 类只支持单继承，接口支持多实现。",
+  "sourceQuestionId": "j119",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j120",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-polymorphism"
+  ],
+  "text": "多态的运行特点是？\n答案：运行看子类\n解析：多态：编译绑定父类，运行执行子类重写方法。",
+  "sourceQuestionId": "j120",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j136",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes",
+   "java-errorprone"
+  ],
+  "text": "构造方法的名称要求是？\n答案：与类名相同\n解析：构造方法名必须和类名完全一致。",
+  "sourceQuestionId": "j136",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j137",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-inheritance"
+  ],
+  "text": "子类重写父类方法的目的是？\n答案：改写原有逻辑\n解析：重写用于在子类中重新实现方法逻辑。",
+  "sourceQuestionId": "j137",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j138",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-polymorphism",
+   "java-errorprone"
+  ],
+  "text": "子类对象赋值给父类引用的过程称为？\n答案：向上转型\n解析：向上转型是多态的基础。",
+  "sourceQuestionId": "j138",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j149",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-classes"
+  ],
+  "text": "对象的成员变量也可称为？\n答案：属性\n解析：类中定义的成员变量描述对象属性。",
+  "sourceQuestionId": "j149",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j150",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-oop",
+   "java-inheritance",
+   "java-errorprone"
+  ],
+  "text": "子类不能继承父类哪类成员？\n答案：private 成员\n解析：private 私有成员仅父类内部可见，子类无法继承访问。",
+  "sourceQuestionId": "j150",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j127",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-classes"
+  ],
+  "text": "权限最小、仅本类可访问的修饰符是？\n答案：private\n解析：private 私有权限，作用范围最小。",
+  "sourceQuestionId": "j127",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j128",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-classes",
+   "java-errorprone"
+  ],
+  "text": "被 static 修饰的成员属于？\n答案：类\n解析：静态成员属于类，全局共享。",
+  "sourceQuestionId": "j128",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j129",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-classes"
+  ],
+  "text": "被 final 修饰的变量称为？\n答案：常量\n解析：final 变量赋值后不可修改，即为常量。",
+  "sourceQuestionId": "j129",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j142",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-classes"
+  ],
+  "text": "访问权限最大的修饰符是？\n答案：public\n解析：public 公开访问，任何位置都可调用。",
+  "sourceQuestionId": "j142",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j13",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-inheritance"
+  ],
+  "text": "final 关键字修饰的类有什么特点？\n答案：不能被继承\n解析：final 类不能有子类，如 String 类。",
+  "sourceQuestionId": "j13",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j14",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-inheritance"
+  ],
+  "text": "关于抽象类，以下说法正确的是？\n答案：抽象类可以包含非抽象方法\n解析：抽象类可以有构造器、字段和具体方法，但不能实例化。",
+  "sourceQuestionId": "j14",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j36",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-inheritance"
+  ],
+  "text": "所有 Java 类的最终父类是？\n答案：Object\n解析：Object 是根类，提供 toString, equals, hashCode 等方法。",
+  "sourceQuestionId": "j36",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j63",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-inheritance"
+  ],
+  "text": "类继承使用 ___ 关键字。\n答案：extends\n解析：子类 extends 父类。",
+  "sourceQuestionId": "j63",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j64",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-inheritance"
+  ],
+  "text": "包含抽象方法的类必须声明为 ___ 类。\n答案：abstract\n解析：抽象类可以包含具体方法，但至少有一个抽象方法时必须是 abstract。",
+  "sourceQuestionId": "j64",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j85",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-inheritance"
+  ],
+  "text": "用 ___ 修饰的方法不能被子类重写。\n答案：final\n解析：final 方法保证行为不变。",
+  "sourceQuestionId": "j85",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j15",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-polymorphism"
+  ],
+  "text": "向下转型（downcasting）需要？\n答案：显式类型转换，可能抛出 ClassCastException\n解析：向下转型需要强制转换，并使用 instanceof 检查以避免异常。",
+  "sourceQuestionId": "j15",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j37",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-polymorphism",
+   "java-operators"
+  ],
+  "text": "instanceof 运算符返回什么类型？\n答案：boolean\n解析：instanceof 返回 true 或 false。",
+  "sourceQuestionId": "j37",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j65",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-polymorphism"
+  ],
+  "text": "Java 中对于重写的方法，调用时采用 ___ 绑定（根据实际对象类型）。\n答案：动态\n解析：运行时动态绑定决定调用哪个版本。",
+  "sourceQuestionId": "j65",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j86",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-polymorphism"
+  ],
+  "text": "将父类引用强制转换为子类类型称为向 ___ 转型。\n答案：下\n解析：向下转型（downcasting）需要使用 instanceof 检查。",
+  "sourceQuestionId": "j86",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j16",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-interfaces"
+  ],
+  "text": "Java 8 中接口允许定义默认方法（default method），其目的是？\n答案：提供方法的默认实现，不影响已有实现\n解析：默认方法允许接口演进而不破坏现有代码。",
+  "sourceQuestionId": "j16",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j66",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-interfaces"
+  ],
+  "text": "类实现接口使用 ___ 关键字。\n答案：implements\n解析：一个类可以实现多个接口。",
+  "sourceQuestionId": "j66",
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j17",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-exceptions"
+  ],
+  "text": "throws 关键字用于？\n答案：声明方法可能抛出的异常\n解析：throws 出现在方法签名中，表示该方法不处理异常，交给调用者。",
+  "sourceQuestionId": "j17",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j18",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-exceptions"
+  ],
+  "text": "创建自定义 checked 异常应该继承哪个类？\n答案：Exception\n解析：继承 Exception 得到 checked 异常；继承 RuntimeException 得到 unchecked 异常。",
+  "sourceQuestionId": "j18",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j38",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-exceptions"
+  ],
+  "text": "以下哪个是运行时异常（unchecked exception）？\n答案：NullPointerException\n解析：NullPointerException 是 RuntimeException 的子类，不需要强制处理。",
+  "sourceQuestionId": "j38",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j50",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-exceptions"
+  ],
+  "text": "多个 catch 块捕获异常时，顺序应该是？\n答案：先子类后父类\n解析：更具体的子类异常必须放在前面，否则父类会先捕获导致子类不可达。",
+  "sourceQuestionId": "j50",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j67",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-exceptions"
+  ],
+  "text": "手动抛出异常使用 ___ 关键字。\n答案：throw\n解析：throw new Exception();",
+  "sourceQuestionId": "j67",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j68",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-exceptions"
+  ],
+  "text": "try-catch 块后可以跟一个可选的 ___ 块，用于清理资源。\n答案：finally\n解析：finally 总是执行。",
+  "sourceQuestionId": "j68",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j87",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-exceptions"
+  ],
+  "text": "严重的问题如 OutOfMemoryError 是 ___ 类的子类，通常不捕获。\n答案：Error\n解析：Error 和 Exception 都继承自 Throwable。",
+  "sourceQuestionId": "j87",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j121",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-exceptions"
+  ],
+  "text": "捕获异常使用的关键字组合是？\n答案：try-catch\n解析：try-catch-finally 是 Java 异常处理标准结构。",
+  "sourceQuestionId": "j121",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j122",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-exceptions",
+   "java-errorprone"
+  ],
+  "text": "无论是否异常都会执行的代码块关键字是？\n答案：finally\n解析：finally 块必定执行，常用于资源释放。",
+  "sourceQuestionId": "j122",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j139",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-exceptions"
+  ],
+  "text": "运行时异常英文简称是？\n答案：RuntimeException\n解析：RuntimeException 为运行时异常，无需强制处理。",
+  "sourceQuestionId": "j139",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j19",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-io"
+  ],
+  "text": "BufferedReader 相对于 FileReader 的优势是？\n答案：提供了缓冲区，提高读取效率\n解析：BufferedReader 包装低级 Reader，减少实际 IO 次数。",
+  "sourceQuestionId": "j19",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j20",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-io"
+  ],
+  "text": "Java NIO 中的核心组件不包括？\n答案：OutputStream\n解析：OutputStream 属于传统 IO，NIO 使用 Channel、Buffer 和 Selector。",
+  "sourceQuestionId": "j20",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j39",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-io"
+  ],
+  "text": "java.nio.file.Paths 类的 get() 方法用于？\n答案：创建 Path 实例\n解析：Paths.get(String path) 返回一个 Path 对象，用于 NIO 文件操作。",
+  "sourceQuestionId": "j39",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j69",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-io"
+  ],
+  "text": "Java 传统 IO 流的核心包是 java.___。\n答案：io\n解析：java.io 提供 InputStream, OutputStream 等类。",
+  "sourceQuestionId": "j69",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j70",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-io"
+  ],
+  "text": "对象序列化需要实现 ___ 接口。\n答案：Serializable\n解析：标记接口，告诉 JVM 可以将对象转化为字节流。",
+  "sourceQuestionId": "j70",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j88",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-io"
+  ],
+  "text": "Java NIO 的核心包是 java.___。\n答案：nio\n解析：java.nio 提供非阻塞 IO 和选择器等。",
+  "sourceQuestionId": "j88",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j125",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-io"
+  ],
+  "text": "Java IO 流分为字节流和？\n答案：字符流\n解析：IO 流两大分类：字节流、字符流。",
+  "sourceQuestionId": "j125",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j126",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-io",
+   "java-errorprone"
+  ],
+  "text": "专门操作文本文件优先使用？\n答案：字符流\n解析：字符流针对文本文件，字节流通用所有文件。",
+  "sourceQuestionId": "j126",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j141",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-io"
+  ],
+  "text": "以下哪个类用于描述文件本身？\n答案：File\n解析：File 类操作文件路径与属性，不做内容读写。",
+  "sourceQuestionId": "j141",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j21",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-collections"
+  ],
+  "text": "以下哪个 List 实现类底层使用数组？\n答案：A 和 C\n解析：ArrayList 和 Vector 底层都是数组，LinkedList 是双向链表。",
+  "sourceQuestionId": "j21",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j22",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-collections"
+  ],
+  "text": "HashSet 判断元素重复的依据是？\n答案：equals() 和 hashCode()\n解析：首先计算 hashCode，相同再调用 equals 确认。",
+  "sourceQuestionId": "j22",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j40",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-collections"
+  ],
+  "text": "要实现对象的自然排序，应该实现哪个接口？\n答案：Comparable\n解析：Comparable 定义 compareTo 方法，用于自然排序。",
+  "sourceQuestionId": "j40",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j71",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-collections"
+  ],
+  "text": "键值对存储的顶级接口是 ___。\n答案：Map\n解析：Map 不是 Collection 的子接口，但也是集合框架的一部分。",
+  "sourceQuestionId": "j71",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j72",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-collections"
+  ],
+  "text": "遍历集合的标准设计模式是 ___。\n答案：迭代器\n解析：Iterator 接口提供 hasNext() 和 next() 方法。",
+  "sourceQuestionId": "j72",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j89",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-collections"
+  ],
+  "text": "先进先出（FIFO）的集合接口是 ___。\n答案：Queue\n解析：Queue 通常由 LinkedList 实现。",
+  "sourceQuestionId": "j89",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j100",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-collections"
+  ],
+  "text": "List 接口保证元素的 ___ 顺序。\n答案：插入\n解析：List 是有序集合，允许重复。",
+  "sourceQuestionId": "j100",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j123",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-collections"
+  ],
+  "text": "以下属于有序可重复集合的是？\n答案：ArrayList\n解析：List 集合有序可重复，Set 集合无序不可重复。",
+  "sourceQuestionId": "j123",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j124",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-collections",
+   "java-errorprone"
+  ],
+  "text": "HashMap 集合中不允许重复的是？\n答案：key\n解析：HashMap 的 key 唯一，value 允许重复。",
+  "sourceQuestionId": "j124",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j140",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-collections",
+   "java-errorprone"
+  ],
+  "text": "获取集合元素个数使用？\n答案：size()\n解析：集合调用 size() 方法获取元素数量。",
+  "sourceQuestionId": "j140",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j23",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-generics"
+  ],
+  "text": "Java 泛型是通过什么机制实现的？\n答案：类型擦除\n解析：泛型信息在编译后被擦除，替换为原始类型和强制转换。",
+  "sourceQuestionId": "j23",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j24",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-generics"
+  ],
+  "text": "通配符 ? extends Number 的含义是？\n答案：Number 或其子类\n解析：上界通配符，表示 Number 或 Number 的子类。",
+  "sourceQuestionId": "j24",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j41",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-generics"
+  ],
+  "text": "Java 7 引入的菱形运算符（<>）的作用是？\n答案：类型推断，简化泛型实例化\n解析：例如 List<String> list = new ArrayList<>(); 省略右侧类型参数。",
+  "sourceQuestionId": "j41",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j73",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-generics"
+  ],
+  "text": "泛型类型参数通常使用单个大写字母，如 T 表示 Type，E 表示 ___。\n答案：Element\n解析：E 用于集合元素，K 键，V 值。",
+  "sourceQuestionId": "j73",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j90",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-generics"
+  ],
+  "text": "无限制通配符是 ___。\n答案：?\n解析：例如 List<?> 表示未知类型的列表。",
+  "sourceQuestionId": "j90",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j26",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-multithreading"
+  ],
+  "text": "创建线程的两种主要方式是继承 Thread 类和实现哪个接口？\n答案：Runnable\n解析：实现 Runnable 接口并传入 Thread 对象。",
+  "sourceQuestionId": "j26",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j27",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-multithreading"
+  ],
+  "text": "Thread.sleep(1000) 可能抛出什么异常？\n答案：InterruptedException\n解析：sleep 方法可能被中断，抛出 InterruptedException，需要捕获或声明。",
+  "sourceQuestionId": "j27",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j43",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-multithreading"
+  ],
+  "text": "volatile 关键字的主要作用是？\n答案：保证可见性和禁止指令重排序\n解析：volatile 确保变量变化对所有线程可见，但不保证复合操作的原子性。",
+  "sourceQuestionId": "j43",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j75",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-multithreading"
+  ],
+  "text": "启动新线程应调用 Thread 对象的 ___ 方法，而不是直接调用 run()。\n答案：start\n解析：start() 创建新线程并执行 run()，直接调用 run() 只是普通方法调用。",
+  "sourceQuestionId": "j75",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j76",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-multithreading"
+  ],
+  "text": "等待一个线程结束的方法是 ___。\n答案：join\n解析：t.join() 使当前线程阻塞直到 t 结束。",
+  "sourceQuestionId": "j76",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j92",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-multithreading"
+  ],
+  "text": "synchronized 代码块中使用的锁对象可以是任何 ___ 对象。\n答案：Java\n解析：任意对象都可作为内置锁。",
+  "sourceQuestionId": "j92",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j28",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-lambda",
+   "java-syntax"
+  ],
+  "text": "以下哪个是 Java 中合法的 Lambda 表达式？\n答案：(int x, int y) -> { return x + y; }\n解析：正确形式：(参数) -> 表达式 或 (参数) -> { 语句; }。选项 A 正确，B 缺少花括号和 return 的写法有误。",
+  "sourceQuestionId": "j28",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j29",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-lambda"
+  ],
+  "text": "Stream API 中的终端操作（terminal operation）是？\n答案：collect\n解析：collect、forEach、reduce 等都是终端操作，触发流处理。filter/map 是中间操作。",
+  "sourceQuestionId": "j29",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j44",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-lambda"
+  ],
+  "text": "方法引用 System.out::println 等价于以下哪个 Lambda 表达式？\n答案：x -> System.out.println(x)\n解析：方法引用是 Lambda 的简写，参数传递给 println。",
+  "sourceQuestionId": "j44",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j77",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-lambda"
+  ],
+  "text": "如果一个接口只有一个抽象方法，则称为 ___ 接口。\n答案：函数式\n解析：可以使用 @FunctionalInterface 注解检查。",
+  "sourceQuestionId": "j77",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j78",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-lambda"
+  ],
+  "text": "Stream API 中用于将流元素收集到集合的终端操作是 ___。\n答案：collect\n解析：collect(Collectors.toList()) 等。",
+  "sourceQuestionId": "j78",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j93",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-lambda"
+  ],
+  "text": "将 Stream 转换为并行流可以使用 ___() 方法。\n答案：parallel\n解析：stream.parallel() 或 Collection.parallelStream()。",
+  "sourceQuestionId": "j93",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "hard"
+ },
+ {
+  "id": "java-j25",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-annotations"
+  ],
+  "text": "@Override 注解的作用是？\n答案：检查是否真正重写了父类方法\n解析：标记并让编译器检查该方法是否正确地覆盖了父类方法。",
+  "sourceQuestionId": "j25",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j42",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-annotations"
+  ],
+  "text": "@Retention(RetentionPolicy.RUNTIME) 表示注解会保留到？\n答案：运行时可通过反射获取\n解析：RUNTIME 保留策略使注解在 JVM 运行时可用。",
+  "sourceQuestionId": "j42",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "java-j74",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-annotations"
+  ],
+  "text": "@Deprecated 注解用于标记已过时的程序元素，编译器会生成 ___ 警告。\n答案：弃用\n解析：提示开发者应避免使用该元素。",
+  "sourceQuestionId": "j74",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "java-j91",
+  "kind": "question",
+  "bank": "java",
+  "tags": [
+   "java-annotations"
+  ],
+  "text": "@Target 注解用于指定自定义注解可以应用的 ___ 元素类型。\n答案：Java\n解析：例如 METHOD, FIELD, TYPE 等。",
+  "sourceQuestionId": "j91",
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q1",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-fundamentals"
+  ],
+  "text": "数据库的英文缩写是？\n答案：DB\n解析：DB（Database）为数据库，DBS是数据库系统，DBMS是数据库管理系统，DBA是数据库管理员。",
+  "sourceQuestionId": "db-q1",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q2",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-fundamentals"
+  ],
+  "text": "数据库管理系统的英文缩写是？\n答案：DBMS\n解析：DBMS（Database Management System）即数据库管理系统，是管理数据库的核心软件。",
+  "sourceQuestionId": "db-q2",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q3",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-fundamentals"
+  ],
+  "text": "以下不属于数据库三大范式作用的是？\n答案：提升数据安全性\n解析：数据库三大范式主要用于规范表结构，减少冗余、更新删除异常，优化维护，与数据安全无关。",
+  "sourceQuestionId": "db-q3",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q4",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中用于查询数据的关键字是？\n答案：SELECT\n解析：SELECT是SQL数据查询核心语句，用于从数据表中检索数据。",
+  "sourceQuestionId": "db-q4",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q5",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中用于插入新数据的语句是？\n答案：INSERT\n解析：INSERT语句用于向数据表中新增一行或多行数据记录。",
+  "sourceQuestionId": "db-q5",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q6",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中用于修改表中已有数据的语句是？\n答案：UPDATE\n解析：UPDATE语句用于更新数据表中满足条件的字段数据。",
+  "sourceQuestionId": "db-q6",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q7",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中用于删除表中数据的语句是？\n答案：DELETE\n解析：DELETE用于删除表中指定数据，DROP删除表结构，TRUNCATE清空表所有数据。",
+  "sourceQuestionId": "db-q7",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q8",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "以下哪个关键字用于SQL条件筛选？\n答案：WHERE\n解析：WHERE子句用于指定查询、更新、删除的条件，筛选符合要求的数据。",
+  "sourceQuestionId": "db-q8",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q9",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中用于排序的关键字是？\n答案：ORDER BY\n解析：ORDER BY用于对查询结果进行升序（ASC）或降序（DESC）排序。",
+  "sourceQuestionId": "db-q9",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q10",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中用于去重的关键字是？\n答案：DISTINCT\n解析：DISTINCT关键字可去除查询结果中的重复数据行。",
+  "sourceQuestionId": "db-q10",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q11",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "以下哪个函数用于统计数据行数？\n答案：COUNT()\n解析：COUNT()为聚合函数，用于统计查询结果的记录行数。",
+  "sourceQuestionId": "db-q11",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q12",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "以下哪个函数用于计算平均值？\n答案：AVG()\n解析：AVG()聚合函数用于计算指定字段数据的平均值。",
+  "sourceQuestionId": "db-q12",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q13",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SUM()函数的作用是？\n答案：求和\n解析：SUM()聚合函数用于计算指定字段所有数值的总和。",
+  "sourceQuestionId": "db-q13",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q14",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "GROUP BY的作用是？\n答案：数据分组\n解析：GROUP BY子句用于根据指定字段对查询结果进行分组，常搭配聚合函数使用。",
+  "sourceQuestionId": "db-q14",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q15",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "分组后筛选数据需要使用哪个子句？\n答案：HAVING\n解析：WHERE用于分组前筛选，HAVING用于GROUP BY分组后的条件筛选。",
+  "sourceQuestionId": "db-q15",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q16",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "LIMIT关键字的作用是？\n答案：限制查询结果条数\n解析：LIMIT子句用于限制SQL查询返回的数据行数，常用于分页场景。",
+  "sourceQuestionId": "db-q16",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q17",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SELECT语句可以单独执行，无需搭配其他子句。\n答案：正确\n解析：简单的SELECT * FROM 表名 可直接查询表中所有数据，无需额外子句。",
+  "sourceQuestionId": "db-q17",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q18",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "UPDATE语句不添加WHERE条件时，会更新表中所有数据。\n答案：正确\n解析：UPDATE无WHERE条件会匹配全表数据，批量更新所有记录，操作风险极高。",
+  "sourceQuestionId": "db-q18",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q19",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "DELETE语句可以删除数据表的结构。\n答案：错误\n解析：DELETE仅删除表数据，DROP语句才会删除数据表结构。",
+  "sourceQuestionId": "db-q19",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q20",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "HAVING子句可以单独使用，无需搭配GROUP BY。\n答案：错误\n解析：HAVING是分组后筛选子句，必须依托GROUP BY分组使用。",
+  "sourceQuestionId": "db-q20",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q21",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "COUNT(*) 会统计包含NULL值的所有行数。\n答案：正确\n解析：COUNT(*)统计全表行数，不忽略空值；COUNT(字段)会忽略字段NULL值。",
+  "sourceQuestionId": "db-q21",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q22",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "DISTINCT可以对单个或多个字段组合去重。\n答案：正确\n解析：DISTINCT支持多字段去重，仅当所有字段值均相同时判定为重复数据。",
+  "sourceQuestionId": "db-q22",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q23",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "ORDER BY 默认排序方式为升序。\n答案：正确\n解析：ORDER BY 默认ASC升序排序，可手动指定DESC降序。",
+  "sourceQuestionId": "db-q23",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q24",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "LIMIT 2,3 表示取第2到第5条数据。\n答案：错误\n解析：LIMIT 偏移量,条数，2,3代表偏移2条，取后续3条数据（第3、4、5条）。",
+  "sourceQuestionId": "db-q24",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q25",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "MAX()函数可以获取字段最大值。\n答案：正确\n解析：MAX()聚合函数用于查询指定字段的最大数值。",
+  "sourceQuestionId": "db-q25",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q26",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL语句不区分大小写。\n答案：正确\n解析：SQL关键字大小写不敏感，书写大写、小写均可，行业常用大写关键字。",
+  "sourceQuestionId": "db-q26",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q27",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-fundamentals"
+  ],
+  "text": "数据库系统包含数据库、数据库管理系统、管理员和应用程序。\n答案：正确\n解析：完整的数据库系统（DBS）由硬件、数据库、DBMS、DBA和应用系统共同组成。",
+  "sourceQuestionId": "db-q27",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q28",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-fundamentals"
+  ],
+  "text": "数据冗余一定是有害的，需要完全消除。\n答案：错误\n解析：适度数据冗余可提升查询效率，完全消除冗余会导致表拆分过细，增加联表查询开销。",
+  "sourceQuestionId": "db-q28",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q29",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-fundamentals"
+  ],
+  "text": "数据库的核心目的是高效存储和管理数据。\n答案：正确\n解析：数据库通过规范化结构、索引、事务等机制，实现数据高效存储、查询、管理。",
+  "sourceQuestionId": "db-q29",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q30",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "简述SQL中DELETE和TRUNCATE的区别。\n答案：1.执行方式：DELETE逐行删除数据，TRUNCATE直接清空数据页；2.事务支持：DELETE记录日志可回滚，TRUNCATE不记录日志不可回滚；3.效率：TRUNCATE远快于DELETE；4.约束：DELETE可触发触发器，TRUNCATE不触发；5.自增列：TRUNCATE会重置自增主键，DELETE不会。\n解析：二者核心差异为执行机制、日志记录、性能和自增列处理。",
+  "sourceQuestionId": "db-q30",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q31",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "简述WHERE和HAVING子句的区别。\n答案：1.筛选时机：WHERE是分组前筛选原始数据，HAVING是分组后筛选分组结果；2.使用范围：WHERE无需分组，HAVING必须搭配GROUP BY；3.聚合函数：WHERE不能使用聚合函数，HAVING支持聚合函数筛选。\n解析：核心区别为筛选阶段和聚合函数支持性不同。",
+  "sourceQuestionId": "db-q31",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q32",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "简述常用的SQL聚合函数及功能。\n答案：1.COUNT()：统计数据行数；2.SUM()：计算数值字段总和；3.AVG()：计算数值字段平均值；4.MAX()：获取字段最大值；5.MIN()：获取字段最小值。\n解析：聚合函数常与GROUP BY分组语句搭配使用，实现数据统计分析。",
+  "sourceQuestionId": "db-q32",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q33",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-fundamentals"
+  ],
+  "text": "简述数据库、数据库管理系统、数据库系统的区别。\n答案：1.数据库（DB）：存储数据的容器，是结构化数据的集合；2.数据库管理系统（DBMS）：管理数据库的软件，提供增删改查、事务、索引等功能；3.数据库系统（DBS）：由数据库、DBMS、管理员、硬件、应用程序组成的完整系统，范围最广。\n解析：三者为包含关系，DBS包含DB和DBMS，是完整的运行体系。",
+  "sourceQuestionId": "db-q33",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q34",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "主键约束的关键字是？\n答案：PRIMARY KEY\n解析：PRIMARY KEY 定义主键，唯一标识数据表中的每一条记录，非空且唯一。",
+  "sourceQuestionId": "db-q34",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q35",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "外键约束的关键字是？\n答案：FOREIGN KEY\n解析：FOREIGN KEY 外键约束，用于关联两张数据表，保证数据参照完整性。",
+  "sourceQuestionId": "db-q35",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q36",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "用于限制字段值唯一的约束是？\n答案：UNIQUE\n解析：UNIQUE约束保证字段所有值唯一，允许为空，主键约束不允许为空。",
+  "sourceQuestionId": "db-q36",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q37",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "用于限制字段不能为空的约束是？\n答案：NOT NULL\n解析：NOT NULL约束强制字段必须赋值，不允许为空值。",
+  "sourceQuestionId": "db-q37",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q38",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "DEFAULT约束的作用是？\n答案：设置默认值\n解析：DEFAULT约束用于为字段指定默认值，插入数据未赋值时自动填充默认值。",
+  "sourceQuestionId": "db-q38",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q39",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "CHECK约束的作用是？\n答案：自定义条件校验\n解析：CHECK约束可自定义字段取值规则，限制字段数据的有效范围。",
+  "sourceQuestionId": "db-q39",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q40",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "以下哪种索引查询效率最高？\n答案：主键索引\n解析：主键索引是聚簇索引，数据与索引绑定，查询速度远快于普通二级索引。",
+  "sourceQuestionId": "db-q40",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q41",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "索引的主要作用是？\n答案：加快查询速度\n解析：索引通过构建有序数据结构，大幅提升数据库数据查询效率。",
+  "sourceQuestionId": "db-q41",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q42",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "以下哪种场景不适合建立索引？\n答案：高频更新字段\n解析：索引会降低增删改效率，高频更新字段建立索引会大幅增加数据库开销。",
+  "sourceQuestionId": "db-q42",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q43",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "主键可以为NULL。\n答案：错误\n解析：主键约束兼具非空和唯一特性，主键字段绝对不允许为空值。",
+  "sourceQuestionId": "db-q43",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q44",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "一张数据表只能有一个主键。\n答案：正确\n解析：数据表仅支持一个主键（可由单个或多个字段组成复合主键）。",
+  "sourceQuestionId": "db-q44",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q45",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "UNIQUE约束字段允许存在一个NULL值。\n答案：正确\n解析：唯一约束仅限制非空值唯一，可存储单个空值，多个空值不重复校验。",
+  "sourceQuestionId": "db-q45",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q46",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "外键约束可以关联非主键字段。\n答案：错误\n解析：外键必须关联主表的主键或唯一索引字段，保证参照完整性。",
+  "sourceQuestionId": "db-q46",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q47",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "DEFAULT默认值可以为NULL。\n答案：正确\n解析：可通过DEFAULT NULL为字段设置空值默认值。",
+  "sourceQuestionId": "db-q47",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q48",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "CHECK约束可以限制字符串长度。\n答案：正确\n解析：CHECK支持自定义表达式，可校验字符串长度、数值范围等各类规则。",
+  "sourceQuestionId": "db-q48",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q49",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "索引可以提升增删改查所有操作的效率。\n答案：错误\n解析：索引提升查询效率，但会降低新增、修改、删除数据的效率。",
+  "sourceQuestionId": "db-q49",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q50",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "主键索引属于聚簇索引。\n答案：正确\n解析：InnoDB存储引擎中，主键索引就是聚簇索引，数据存储在主键索引叶子节点。",
+  "sourceQuestionId": "db-q50",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q51",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "数据表索引越多越好。\n答案：错误\n解析：索引会占用存储空间、增加写入开销，需根据业务合理建立，并非越多越好。",
+  "sourceQuestionId": "db-q51",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q52",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "NULL值不会被普通索引收录。\n答案：错误\n解析：普通索引会存储NULL值，可查询空值数据。",
+  "sourceQuestionId": "db-q52",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q53",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "简述数据库五大常用约束及作用。\n答案：1.主键约束（PRIMARY KEY）：唯一标识记录，非空且唯一；2.外键约束（FOREIGN KEY）：关联多表，保证数据参照完整性；3.非空约束（NOT NULL）：限制字段不能为空；4.唯一约束（UNIQUE）：保证字段值唯一，允许单个空值；5.默认约束（DEFAULT）：为字段设置默认填充值。\n解析：五大约束用于规范数据表数据，保证数据完整性、唯一性、有效性。",
+  "sourceQuestionId": "db-q53",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "short",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q54",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "简述索引的优缺点。\n答案：优点：1.大幅提升数据查询效率；2.加速多表联表查询速度；3.通过唯一索引保证数据唯一性。缺点：1.占用额外存储空间；2.降低增、删、改数据的执行效率；3.增加数据库维护开销。\n解析：索引适用于查询多、更新少的业务场景，需合理创建避免冗余。",
+  "sourceQuestionId": "db-q54",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q55",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "简述哪些场景不适合建立索引。\n答案：1.数据量极少的数据表，索引开销大于查询收益；2.高频增删改的字段，索引会大幅降低写入效率；3.重复度极高的字段，索引无法有效筛选数据；4.频繁为空的字段，索引利用率极低；5.短时间临时使用的字段。\n解析：索引需结合业务读写比例合理创建，避免无效索引。",
+  "sourceQuestionId": "db-q55",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q56",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "以下不属于事务四大特性的是？\n答案：时效性\n解析：事务四大特性为ACID：原子性、一致性、隔离性、持久性，无时效性。",
+  "sourceQuestionId": "db-q56",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q57",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "事务ACID中A代表的特性是？\n答案：原子性\n解析：A（Atomicity）原子性，指事务要么全部执行成功，要么全部回滚。",
+  "sourceQuestionId": "db-q57",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q58",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "事务执行成功后永久保存数据的特性是？\n答案：持久性\n解析：持久性（Durability）指事务提交后，数据修改永久生效，不会丢失。",
+  "sourceQuestionId": "db-q58",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q59",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "事务提交的关键字是？\n答案：COMMIT\n解析：COMMIT用于提交事务，确认所有数据修改永久生效。",
+  "sourceQuestionId": "db-q59",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q60",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "事务回滚的关键字是？\n答案：ROLLBACK\n解析：ROLLBACK用于回滚事务，撤销本次事务所有未提交的数据修改。",
+  "sourceQuestionId": "db-q60",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q61",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-multi-table-query"
+  ],
+  "text": "查询两张表交集数据的连接方式是？\n答案：INNER JOIN\n解析：INNER JOIN 内连接，只返回两张表中匹配成功的交集数据。",
+  "sourceQuestionId": "db-q61",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q62",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-multi-table-query"
+  ],
+  "text": "返回左表所有数据，右表匹配数据的连接是？\n答案：LEFT JOIN\n解析：左连接（LEFT JOIN）保留左表全部数据，右表无匹配则显示NULL。",
+  "sourceQuestionId": "db-q62",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q63",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-multi-table-query"
+  ],
+  "text": "FULL JOIN 的作用是？\n答案：两表所有数据\n解析：全连接（FULL JOIN）返回左表和右表中所有数据，无匹配项填充NULL。",
+  "sourceQuestionId": "db-q63",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q64",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "事务的原子性指事务操作不可分割。\n答案：正确\n解析：原子性要求事务所有操作要么全部成功提交，要么全部失败回滚。",
+  "sourceQuestionId": "db-q64",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q65",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "未提交的事务数据，所有客户端都可以查询到。\n答案：错误\n解析：数据库事务具备隔离性，未提交的脏数据，其他客户端无法查询。",
+  "sourceQuestionId": "db-q65",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q66",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "COMMIT提交后的事务数据永久生效。\n答案：正确\n解析：事务提交后满足持久性特性，数据修改永久保存，不会丢失。",
+  "sourceQuestionId": "db-q66",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q67",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "事务隔离级别可以解决脏读、幻读等问题。\n答案：正确\n解析：数据库四种隔离级别，可逐级解决脏读、不可重复读、幻读问题。",
+  "sourceQuestionId": "db-q67",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q68",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-multi-table-query"
+  ],
+  "text": "INNER JOIN 会保留左表所有不匹配数据。\n答案：错误\n解析：INNER JOIN仅返回两表匹配数据，不匹配数据全部过滤。",
+  "sourceQuestionId": "db-q68",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q69",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-multi-table-query"
+  ],
+  "text": "LEFT JOIN 查询结果可能包含NULL值。\n答案：正确\n解析：左表数据无右表匹配项时，右表字段会填充NULL值。",
+  "sourceQuestionId": "db-q69",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q70",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-multi-table-query"
+  ],
+  "text": "多表查询必须使用JOIN语句。\n答案：错误\n解析：可通过逗号分隔多表+WHERE关联条件实现联表查询，等价于内连接。",
+  "sourceQuestionId": "db-q70",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q71",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "简述事务ACID四大特性。\n答案：1.原子性（Atomicity）：事务操作不可分割，要么全成功、要么全回滚；2.一致性（Consistency）：事务执行前后，数据库数据完整性约束不变；3.隔离性（Isolation）：多个事务并发执行互不干扰，相互隔离；4.持久性（Durability）：事务提交后，数据修改永久生效，断电不丢失。\n解析：ACID是关系型数据库事务的核心标准，保障并发数据安全。",
+  "sourceQuestionId": "db-q71",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q72",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "简述数据库事务的三种并发问题。\n答案：1.脏读：一个事务读取到另一个事务未提交的脏数据；2.不可重复读：同一事务内，多次读取同一数据，结果被其他已提交事务修改，读取结果不一致；3.幻读：同一事务内，其他事务新增或删除数据，导致当前事务查询结果出现数据行数变化。\n解析：可通过调整事务隔离级别解决三种并发问题。",
+  "sourceQuestionId": "db-q72",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q73",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "简述MySQL四种事务隔离级别。\n答案：1.读未提交：最低级别，允许读取未提交数据，存在脏读、不可重复读、幻读；2.读已提交：只能读取已提交数据，解决脏读，存在不可重复读、幻读；3.可重复读：同一事务多次读取结果一致，解决脏读、不可重复读，存在幻读（MySQL默认级别）；4.串行化：最高级别，事务串行执行，解决所有并发问题，性能最低。\n解析：隔离级别越高，数据一致性越强，并发性能越低。",
+  "sourceQuestionId": "db-q73",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q74",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-multi-table-query"
+  ],
+  "text": "简述内连接、左连接、右连接的区别。\n答案：1.内连接（INNER JOIN）：只返回两张表中匹配成功的交集数据，无匹配则不展示；2.左连接（LEFT JOIN）：保留左表所有数据，匹配右表数据，无匹配则右表字段为NULL；3.右连接（RIGHT JOIN）：保留右表所有数据，匹配左表数据，无匹配则左表字段为NULL。\n解析：三者核心差异为保留数据范围，适用于不同联表查询场景。",
+  "sourceQuestionId": "db-q74",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q75",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "数据库表中不可再分的最小数据单元称为？\n答案：数据项\n解析：数据项是数据库中最基础、不可拆分的数据单元，是表结构的最小组成部分。",
+  "sourceQuestionId": "db-q75",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q76",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "E-R图中，矩形代表的是？\n答案：实体\n解析：E-R图规范：矩形表示实体，椭圆形表示属性，菱形表示实体联系。",
+  "sourceQuestionId": "db-q76",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q77",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "E-R图中菱形代表的是？\n答案：联系\n解析：E-R图中菱形用于表示不同实体之间的关联关系。",
+  "sourceQuestionId": "db-q77",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q78",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-ops"
+  ],
+  "text": "以下哪个语句用于删除数据表结构？\n答案：DROP TABLE\n解析：DROP TABLE 彻底删除数据表结构及所有数据，无法恢复。",
+  "sourceQuestionId": "db-q78",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q79",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-ops"
+  ],
+  "text": "TRUNCATE TABLE 和 DELETE 的主要区别是？\n答案：TRUNCATE无日志、不可回滚\n解析：DELETE逐条删除、记录日志可回滚；TRUNCATE清空表数据，不记录日志、无法回滚。",
+  "sourceQuestionId": "db-q79",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "choice",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q80",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "MySQL属于什么类型的数据库？\n答案：关系型\n解析：MySQL、Oracle、SQL Server均为主流关系型数据库，基于二维表存储数据。",
+  "sourceQuestionId": "db-q80",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q81",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "Redis属于什么类型的数据库？\n答案：键值对非关系型\n解析：Redis是基于内存的键值对NoSQL非关系型数据库，读写速度极快。",
+  "sourceQuestionId": "db-q81",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "choice",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q82",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "第一范式要求字段不可再分。\n答案：正确\n解析：1NF核心规则：所有字段为原子值，不可拆分、无复合数据。",
+  "sourceQuestionId": "db-q82",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q83",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "第二范式消除了非主键字段对主键的传递依赖。\n答案：错误\n解析：第二范式消除部分依赖，第三范式消除传递依赖。",
+  "sourceQuestionId": "db-q83",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q84",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "E-R图可以用于数据库概念结构设计。\n答案：正确\n解析：E-R模型是数据库概念设计的核心工具，用于梳理实体、属性、联系。",
+  "sourceQuestionId": "db-q84",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q85",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "三大范式可以完全杜绝所有数据异常。\n答案：错误\n解析：三大范式可大幅减少数据异常，部分场景需牺牲范式保留冗余，提升性能。",
+  "sourceQuestionId": "db-q85",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q86",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-ops"
+  ],
+  "text": "TRUNCATE操作速度比DELETE更快。\n答案：正确\n解析：TRUNCATE直接清空数据页，不逐行记录日志，执行效率远高于DELETE。",
+  "sourceQuestionId": "db-q86",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q87",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-ops"
+  ],
+  "text": "DROP操作的数据可以通过事务回滚恢复。\n答案：错误\n解析：DROP属于DDL语句，隐式提交事务，删除后无法回滚恢复。",
+  "sourceQuestionId": "db-q87",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q88",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-ops"
+  ],
+  "text": "数据库备份可以防止数据丢失。\n答案：正确\n解析：定期数据备份是数据库容灾、防止数据误删丢失的核心手段。",
+  "sourceQuestionId": "db-q88",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "truefalse",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q89",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "关系型数据库基于二维数据表存储数据。\n答案：正确\n解析：关系型数据库以行和列的二维表格形式组织、存储和管理数据。",
+  "sourceQuestionId": "db-q89",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q90",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "NoSQL数据库完全不支持事务。\n答案：错误\n解析：部分NoSQL数据库支持简单事务，仅不支持关系型数据库的完整ACID事务。",
+  "sourceQuestionId": "db-q90",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q91",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "Oracle是开源免费的关系型数据库。\n答案：错误\n解析：Oracle为商用收费数据库，MySQL是开源免费主流关系型数据库。",
+  "sourceQuestionId": "db-q91",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "truefalse",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q92",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "简述数据库三大范式的核心规则。\n答案：1.第一范式（1NF）：字段具有原子性，不可拆分，无复合数据；2.第二范式（2NF）：满足1NF，消除非主键字段对主键的部分函数依赖；3.第三范式（3NF）：满足2NF，消除非主键字段对主键的传递函数依赖。\n解析：三大范式逐级优化表结构，减少数据冗余和更新异常。",
+  "sourceQuestionId": "db-q92",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q93",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "简述E-R模型的三大组成要素。\n答案：1.实体：现实中独立存在的事物，对应数据表，E-R图用矩形表示；2.属性：实体的特征和参数，对应表字段，E-R图用椭圆形表示；3.联系：不同实体之间的关联关系，分为一对一、一对多、多对多，E-R图用菱形表示。\n解析：E-R三要素是数据库概念设计的基础，可快速梳理业务数据关系。",
+  "sourceQuestionId": "db-q93",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q94",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-ops"
+  ],
+  "text": "简述数据库常用优化方式。\n答案：1.SQL优化：避免SELECT *、合理使用索引、优化JOIN和子查询；2.索引优化：为高频查询字段建索引、删除无效索引；3.表结构优化：遵循三大范式、合理拆分大表、优化字段数据类型；4.配置优化：调整数据库连接数、缓存参数；5.架构优化：主从分离、读写分离、分库分表。\n解析：数据库优化从SQL、索引、结构、配置、架构多维度落地。",
+  "sourceQuestionId": "db-q94",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q95",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "简述关系型数据库和非关系型数据库的区别。\n答案：1.存储结构：关系型基于二维表存储，结构固定；非关系型基于键值、文档、图等结构，灵活松散；2.事务支持：关系型完整支持ACID事务，非关系型事务能力薄弱；3.扩展性：关系型横向扩展弱，非关系型分布式扩展能力强；4.适用场景：关系型适用于金融、订单等强一致性场景，非关系型适用于海量数据、高并发场景。\n解析：两类数据库互补，企业业务常组合使用。",
+  "sourceQuestionId": "db-q95",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "short",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q96",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中查询数据的核心语句是______。\n答案：SELECT\n解析：SELECT是数据查询DQL语句的核心关键字。",
+  "sourceQuestionId": "db-q96",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q97",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中插入数据的语句是______。\n答案：INSERT\n解析：INSERT INTO 表名(字段) VALUES(值) 为标准插入语法。",
+  "sourceQuestionId": "db-q97",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q98",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中更新数据的语句是______。\n答案：UPDATE\n解析：UPDATE用于修改数据表中已存在的记录数据。",
+  "sourceQuestionId": "db-q98",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q99",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中删除数据的语句是______。\n答案：DELETE\n解析：DELETE用于删除表中指定条件的数据记录。",
+  "sourceQuestionId": "db-q99",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q100",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "查询结果去重的关键字是______。\n答案：DISTINCT\n解析：DISTINCT可去除查询结果中的重复数据行。",
+  "sourceQuestionId": "db-q100",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q101",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "对查询结果降序排序的关键字是______。\n答案：DESC\n解析：ORDER BY 字段 DESC 实现降序排序，ASC为升序。",
+  "sourceQuestionId": "db-q101",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q102",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "限制查询结果条数的关键字是______。\n答案：LIMIT\n解析：LIMIT常用于数据库分页查询场景。",
+  "sourceQuestionId": "db-q102",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q103",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "分组后筛选数据需要使用______子句。\n答案：HAVING\n解析：HAVING适配GROUP BY分组后的条件筛选。",
+  "sourceQuestionId": "db-q103",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q104",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "SQL中用于从表中选取数据的语句是______。\n答案：SELECT\n解析：SELECT是查询核心。",
+  "sourceQuestionId": "db-q104",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q105",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "在WHERE子句中，判断列值是否为NULL应使用______操作符。\n答案：IS NULL\n解析：不能用 = NULL。",
+  "sourceQuestionId": "db-q105",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q106",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "为列起别名可以使用______关键字，通常可以省略。\n答案：AS\n解析：AS用于别名。",
+  "sourceQuestionId": "db-q106",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q107",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "ORDER BY子句默认的排序方式是______，若要降序需指定DESC。\n答案：ASC\n解析：ASC升序，DESC降序。",
+  "sourceQuestionId": "db-q107",
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q108",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "唯一标识数据表记录的约束是______。\n答案：主键约束\n解析：主键约束（PRIMARY KEY）是数据表记录的唯一标识。",
+  "sourceQuestionId": "db-q108",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q109",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "用于关联两张数据表的约束是______。\n答案：外键约束\n解析：外键约束保障多表数据的参照完整性。",
+  "sourceQuestionId": "db-q109",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q110",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "限制字段不能为空的约束关键字是______。\n答案：NOT NULL\n解析：NOT NULL强制字段必须赋值，不允许空值。",
+  "sourceQuestionId": "db-q110",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q111",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "为字段设置默认值的约束是______。\n答案：DEFAULT\n解析：DEFAULT约束可自动填充字段默认值。",
+  "sourceQuestionId": "db-q111",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q112",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "限制列取值范围可以使用______约束。\n答案：CHECK\n解析：CHECK定义条件。",
+  "sourceQuestionId": "db-q112",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q113",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "主键的约束条件是值必须______且非空。\n答案：唯一\n解析：主键要求唯一且不为NULL。",
+  "sourceQuestionId": "db-q113",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q114",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "InnoDB存储引擎的主键索引属于______索引。\n答案：聚簇\n解析：聚簇索引将数据与索引绑定，查询效率最高。",
+  "sourceQuestionId": "db-q114",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q115",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "数据库索引的核心作用是______查询效率。\n答案：提升\n解析：索引通过有序数据结构，大幅优化数据查询速度。",
+  "sourceQuestionId": "db-q115",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q116",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "B+树索引中，所有数据记录都存储在______节点中。\n答案：叶子\n解析：B+树的数据都在叶子层。",
+  "sourceQuestionId": "db-q116",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q117",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "一个索引包含了查询所需的所有列而不需要回表，称为______。\n答案：覆盖索引\n解析：覆盖索引直接提供查询结果。",
+  "sourceQuestionId": "db-q117",
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q118",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "事务的四大特性简称为______。\n答案：ACID\n解析：ACID对应原子性、一致性、隔离性、持久性。",
+  "sourceQuestionId": "db-q118",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q119",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "事务提交的关键字是______。\n答案：COMMIT\n解析：COMMIT用于提交事务，使数据修改永久生效。",
+  "sourceQuestionId": "db-q119",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q120",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "事务中使用______命令永久保存修改，使用ROLLBACK命令撤销修改。\n答案：COMMIT\n解析：提交和回滚是事务控制的基本命令。",
+  "sourceQuestionId": "db-q120",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q121",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "MySQL InnoDB引擎默认的事务隔离级别是______。\n答案：可重复读\n解析：MySQL默认REPEATABLE READ。",
+  "sourceQuestionId": "db-q121",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "fill",
+  "difficulty": "hard"
+ },
+ {
+  "id": "database-db-q122",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-multi-table-query"
+  ],
+  "text": "返回两个表中匹配行的连接称为______JOIN，返回左表所有行的连接称为LEFT JOIN。\n答案：INNER\n解析：内连接和外连接的区分。",
+  "sourceQuestionId": "db-q122",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q123",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-multi-table-query"
+  ],
+  "text": "合并两个查询结果并自动去除重复行的操作符是______。\n答案：UNION\n解析：UNION去重，UNION ALL不去重。",
+  "sourceQuestionId": "db-q123",
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q124",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "外键约束保证了数据的______完整性。\n答案：参照\n解析：外键实现参照完整性。",
+  "sourceQuestionId": "db-q124",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q125",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "第一范式要求表中的每个属性值都是______的。\n答案：原子\n解析：原子性即不可再分。",
+  "sourceQuestionId": "db-q125",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q126",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "为了提高查询性能，故意引入数据冗余称为______。\n答案：反范式化\n解析：反范式是性能调优手段。",
+  "sourceQuestionId": "db-q126",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q127",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "E-R图中的矩形代表______，椭圆代表属性。\n答案：实体\n解析：基本E-R图符号。",
+  "sourceQuestionId": "db-q127",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q128",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-ops"
+  ],
+  "text": "删除表中所有数据但保留表结构的命令是______。\n答案：TRUNCATE\n解析：TRUNCATE清空数据，DROP删除表。",
+  "sourceQuestionId": "db-q128",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "database-db-q129",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-ops"
+  ],
+  "text": "数据库系统的英文缩写是______。\n答案：DBS\n解析：DBS（Database System）代表完整的数据库系统。",
+  "sourceQuestionId": "db-q129",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q130",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-ops"
+  ],
+  "text": "数据库管理员的英文缩写是______。\n答案：DBA\n解析：DBA（Database Administrator）负责数据库运维、优化、权限管理。",
+  "sourceQuestionId": "db-q130",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q131",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "MongoDB是一种典型的______型NoSQL数据库。\n答案：文档\n解析：MongoDB存储BSON文档。",
+  "sourceQuestionId": "db-q131",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q132",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "CAP定理指出，分布式系统最多能同时满足一致性、可用性和______中的两个。\n答案：分区容错性\n解析：P代表Partition Tolerance。",
+  "sourceQuestionId": "db-q132",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q133",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "MySQL中用于存储数据库元数据（如表结构）的数据库是______。\n答案：information_schema\n解析：information_schema是系统库。",
+  "sourceQuestionId": "db-q133",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q134",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "授予用户权限的命令是______，收回权限的命令是REVOKE。\n答案：GRANT\n解析：权限控制的核心命令。",
+  "sourceQuestionId": "db-q134",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "easy"
+ },
+ {
+  "id": "database-db-q135",
+  "kind": "question",
+  "bank": "database",
+  "tags": [
+   "database-design",
+   "database-db-types"
+  ],
+  "text": "数据库崩溃恢复时，使用______日志重做已提交的事务，使用UNDO日志回滚未提交的事务。\n答案：REDO\n解析：REDO重做已提交事务，UNDO回滚未提交事务。",
+  "sourceQuestionId": "db-q135",
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "fill",
+  "difficulty": "medium"
+ },
+ {
+  "id": "overview-python-python-syntax",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-syntax"
+  ],
+  "text": "【知识点概览】Python · syntax\n本主题共 14 道题，Pythonsyntax的典型考点包括：\n- Python 中变量在使用前必须先声明类型。\n- Python 中的 `elif` 可以替代 `else if` 使用，效果完全相同。\n- Python 使用缩进（indentation）来标识代码块。\n- Python 中多条语句可以写在同一行，语句之间使用分号分隔。\n- Python 关键字可以被用作自定义变量名。\n- Python 多行注释可以使用三个单引号 ''' 或者三个双引号 \"\"\"。\n- 变量名可以以数字作为开头。\n- Python 区分大小写，变量 name 和 Name 是两个不同变量。\n- Python 中括号、引号可以不配对使用。\n- pass 语句是空语句，仅用于占位，不会执行任何操作。\n- 请说明 Python 中 `==` 和 `is` 的区别，并举例说明何时应该使用哪个。\n- Python 的 for 循环和 while 循环有什么区别？各适合什么场景？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-errorprone",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-errorprone"
+  ],
+  "text": "【知识点概览】Python · 易错点\n本主题共 41 道题，Python易错点的典型考点包括：\n- Python 关键字可以被用作自定义变量名。\n- 变量名可以以数字作为开头。\n- Python 中括号、引号可以不配对使用。\n- 字典（dict）的键（key）可以使用列表类型。\n- 字典中的值（value）不可以为列表类型。\n- 空字符串 '' 参与逻辑判断时，等价于 False。\n- 字符串属于可变数据类型，可以直接修改其中单个字符。\n- 空列表 [] 在逻辑判断中会被判定为 True。\n- += 属于 Python 中的复合赋值运算符。\n- 运算符优先级：算术运算符高于比较运算符。\n- for...else 结构中，循环正常结束没有触发 break 时，会执行 else 代码块。\n- continue 语句会直接终止整个循环的执行。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-data-types",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-data-types"
+  ],
+  "text": "【知识点概览】Python · data-types\n本主题共 16 道题，Pythondata-types的典型考点包括：\n- 请说明 Python 中 `==` 和 `is` 的区别，并举例说明何时应该使用哪个。\n- 在 Python 中，list 是可变类型，tuple 是不可变类型。\n- 以下哪个不是 Python 的基本数据类型？\n- 以下哪个表达式的结果为 True？\n- `type({})` 的返回值是？\n- 执行 `a = [1, 2, 3]; b = a; b.append(4)` 后，a 的值是？\n- 元组 tuple 创建完成后，内部元素可以直接修改。\n- 集合（set）中允许存放重复的元素。\n- 字典（dict）的键（key）可以使用列表类型。\n- 字典中的值（value）不可以为列表类型。\n- Python 中布尔类型只有 True 和 False 两个取值。\n- 空字符串 '' 参与逻辑判断时，等价于 False。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-control-flow",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-control-flow"
+  ],
+  "text": "【知识点概览】Python · control-flow\n本主题共 7 道题，Pythoncontrol-flow的典型考点包括：\n- Python 的 for 循环和 while 循环有什么区别？各适合什么场景？\n- if...elif...else 语句中，多个分支会同时执行。\n- for...else 结构中，循环正常结束没有触发 break 时，会执行 else 代码块。\n- break 语句可以终止当前所在的循环，跳出循环体。\n- continue 语句会直接终止整个循环的执行。\n- continue 语句可以跳出多层嵌套循环。\n- while 循环的条件表达式结果必须是布尔类型。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-operators",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-operators"
+  ],
+  "text": "【知识点概览】Python · operators\n本主题共 7 道题，Pythonoperators的典型考点包括：\n- 表达式 `3 ** 2 ** 2` 的结果是？\n- `print(1 or 2)` 的输出是？\n- Python 中 % 运算符的作用是求取两个数字的余数。\n- 逻辑运算符 and 表示两边条件同时成立，整体结果才为真。\n- += 属于 Python 中的复合赋值运算符。\n- 逻辑运算符 or 只要一侧条件为真，整体结果就为真。\n- 运算符优先级：算术运算符高于比较运算符。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-functions",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-functions"
+  ],
+  "text": "【知识点概览】Python · functions\n本主题共 13 道题，Pythonfunctions的典型考点包括：\n- Python 函数可以返回多个值。\n- 函数的默认参数值可以是可变对象（如 list），且行为总是安全的。\n- 以下哪个是正确的装饰器语法？\n- 执行以下代码，`y` 的值是？\n\n```python\ndef foo(x, lst=[]):\n    lst.append(x)\n    return lst\n\ny = foo(1)\ny = foo(2)\n```\n- 函数参数中 `*args` 和 `**kwargs` 的作用是？\n- 请解释 Python 中函数调用时的参数传递机制。它是按值传递还是按引用传递？请结合示例说明。\n- 以下哪个是 Python 中合法的 lambda 函数？\n- 函数必须设置返回值，不能省略 return 语句。\n- 函数的形参可以设置默认值，有默认值的参数必须放在参数列表末尾。\n- 调用函数时，传入的实参数量必须匹配无默认值的形参数量。\n- 函数可以作为另一个函数的参数进行传递。\n- 使用 global 关键字可以在函数内部修改全局变量。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-scope",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-scope"
+  ],
+  "text": "【知识点概览】Python · scope\n本主题共 3 道题，Pythonscope的典型考点包括：\n- 在 Python 中，可以在函数内部修改全局变量的值而不使用 global 关键字。\n- 使用 global 关键字可以在函数内部修改全局变量。\n- 全局变量在整个代码文件内都可以被访问。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-modules",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-modules"
+  ],
+  "text": "【知识点概览】Python · modules\n本主题共 6 道题，Pythonmodules的典型考点包括：\n- 以下哪个命令可以将模块 my_module 中的 func 函数导入到当前命名空间？\n- `__all__` 变量在 Python 模块中的作用是？\n- 使用 `from math import *` 会导入 math 模块中的所有公开属性。\n- 请说明 Python 模块的搜索路径顺序，以及如何修改模块搜索路径。\n- 导入模块后，可以直接使用 模块名.功能名 的方式调用内部功能。\n- 导入模块后，模块内部的私有变量可以被外部直接访问。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-oop",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-oop"
+  ],
+  "text": "【知识点概览】Python · 面向对象\n本主题共 12 道题，Python面向对象的典型考点包括：\n- Python 中所有类的方法的第一个参数都代表当前实例，通常命名为 self。\n- 请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。\n- 类是对象的模板，对象是类的实例。\n- __init__ 方法在手动调用类之后才会执行。\n- 类属性只能通过实例对象访问，不能通过类名直接访问。\n- 执行以下代码，输出是？\n\n```python\nclass A:\n    def __init__(self, v): self.v = v\n    def __eq__(self, other): return self.v == other.v\n\nclass B(A):\n    def __init__(self, v): self.v = v\n\na = A(1); b = B(1)\nprint(a == b)\n```\n- 子类无法重写父类已经定义好的方法。\n- 子类不能调用父类中已经重写的方法。\n- Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。\n- 实现多态的前提通常是子类重写父类的方法。\n- 不同子类调用同名重写方法，执行效果完全一致。\n- Pytho…（其余条目已省略）",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-classes",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-classes"
+  ],
+  "text": "【知识点概览】Python · classes\n本主题共 9 道题，Pythonclasses的典型考点包括：\n- 以下哪个不是 Python 的魔术方法（dunder method）？\n- Python 中使用 `@property` 装饰器可以让一个方法像属性一样被访问。\n- 以下哪种方法最适合实现类的『单例模式』？\n- 私有属性（如 `self.__x`）在 Python 中是完全无法从类外部访问的。\n- 下面代码的输出是？\n\n```python\nclass A:\n    x = 1\nclass B(A): pass\nclass C(A): pass\nA.x = 2\nprint(B.x, C.x)\n```\n- 请说明 Python 中 `__slots__` 的作用和使用场景，以及它与默认的 `__dict__` 相比有什么优势和限制。\n- 类是对象的模板，对象是类的实例。\n- __init__ 方法在手动调用类之后才会执行。\n- 类属性只能通过实例对象访问，不能通过类名直接访问。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-inheritance",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-inheritance"
+  ],
+  "text": "【知识点概览】Python · inheritance\n本主题共 5 道题，Pythoninheritance的典型考点包括：\n- Python 支持多继承，一个子类可以有多个父类。\n- 在 Python 中，以下哪种方式最符合『面向对象设计原则』中的『里氏替换原则』？\n- 使用 `class Child(Parent1, Parent2)` 定义类时，Child 类的方法解析顺序（MRO）是？\n- 子类无法重写父类已经定义好的方法。\n- 子类不能调用父类中已经重写的方法。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-polymorphism",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-polymorphism"
+  ],
+  "text": "【知识点概览】Python · polymorphism\n本主题共 6 道题，Pythonpolymorphism的典型考点包括：\n- 在 Python 中，以下哪种方式最符合『面向对象设计原则』中的『里氏替换原则』？\n- 执行以下代码，输出是？\n\n```python\nclass A:\n    def __init__(self, v): self.v = v\n    def __eq__(self, other): return self.v == other.v\n\nclass B(A):\n    def __init__(self, v): self.v = v\n\na = A(1); b = B(1)\nprint(a == b)\n```\n- Python 的 duck typing（鸭子类型）和传统的静态类型语言的多态有什么本质区别？请举例说明。\n- 实现多态的前提通常是子类重写父类的方法。\n- 不同子类调用同名重写方法，执行效果完全一致。\n- Python 实现多态不需要严格定义父类抽象方法。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-exceptions",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-exceptions"
+  ],
+  "text": "【知识点概览】Python · exceptions\n本主题共 7 道题，Pythonexceptions的典型考点包括：\n- 在 Python 中，`try...except...finally` 语句中，`finally` 块无论是否发生异常都会执行。\n- 以下哪个语法可以正确捕获所有类型的异常？\n- 执行以下代码，会输出什么？\n\n```python\ntry:\n    raise ValueError('error1')\nexcept ValueError as e:\n    print('caught')\n    raise TypeError('error2')\nfinally:\n    print('finally')\n```\n- 请说明 Python 中自定义异常类的最佳实践，包括如何命名、是否需要定义额外属性，以及在什么场景下应该创建自定义异常。\n- except 语句可以单独使用，不需要搭配 try 语句。\n- 可以针对不同类型的异常，设置多个 except 分支分别处理。\n- try 代码块中出现异常，后续代码依然会继续执行。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-studyhabit",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-studyhabit"
+  ],
+  "text": "【知识点概览】Python · studyhabit\n本主题共 5 道题，Pythonstudyhabit的典型考点包括：\n- 请说明 Python 中自定义异常类的最佳实践，包括如何命名、是否需要定义额外属性，以及在什么场景下应该创建自定义异常。\n- 请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。\n- 代码出现报错时，直接忽略报错继续编写即可。\n- 编写代码前梳理思路、简单注释，有助于减少出错概率。\n- 编写代码时统一缩进格式，是良好的 Python 编码习惯。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-files",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-files"
+  ],
+  "text": "【知识点概览】Python · files\n本主题共 8 道题，Pythonfiles的典型考点包括：\n- 使用 `with open('file.txt') as f:` 打开文件时，文件会在 with 块结束时自动关闭。\n- 以二进制模式写入二进制数据，正确的打开方式是？\n- 请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。\n- 以 r 模式打开文件时，可以向文件中写入新内容。\n- 以 w 模式打开文件，会清空文件原有内容再写入新数据。\n- readline() 方法每次只会读取文件中的一行内容。\n- 使用 a+ 模式打开文件，既可以读取内容也可以追加写入内容。\n- readlines() 方法会将文件所有行读取为一个列表返回。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-comprehensions",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-comprehensions"
+  ],
+  "text": "【知识点概览】Python · comprehensions\n本主题共 7 道题，Pythoncomprehensions的典型考点包括：\n- 请说明 Python 文件操作中『打开模式』的区别（r/w/a/r+/w+/a+/b/t），以及如何安全地处理文件操作中的异常。\n- 列表推导式 `[x for x in range(5)]` 与生成器表达式 `(x for x in range(5))` 完全等效。\n- `{x: x**2 for x in range(5)}` 创建的对象类型是？\n- 字典也可以使用推导式语法快速生成。\n- 集合推导式和列表推导式的语法符号完全相同。\n- 嵌套循环逻辑也可以使用列表推导式简化编写。\n- 推导式语法只能简化循环，不能搭配条件判断。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-python-python-decorators",
+  "kind": "tag-overview",
+  "bank": "python",
+  "tags": [
+   "python-decorators"
+  ],
+  "text": "【知识点概览】Python · decorators\n本主题共 6 道题，Pythondecorators的典型考点包括：\n- 执行以下代码，输出是？\n\n```python\ndef decorator(func):\n    return func\n\n@decorator\ndef foo():\n    return 'hello'\n\nprint(foo())\n```\n- 装饰器 `@functools.wraps(func)` 的主要作用是？\n- 带参数的装饰器 `@decorator(arg)` 本质上是一个返回装饰器的函数。\n- 使用装饰器会直接修改原函数内部的代码逻辑。\n- 多个装饰器可以同时装饰同一个函数。\n- 装饰器无法为函数添加额外的日志记录功能。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-syntax",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-syntax"
+  ],
+  "text": "【知识点概览】Java · syntax\n本主题共 17 道题，Javasyntax的典型考点包括：\n- 包（package）的作用是什么？\n- 导入一个包中所有类的正确语法是？\n- Java 中多行注释以 /* 开始，以什么结束？\n- 以下哪个是合法的 Java 标识符？\n- Java 程序编译后生成的文件扩展名是 ___。\n- main 方法参数列表中的数组类型是 ___[]。\n- Java Development Kit 的缩写是 ___。\n- Java Runtime Environment 的缩写是 ___。\n- Java 程序的执行入口方法是？\n- Java 单行注释使用哪个符号？\n- Java 用来划分代码块的符号是？\n- Java 语句结束标志是？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-errorprone",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-errorprone"
+  ],
+  "text": "【知识点概览】Java · 易错点\n本主题共 25 道题，Java易错点的典型考点包括：\n- Java 用来划分代码块的符号是？\n- Java 语句结束标志是？\n- Java 使用________符号划分代码块。\n- 布尔类型的取值个数是？\n- 获取数组长度使用以下哪项？\n- 以下浮点类型是？\n- String 属于________数据类型。\n- 获取数组长度使用________属性。\n- 具备短路效果的逻辑与运算符是？\n- 三元运算符的表达式个数是？\n- 具备短路效果的逻辑与运算符是________。\n- 以下哪项不是循环语句？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-data-types",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-data-types"
+  ],
+  "text": "【知识点概览】Java · data-types\n本主题共 20 道题，Javadata-types的典型考点包括：\n- 以下哪个是正确的数组声明？\n- 将 int 转换为 Integer 的过程称为？\n- 以下哪个字面量表示 float 类型？\n- 将 double 赋值给 int 会发生什么？\n- Java 中布尔类型的字面量只有 true 和 ___。\n- char 类型在 Java 中占用 ___ 个字节。\n- Java 为了节省内存，字符串字面量存储在 ___ 池中。\n- 引用类型变量可以赋值为 ___，表示不指向任何对象。\n- 以下不属于 Java 基本数据类型的是？\n- 布尔类型的取值个数是？\n- Java 数组下标起始位置是？\n- 获取数组长度使用以下哪项？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-operators",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-operators"
+  ],
+  "text": "【知识点概览】Java · operators\n本主题共 15 道题，Javaoperators的典型考点包括：\n- 表达式 int a = 5; int b = a++; 执行后 a 和 b 的值分别是？\n- 三元运算符 ?: 的语法是 condition ? expr1 : expr2，expr1 和 expr2 的类型必须？\n- 以下哪个是复合赋值运算符？\n- Java 中求余运算符是 ___。\n- 有符号右移运算符是 ___。\n- 逻辑或的短路运算符是 ___。\n- instanceof 运算符用于测试对象是否为某个 ___ 的实例。\n- 判断两个基本类型数值是否相等使用？\n- 具备短路效果的逻辑与运算符是？\n- 赋值运算符是？\n- 三元运算符的表达式个数是？\n- 判断基本类型数值相等使用________运算符。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-control-flow",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-control-flow"
+  ],
+  "text": "【知识点概览】Java · control-flow\n本主题共 13 道题，Javacontrol-flow的典型考点包括：\n- 增强 for 循环（for-each）的语法是？\n- continue 语句的作用是？\n- if (condition) { } else { } 中，if 后面的条件必须是？\n- Java 中带标签的 break 用于？\n- switch 语句中的表达式类型可以是 byte, short, int, char, String 以及 ___ 类型（自 Java 5）。\n- ___ 循环至少执行一次循环体。\n- 增强 for 循环的语法是 for (type var : ___)。\n- 使用带 ___ 的 break 可以跳出多重循环。\n- 跳出当前循环的语句是？\n- 以下哪项不是循环语句？\n- do...while 循环的特点是？\n- 多选一分支语句是？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-functions",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-functions"
+  ],
+  "text": "【知识点概览】Java · functions\n本主题共 12 道题，Javafunctions的典型考点包括：\n- 如果一个方法声明返回类型为 void，可以省略 return 语句吗？\n- 可变参数（varargs）的语法是？\n- 递归函数必须包含？\n- 方法重写时，子类方法的返回类型可以是父类方法返回类型的子类吗？\n- 方法签名由方法名和 ___ 列表组成。\n- 使用 ___ import 可以导入类的静态成员，直接使用而不需要类名前缀。\n- 使用 ___ 语句从方法中返回值。\n- 方法重载的解析发生在 ___ 时（编译期或运行期）。\n- 表示方法无返回值的关键字是？\n- 方法重载的要求不包括？\n- 方法返回数据使用的关键字是？\n- 构造方法是否存在返回值？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-2",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-oop",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-oop"
+  ],
+  "text": "【知识点概览】Java · 面向对象\n本主题共 18 道题，Java面向对象的典型考点包括：\n- 创建一个对象使用的关键字是？\n- 以下哪个访问修饰符的可见性范围最大？\n- 静态变量存储在内存的哪个区域？\n- 关键字 this 在构造器中可以用来调用另一个重载构造器，语法是？\n- 构造器的名称必须与 ___ 名完全相同。\n- Java 自动内存管理机制称为 ___ 收集。\n- 将实例变量声明为 private，然后提供公共的 getter/setter，体现了面向对象的 ___ 特性。\n- 使用 ___ 可以判断对象是否属于某个类。\n- 定义类使用的关键字是？\n- 创建对象使用哪个关键字？\n- 实现类继承的关键字是？\n- Java 类的继承形式是？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-classes",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-classes"
+  ],
+  "text": "【知识点概览】Java · classes\n本主题共 15 道题，Javaclasses的典型考点包括：\n- 创建一个对象使用的关键字是？\n- 以下哪个访问修饰符的可见性范围最大？\n- 静态变量存储在内存的哪个区域？\n- 关键字 this 在构造器中可以用来调用另一个重载构造器，语法是？\n- 构造器的名称必须与 ___ 名完全相同。\n- Java 自动内存管理机制称为 ___ 收集。\n- 将实例变量声明为 private，然后提供公共的 getter/setter，体现了面向对象的 ___ 特性。\n- 定义类使用的关键字是？\n- 创建对象使用哪个关键字？\n- 构造方法的名称要求是？\n- 对象的成员变量也可称为？\n- 权限最小、仅本类可访问的修饰符是？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-inheritance",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-inheritance"
+  ],
+  "text": "【知识点概览】Java · inheritance\n本主题共 10 道题，Javainheritance的典型考点包括：\n- 实现类继承的关键字是？\n- Java 类的继承形式是？\n- 子类重写父类方法的目的是？\n- 子类不能继承父类哪类成员？\n- final 关键字修饰的类有什么特点？\n- 关于抽象类，以下说法正确的是？\n- 所有 Java 类的最终父类是？\n- 类继承使用 ___ 关键字。\n- 包含抽象方法的类必须声明为 ___ 类。\n- 用 ___ 修饰的方法不能被子类重写。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-polymorphism",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-polymorphism"
+  ],
+  "text": "【知识点概览】Java · polymorphism\n本主题共 6 道题，Javapolymorphism的典型考点包括：\n- 多态的运行特点是？\n- 子类对象赋值给父类引用的过程称为？\n- 向下转型（downcasting）需要？\n- instanceof 运算符返回什么类型？\n- Java 中对于重写的方法，调用时采用 ___ 绑定（根据实际对象类型）。\n- 将父类引用强制转换为子类类型称为向 ___ 转型。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-3",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-exceptions",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-exceptions"
+  ],
+  "text": "【知识点概览】Java · exceptions\n本主题共 10 道题，Javaexceptions的典型考点包括：\n- throws 关键字用于？\n- 创建自定义 checked 异常应该继承哪个类？\n- 以下哪个是运行时异常（unchecked exception）？\n- 多个 catch 块捕获异常时，顺序应该是？\n- 手动抛出异常使用 ___ 关键字。\n- try-catch 块后可以跟一个可选的 ___ 块，用于清理资源。\n- 严重的问题如 OutOfMemoryError 是 ___ 类的子类，通常不捕获。\n- 捕获异常使用的关键字组合是？\n- 无论是否异常都会执行的代码块关键字是？\n- 运行时异常英文简称是？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-io",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-io"
+  ],
+  "text": "【知识点概览】Java · IO 流\n本主题共 9 道题，JavaIO 流的典型考点包括：\n- BufferedReader 相对于 FileReader 的优势是？\n- Java NIO 中的核心组件不包括？\n- java.nio.file.Paths 类的 get() 方法用于？\n- Java 传统 IO 流的核心包是 java.___。\n- 对象序列化需要实现 ___ 接口。\n- Java NIO 的核心包是 java.___。\n- Java IO 流分为字节流和？\n- 专门操作文本文件优先使用？\n- 以下哪个类用于描述文件本身？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-collections",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-collections"
+  ],
+  "text": "【知识点概览】Java · collections\n本主题共 10 道题，Javacollections的典型考点包括：\n- 以下哪个 List 实现类底层使用数组？\n- HashSet 判断元素重复的依据是？\n- 要实现对象的自然排序，应该实现哪个接口？\n- 键值对存储的顶级接口是 ___。\n- 遍历集合的标准设计模式是 ___。\n- 先进先出（FIFO）的集合接口是 ___。\n- List 接口保证元素的 ___ 顺序。\n- 以下属于有序可重复集合的是？\n- HashMap 集合中不允许重复的是？\n- 获取集合元素个数使用？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-generics",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-generics"
+  ],
+  "text": "【知识点概览】Java · generics\n本主题共 5 道题，Javagenerics的典型考点包括：\n- Java 泛型是通过什么机制实现的？\n- 通配符 ? extends Number 的含义是？\n- Java 7 引入的菱形运算符（<>）的作用是？\n- 泛型类型参数通常使用单个大写字母，如 T 表示 Type，E 表示 ___。\n- 无限制通配符是 ___。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-multithreading",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-multithreading"
+  ],
+  "text": "【知识点概览】Java · multithreading\n本主题共 6 道题，Javamultithreading的典型考点包括：\n- 创建线程的两种主要方式是继承 Thread 类和实现哪个接口？\n- Thread.sleep(1000) 可能抛出什么异常？\n- volatile 关键字的主要作用是？\n- 启动新线程应调用 Thread 对象的 ___ 方法，而不是直接调用 run()。\n- 等待一个线程结束的方法是 ___。\n- synchronized 代码块中使用的锁对象可以是任何 ___ 对象。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-lambda",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-lambda"
+  ],
+  "text": "【知识点概览】Java · lambda\n本主题共 6 道题，Javalambda的典型考点包括：\n- 以下哪个是 Java 中合法的 Lambda 表达式？\n- Stream API 中的终端操作（terminal operation）是？\n- 方法引用 System.out::println 等价于以下哪个 Lambda 表达式？\n- 如果一个接口只有一个抽象方法，则称为 ___ 接口。\n- Stream API 中用于将流元素收集到集合的终端操作是 ___。\n- 将 Stream 转换为并行流可以使用 ___() 方法。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-java-java-annotations",
+  "kind": "tag-overview",
+  "bank": "java",
+  "tags": [
+   "java-annotations"
+  ],
+  "text": "【知识点概览】Java · annotations\n本主题共 4 道题，Javaannotations的典型考点包括：\n- @Override 注解的作用是？\n- @Retention(RetentionPolicy.RUNTIME) 表示注解会保留到？\n- @Deprecated 注解用于标记已过时的程序元素，编译器会生成 ___ 警告。\n- @Target 注解用于指定自定义注解可以应用的 ___ 元素类型。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-database-database-fundamentals",
+  "kind": "tag-overview",
+  "bank": "database",
+  "tags": [
+   "database-fundamentals"
+  ],
+  "text": "【知识点概览】数据库 · 数据库基础\n本主题共 7 道题，数据库数据库基础的典型考点包括：\n- 数据库的英文缩写是？\n- 数据库管理系统的英文缩写是？\n- 以下不属于数据库三大范式作用的是？\n- 数据库系统包含数据库、数据库管理系统、管理员和应用程序。\n- 数据冗余一定是有害的，需要完全消除。\n- 数据库的核心目的是高效存储和管理数据。\n- 简述数据库、数据库管理系统、数据库系统的区别。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-database-database-sql-basics",
+  "kind": "tag-overview",
+  "bank": "database",
+  "tags": [
+   "database-sql-basics"
+  ],
+  "text": "【知识点概览】数据库 · SQL 基础\n本主题共 38 道题，数据库SQL 基础的典型考点包括：\n- SQL中用于查询数据的关键字是？\n- SQL中用于插入新数据的语句是？\n- SQL中用于修改表中已有数据的语句是？\n- SQL中用于删除表中数据的语句是？\n- 以下哪个关键字用于SQL条件筛选？\n- SQL中用于排序的关键字是？\n- SQL中用于去重的关键字是？\n- 以下哪个函数用于统计数据行数？\n- 以下哪个函数用于计算平均值？\n- SUM()函数的作用是？\n- GROUP BY的作用是？\n- 分组后筛选数据需要使用哪个子句？",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-db-1",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-database-database-constraints",
+  "kind": "tag-overview",
+  "bank": "database",
+  "tags": [
+   "database-constraints"
+  ],
+  "text": "【知识点概览】数据库 · 数据库约束\n本主题共 19 道题，数据库数据库约束的典型考点包括：\n- 主键约束的关键字是？\n- 外键约束的关键字是？\n- 用于限制字段值唯一的约束是？\n- 用于限制字段不能为空的约束是？\n- DEFAULT约束的作用是？\n- CHECK约束的作用是？\n- 主键可以为NULL。\n- 一张数据表只能有一个主键。\n- UNIQUE约束字段允许存在一个NULL值。\n- 外键约束可以关联非主键字段。\n- DEFAULT默认值可以为NULL。\n- CHECK约束可以限制字符串长度。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-database-database-index",
+  "kind": "tag-overview",
+  "bank": "database",
+  "tags": [
+   "database-index"
+  ],
+  "text": "【知识点概览】数据库 · 数据库索引\n本主题共 13 道题，数据库数据库索引的典型考点包括：\n- 以下哪种索引查询效率最高？\n- 索引的主要作用是？\n- 以下哪种场景不适合建立索引？\n- 索引可以提升增删改查所有操作的效率。\n- 主键索引属于聚簇索引。\n- 数据表索引越多越好。\n- NULL值不会被普通索引收录。\n- 简述索引的优缺点。\n- 简述哪些场景不适合建立索引。\n- InnoDB存储引擎的主键索引属于______索引。\n- 数据库索引的核心作用是______查询效率。\n- B+树索引中，所有数据记录都存储在______节点中。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-db-2",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-database-database-transaction",
+  "kind": "tag-overview",
+  "bank": "database",
+  "tags": [
+   "database-transaction"
+  ],
+  "text": "【知识点概览】数据库 · 数据库事务\n本主题共 16 道题，数据库数据库事务的典型考点包括：\n- 以下不属于事务四大特性的是？\n- 事务ACID中A代表的特性是？\n- 事务执行成功后永久保存数据的特性是？\n- 事务提交的关键字是？\n- 事务回滚的关键字是？\n- 事务的原子性指事务操作不可分割。\n- 未提交的事务数据，所有客户端都可以查询到。\n- COMMIT提交后的事务数据永久生效。\n- 事务隔离级别可以解决脏读、幻读等问题。\n- 简述事务ACID四大特性。\n- 简述数据库事务的三种并发问题。\n- 简述MySQL四种事务隔离级别。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-database-database-multi-table-query",
+  "kind": "tag-overview",
+  "bank": "database",
+  "tags": [
+   "database-multi-table-query"
+  ],
+  "text": "【知识点概览】数据库 · 多表查询\n本主题共 9 道题，数据库多表查询的典型考点包括：\n- 查询两张表交集数据的连接方式是？\n- 返回左表所有数据，右表匹配数据的连接是？\n- FULL JOIN 的作用是？\n- INNER JOIN 会保留左表所有不匹配数据。\n- LEFT JOIN 查询结果可能包含NULL值。\n- 多表查询必须使用JOIN语句。\n- 简述内连接、左连接、右连接的区别。\n- 返回两个表中匹配行的连接称为______JOIN，返回左表所有行的连接称为LEFT JOIN。\n- 合并两个查询结果并自动去除重复行的操作符是______。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-db-3",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-database-database-design",
+  "kind": "tag-overview",
+  "bank": "database",
+  "tags": [
+   "database-design"
+  ],
+  "text": "【知识点概览】数据库 · 数据库设计\n本主题共 14 道题，数据库数据库设计的典型考点包括：\n- 数据库表中不可再分的最小数据单元称为？\n- E-R图中，矩形代表的是？\n- E-R图中菱形代表的是？\n- 第一范式要求字段不可再分。\n- 第二范式消除了非主键字段对主键的传递依赖。\n- E-R图可以用于数据库概念结构设计。\n- 三大范式可以完全杜绝所有数据异常。\n- 简述数据库三大范式的核心规则。\n- 简述E-R模型的三大组成要素。\n- 外键约束保证了数据的______完整性。\n- 第一范式要求表中的每个属性值都是______的。\n- 为了提高查询性能，故意引入数据冗余称为______。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-database-database-ops",
+  "kind": "tag-overview",
+  "bank": "database",
+  "tags": [
+   "database-ops"
+  ],
+  "text": "【知识点概览】数据库 · 数据库运维\n本主题共 9 道题，数据库数据库运维的典型考点包括：\n- 以下哪个语句用于删除数据表结构？\n- TRUNCATE TABLE 和 DELETE 的主要区别是？\n- TRUNCATE操作速度比DELETE更快。\n- DROP操作的数据可以通过事务回滚恢复。\n- 数据库备份可以防止数据丢失。\n- 简述数据库常用优化方式。\n- 删除表中所有数据但保留表结构的命令是______。\n- 数据库系统的英文缩写是______。\n- 数据库管理员的英文缩写是______。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ },
+ {
+  "id": "overview-database-database-db-types",
+  "kind": "tag-overview",
+  "bank": "database",
+  "tags": [
+   "database-db-types"
+  ],
+  "text": "【知识点概览】数据库 · 数据库类型\n本主题共 11 道题，数据库数据库类型的典型考点包括：\n- MySQL属于什么类型的数据库？\n- Redis属于什么类型的数据库？\n- 关系型数据库基于二维数据表存储数据。\n- NoSQL数据库完全不支持事务。\n- Oracle是开源免费的关系型数据库。\n- 简述关系型数据库和非关系型数据库的区别。\n- MongoDB是一种典型的______型NoSQL数据库。\n- CAP定理指出，分布式系统最多能同时满足一致性、可用性和______中的两个。\n- MySQL中用于存储数据库元数据（如表结构）的数据库是______。\n- 授予用户权限的命令是______，收回权限的命令是REVOKE。\n- 数据库崩溃恢复时，使用______日志重做已提交的事务，使用UNDO日志回滚未提交的事务。",
+  "sourceQuestionId": null,
+  "partIndex": 0,
+  "moduleId": "module-db-4",
+  "type": "overview",
+  "difficulty": "mixed"
+ }
+]

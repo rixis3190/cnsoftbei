@@ -386,9 +386,9 @@ d:/GitHub laqudaima/cnsoftbei/
 | P-06 | P1 | `aiReviewAnswer` 评审失败返回 80，伪装成"通过" | `Tutor.tsx:193` 解析失败兜底 80、L195 异常兜底 80 | 改为返回 `{ score, degraded }`，`degraded` 计入报告的"评审降级率"（计划 S3-6） | 待修 |
 | P-07 | P1 | `README.md` 代码块未闭合，模板文字被吞 | L4 起四个反引号未闭合 | 修 markdown；替换 Vite 模板文字为真实项目概述（计划 S6-4） | 待修 |
 | P-08 | ~~P1~~ | ~~`AGENTS.md` / `CLAUDE.md` 内容过时~~ | L18 说"没有测试框架"（实际有 vitest+playwright+4 个 CI job）；Key 处理方式已变；引用了不存在的文档 | **已修**（台账 #13）：`AGENTS.md` 精简为指向 `README.md` 的入口指针；`CLAUDE.md` 已废止删除（§0.3 裁决）。原 S6-5「两份逐字同步」任务随之作废 | **已修**（台账 #13、#17） |
-| P-09 | P2 | `calculateModuleProgress` 纯简答模块返回 NaN | 除零 | 除零保护 + 单测（计划 S3-5） | 待修 |
-| P-10 | P2 | 相似度算法双份实现（逐字 vs 2-gram，结果不可比） | `practiceGrader.ts:132-146` 私有 jaccard | 统一到 `tutorQuality` 单一实现；若统一后现有测试红且分数行为确有变化，则**保留旧实现并注释说明差异**（诚实优于整洁）（计划 S6-1 / §7 ADR-08） | 待修 |
-| P-11 | P2 | prompt 双份真相 | `gradeByAI` 内联 prompt 与 `buildGradeByAIMessages` 重复，另有死代码 | 收敛到 `promptBuilder`（计划 S3-5） | 待修 |
+| P-09 | P2 | `calculateModuleProgress` 纯简答模块返回 NaN | 除零 | 除零保护 + 单测（计划 S3-5） | **已修**（2026-10-08 核实）：现有实现已带除零保护，`practiceGrader.test.ts` 有用例断言不返回 NaN，无需改动 |
+| P-10 | P2 | 相似度算法双份实现（逐字 vs 2-gram，结果不可比） | `practiceGrader.ts:132-146` 私有 jaccard | 统一到 `tutorQuality` 单一实现；若统一后现有测试红且分数行为确有变化，则**保留旧实现并注释说明差异**（诚实优于整洁）（计划 S6-1 / §7 ADR-08） | **已修**（2026-10-08）：私有实现删除，统一用 `jaccardText`；阈值 0.6/0.2 刻意保留不变（理由见 `practiceGrader.ts` 注释表），并新增数值级回归用例锁定 0.625 / 0.207 两个实测值 |
+| P-11 | P2 | prompt 双份真相 | `gradeByAI` 内联 prompt 与 `buildGradeByAIMessages` 重复，另有死代码 | 收敛到 `promptBuilder`（计划 S3-5） | **已修**（2026-10-08 核实）：`practiceGrader.gradeByAI` 已改调 `buildGradeByAIMessages`，无内联 prompt 残留 |
 | P-12 | P2 | `learning-agent/` 残留目录含第二处密钥（讯飞星火） | 33,369 文件，多为已构建 dist | **先删其中 `.env.local`**（止损）；整目录删除需三步前置确认（计划 T-6 / S6-3），因未被 git 追踪故不可 `git checkout` 恢复 | 待修 |
 | P-13 | P2 | CI Node 版本可能不兼容 vite@8/vitest@4 | `node-version: 20` 范围过宽 | 统一 `20.19.0` + `engines`（计划 S5-3） | 待修 |
 | P-14 | **P1** | `npm run lint` 红：**59 errors / 6 warnings**（38 `no-explicit-any` / 8 `react-hooks/set-state-in-effect` / 6 `no-empty` / 4 `no-unused-vars` / 3 `react-refresh/only-export-components`）。**分布：`src/` 52 处 + `tests/` 7 处**（原写「52 / 全在 src/」，漏算 tests 侧 7 处 any，2026-10-07 复核更正） | 既有类型与 React Hooks 技术债；`set-state-in-effect` 与 `only-export-components` 的修复会**改动运行时行为**，不适合顺手改 | 分批专项治理，任务卡见 **§8.1 B-0**：① `no-unused-vars` + `no-empty`（零行为风险，可立即做）；② `any` 逐文件收窄；③ `set-state-in-effect` / `only-export-components` 需配合页面重构，单独排期。**在此之前 CI lint job 持续红**（§13 B-18） | **第 1 批已修**（台账 #18）：`no-empty` 6 + `no-unused-vars` 4 全部清零，**59 → 42 errors**；`tsc -b` 0 错误；`npm test` **334/334 全绿**。剩 42 = `any` 31 + `set-state-in-effect` 8 + `only-export-components` 3，对应 §8.1 B-0 第 2/3 批。另：原计划给 `tests/` 加 disable 注释的做法**作废**——`eslint.config.js` 已有 `tests/**` → `no-explicit-any: off` 的 override，加注释反而触发 unused 告警 |
@@ -687,16 +687,20 @@ git --no-pager log --oneline -20
 | 开关 | 默认 | 关闭时行为 |
 |---|---|---|
 | `RAG_ENABLED` | `false` | 检索返回 `[]`，不注入上下文，行为 = 改造前 |
-| `SEMANTIC_LAYER_ENABLED` | `true` | 跳过语义层（仍计算并记录），拦截交给规则层 + 模型层 |
-| `MODEL_LAYER_ENABLED` | `true` | 只走规则层 + 语义层；`modelScore=null` |
-| `SEMANTIC_SHADOW_MODE` | `false` | 语义层只记录不拦截（阈值区分度不足时用） |
-| `EVAL_MODE` | `offline` | `live` 才允许真实 LLM 调用 |
+| `SEMANTIC_LAYER_ENABLED` | `false` | 跳过语义层，拦截交给规则层 + 模型层（**默认就是关的**；且 Tutor 生产链路不传 `reference/scorer`，即使打开也恒为 skipped） |
+| `MODEL_LAYER_ENABLED` | `true` | 只走规则层 + 语义层；`modelScore=null`，`layersSkipped` 含 `model` |
+| `SEMANTIC_SHADOW_MODE` | `true` | 语义层只记录不拦截（阈值区分度不足时用；默认即为影子模式） |
+| `EVAL_MODE` | `offline` | `live` 才允许真实 LLM 调用（`liveEvalAllowed()` 目前**尚未接线**到出网入口） |
 | `RETRIEVAL_FLOOR` | 阈值脚本产出 | 全部低于 floor → 判无覆盖，不注入 |
-| `MODEL_DEGRADE_IS_BLOCKING` | `false` | 模型层降级不阻塞用户体验，只计入报告 |
+| `MODEL_DEGRADE_IS_BLOCKING` | `false` | 模型层降级不阻塞用户体验，只计入报告；设 `true` 时降级会 `accepted=false` |
 
-**五级降级链**：L0 正常 → L1 语义层降级（只记录）→ L2 模型层降级（`modelDegraded=true` 不阻塞）→ L3 RAG 降级（不注入上下文，**绝不注入空上下文**）→ L4 纯规则降级（等价于改造前）。
+> 默认值以 `src/config/evalConfig.ts` 为准（上面的表在 2026-10-08 已与代码对齐；
+> 覆盖方式为带 `VITE_` 前缀的环境变量）。改动默认值时必须同步本表 +
+> `实施计划_细化版.md §1.2` + `docs/eval-methodology.md`，三处一起改。
 
-**硬性实现约束**：语义层与模型层必须被 `try/catch` 包住且**绝不向 `Tutor.tsx` 抛异常**；`buildIndex` 捕获导入/解码失败后返回 `null`，检索见到 `null` 返回 `[]` 并打 `ragUnavailable` 标记；任何降级都要能在 `eval-report.html` 里看到。
+**五级降级链**：L0 正常 → L1 语义层降级（只记录）→ L2 模型层降级（`modelDegraded=true`，是否阻塞由 `MODEL_DEGRADE_IS_BLOCKING` 决定）→ L3 RAG 降级（不注入上下文，**绝不注入空上下文**）→ L4 纯规则降级（等价于改造前）。
+
+**硬性实现约束**：语义层与模型层必须被 `try/catch` 包住且**绝不向 `Tutor.tsx` 抛异常**；`buildIndex` 捕获导入/解码失败后返回 `null`，检索见到 `null` 返回 `[]` 并打 `ragUnavailable` 标记；每层是否执行由 `FunnelResult.layersRun` / `layersSkipped` 显式记录（**目前只写 console 日志，`eval-report.html` 侧尚未接线降级卡片** —— 若要按「任何降级都要在报告里看到」执行，先补齐报告再引用本条）。
 
 ---
 

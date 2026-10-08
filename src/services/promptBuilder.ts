@@ -183,6 +183,69 @@ export function buildQuizAnalysisPrompt(): string {
 // ==================== practiceGrader AI 判分 Prompt ====================
 
 /** 构建 AI 判分的 messages（system + user） */
+/**
+ * 质量评审 prompt（收敛自 Tutor.tsx 内联的评审提示词，计划 S3-4）
+ * 只输出整数：LLM-as-judge 的分数漂移是已知风险（T3-R4），温度已配置化。
+ */
+export function buildQualityReviewPrompt(): string {
+  return '你是一个严格的教育内容质量评审员。请评估以下回答的质量（0-100分）。评分标准：准确性(40%)、完整性(30%)、清晰度(20%)、实用性(10%)。只输出一个整数分数。';
+}
+
+/** 评审请求的 messages（便于单测断言 prompt 内容） */
+export function buildQualityReviewMessages(
+  questionText: string,
+  answer: string,
+): { system: string; user: string } {
+  return {
+    system: buildQualityReviewPrompt(),
+    user: `问题：${questionText}\n\n回答：${answer.substring(0, 2000)}\n\n请只输出一个0-100的整数分数。`,
+  };
+}
+
+/**
+ * 把拦截原因转成重生成反馈（计划 S3-4）。
+ * 单条原因时保持既有措辞（避免改变 Tutor 原有的重试提示），
+ * 多条原因时列点给出可执行的改进方向。
+ */
+export function buildRagRegenerateHint(reasons: readonly string[]): string {
+  if (reasons.length === 0) return ''
+  if (reasons.length === 1) {
+    return `你的回答质量评分仅偏低：${reasons[0]}。请改进回答的准确性、完整性和清晰度，重新回答。`;
+  }
+  const list = reasons.map((r, i) => `${i + 1}. ${r}`).join('\n');
+  return `你的回答质量评分偏低，问题如下：\n${list}\n请针对以上问题改进回答的准确性、完整性和清晰度，重新回答。`;
+}
+
+/**
+ * RAG 回答提示词（计划 S4-3）
+ *
+ * 关键约束：**chunks 为空时返回空上下文**（''），而不是「无约束的默认 prompt」——
+ * 否则 RAG 关掉后模型仍被暗示「可以依据资料回答」，行为与改造前不一致，
+ * 破坏「RAG_ENABLED=false 等价于改造前」这条安全网（计划 §1.2）。
+ */
+export function buildRagAnswerPrompt(
+  chunks: readonly { index: number; text: string; tagLabel: string }[],
+  profile: StudentProfile | null,
+): { context: string; systemSuffix: string } {
+  if (chunks.length === 0) {
+    return { context: '', systemSuffix: '' }
+  }
+  const context = chunks
+    .map(c => `[${c.index}]（${c.tagLabel || '知识点'}）\n${c.text}`)
+    .join('\n\n')
+  const systemSuffix = [
+    '',
+    '【参考资料】',
+    context,
+    '',
+    '回答要求：',
+    '1. 仅依据上面给出的资料回答，不要补充资料之外的事实；',
+    '2. 资料未覆盖的部分，直接说明「给定的资料中没有说明」，不要推测；',
+    '3. 引用资料时用 [1]、[2] 标注来源编号。',
+  ].join('\n')
+  return { context, systemSuffix: systemSuffix + buildProfileContext(profile) }
+}
+
 export function buildGradeByAIMessages(
   questionText: string,
   sampleAnswer: string,

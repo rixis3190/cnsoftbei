@@ -69,7 +69,8 @@ interface DimensionItem {
 /* ------------------------------------------------------------------ */
 
 const Assessment: React.FC = () => {
-  const [practiceState, setPracticeState] = useState<PracticeState | null>(null);
+  // 初始数据在首帧同步读取，后续只由事件触发重新加载
+  const [practiceState, setPracticeState] = useState<PracticeState | null>(() => loadPracticeState());
 
   const loadData = () => {
     const state = loadPracticeState();
@@ -77,7 +78,6 @@ const Assessment: React.FC = () => {
   };
 
   useEffect(() => {
-    loadData();
     const handler = () => loadData();
     window.addEventListener('storage', handler);
     window.addEventListener(SYSTEM_EVENTS.PRACTICE_UPDATED, handler);

@@ -7,6 +7,7 @@
  */
 
 import type { QAItem } from '../types';
+import { hitsMustExclude } from './textMatch';
 
 // ==================== 规则校验 ====================
 
@@ -17,11 +18,22 @@ export interface ValidationResult {
 
 /**
  * 零成本规则校验：检查回答基本质量
+ *
+ * @param ref 可选的参考答案。**不传时行为与改造前完全一致**（S3-1 的硬约束：
+ * 现有 21 条 tutorQuality 测试必须零改动通过）。
  */
-export function validateAnswerRules(answer: string, questionText: string): ValidationResult {
+export function validateAnswerRules(
+  answer: string,
+  questionText: string,
+  ref?: { referenceAnswer?: string; mustExclude?: readonly string[] },
+): ValidationResult {
+  // 防御：漏斗对外承诺「永不抛异常」，上游任何脏输入都不该让调用方炸掉
+  const text = typeof answer === 'string' ? answer : '';
+  const question = typeof questionText === 'string' ? questionText : '';
+
   // 回答过短
-  if (answer.trim().length < 50) {
-    return { pass: false, reason: `回答仅 ${answer.trim().length} 字，过短` };
+  if (text.trim().length < 50) {
+    return { pass: false, reason: `回答仅 ${text.trim().length} 字，过短` };
   }
 
   // 拒绝性语句
@@ -29,13 +41,22 @@ export function validateAnswerRules(answer: string, questionText: string): Valid
     '我无法回答', '我不能回答', '抱歉，我无法', '抱歉，我不能',
     '这个问题我无法', '我没有能力', 'I cannot', 'I\'m unable',
   ];
-  if (rejectPatterns.some(p => answer.includes(p))) {
+  if (rejectPatterns.some(p => text.includes(p))) {
     return { pass: false, reason: '回答包含拒绝性语句' };
   }
 
+  // 禁止项（仅当调用方传入参考答案时生效；不传 ref 时跳过，保持旧行为）
+  const excludes = ref?.mustExclude ?? [];
+  if (excludes.length > 0) {
+    const hit = hitsMustExclude(text, excludes);
+    if (hit.length > 0) {
+      return { pass: false, reason: `回答包含禁止内容：${hit.join('、')}` };
+    }
+  }
+
   // 关键词重叠检查（粗略，用 2-gram 匹配）
-  const qTokens = extractTokens(questionText);
-  const aTokens = extractTokens(answer);
+  const qTokens = extractTokens(question);
+  const aTokens = extractTokens(text);
   let overlap = 0;
   for (const t of qTokens) {
     if (aTokens.has(t)) overlap++;
@@ -47,10 +68,19 @@ export function validateAnswerRules(answer: string, questionText: string): Valid
   return { pass: true };
 }
 
+/** 字符串版 Jaccard 相似度（供 practiceGrader 复用，消除双份实现，计划 S6-1） */
+export function jaccardText(a: string, b: string): number {
+  return jaccardSimilarity(extractTokens(a), extractTokens(b));
+}
+
 // ==================== 关键词匹配 ====================
 
 /** 中文停用词 */
-const STOP_WORDS = new Set([
+/**
+ * 停用词表（导出供向量检索与关键词通道复用）。
+ * 导出属零行为变更的重构：内部仍在同一处过滤，findBestMatchByKeywords 行为不变。
+ */
+export const STOP_WORDS = new Set([
   '的', '了', '是', '在', '我', '有', '和', '就', '不', '人', '都', '一',
   '一个', '上', '也', '很', '到', '说', '要', '去', '你', '会', '着',
   '没有', '看', '好', '自己', '这', '那', '什么', '怎么', '如何', '为什么',

@@ -4,7 +4,8 @@ import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined, LogoutOutlined, Mes
 import SideMenu from './components/SideMenu';
 import Login from './pages/Login';
 import { PageCacheProvider } from './context/PageCacheContext';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './context/useAuth';
 import { submitFeedback } from './services/feedback';
 import { userKey } from './services/storage';
 import { initialProfile } from './data/mockData';

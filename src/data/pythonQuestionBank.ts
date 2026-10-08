@@ -247,6 +247,11 @@ function buildTagIndex(): Record<string, string[]> {
 
 export const tagIndex: Record<string, string[]> = buildTagIndex();
 
+/** 题号 → 题目 映射（评测与 RAG 归因用，避免每次线性查找） */
+export const questionById: Record<string, PracticeQuestion> = Object.fromEntries(
+  questions.map((q) => [q.id, q]),
+);
+
 // ==================== 分类统计 ====================
 
 export function getCoreQuestions(): PracticeQuestion[] {

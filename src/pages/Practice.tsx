@@ -36,7 +36,7 @@ import {
   tagIndex,
   tagToChinese,
 } from '../data/pythonQuestionBank';
-import { usePageCache } from '../context/PageCacheContext';
+import { usePageCache } from '../context/usePageCache';
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea, Search } = Input;
@@ -54,8 +54,15 @@ interface QuestionResult {
   isSubmitted: boolean;
 }
 
+/** 会话缓存内容：跨页面切换时需要保留的练习页状态 */
+interface PracticeCacheState {
+  activeTab: string;
+  batchIndex: number;
+  results: Record<string, QuestionResult>;
+}
+
 const Practice: React.FC = () => {
-  const { cachedState, saveState } = usePageCache(PAGE_KEY);
+  const { cachedState, saveState } = usePageCache<PracticeCacheState>(PAGE_KEY);
 
   const practiceState = getOrCreatePracticeState();
   const tagScores = practiceState.tagScores;
@@ -63,7 +70,8 @@ const Practice: React.FC = () => {
 
   // 筛选当前阶段的题目
   const stageSplit = useMemo(() => getStageQuestionSplit(currentStage), [currentStage]);
-  const stageQuestions = [...stageSplit.core, ...stageSplit.extension];
+  // 合并成一个稳定引用的数组，避免下游 useMemo 每次渲染都失效
+  const stageQuestions = useMemo(() => [...stageSplit.core, ...stageSplit.extension], [stageSplit]);
   const sortedStageQuestions = useMemo(() => sortByProgress(stageQuestions, tagScores), [stageQuestions, tagScores]);
 
   // 如果无阶段数据，回退到全题库

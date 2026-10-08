@@ -4,11 +4,11 @@ import { UserOutlined, EditOutlined, SaveOutlined, ReloadOutlined, SendOutlined,
 import { initialProfile, defaultChatMessages, quizQuestionBank, quizSelectionCounts, dimensionOptions } from '../data/mockData';
 import { streamChatCompletion } from '../services/api';
 import type { StudentProfile, ProfileDimension } from '../types';
-import { usePageCache } from '../context/PageCacheContext';
+import { usePageCache } from '../context/usePageCache';
 import { buildLearningProfileSnapshot, saveProfileAndNotify } from '../services/learningOrchestrator';
 import { buildProfileAnalysisPrompt, buildProfileReplyPrompt, buildQuizAnalysisPrompt } from '../services/promptBuilder';
 import { userKey } from '../services/storage';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -24,6 +24,21 @@ interface QuizQuestion {
   dimensionLabel: string;
   type: 'knowledge' | 'self-assessment';
   correctAnswer?: number;
+}
+
+/** 会话缓存内容：跨页面切换时需要保留的画像页状态 */
+interface ProfileCacheState {
+  profile: StudentProfile;
+  isModalOpen: boolean;
+  chatMessages: { role: string; content: string; isStreaming?: boolean }[];
+  inputValue: string;
+  isAnalyzing: boolean;
+  currentReply: string;
+  isQuizModalOpen: boolean;
+  quizStep: number;
+  quizAnswers: Record<number, string>;
+  isQuizAnalyzing: boolean;
+  selectedQuestions: QuizQuestion[];
 }
 
 // 从题库中随机抽取题目
@@ -50,7 +65,7 @@ function selectQuizQuestions(): QuizQuestion[] {
 }
 
 const Profile: React.FC = () => {
-  const { cachedState, saveState } = usePageCache(PAGE_KEY);
+  const { cachedState, saveState } = usePageCache<ProfileCacheState>(PAGE_KEY);
   const { currentUser } = useAuth();
 
   // 加载画像：localStorage > 缓存 > 当前用户信息兜底
@@ -216,7 +231,7 @@ const Profile: React.FC = () => {
       setCurrentReply('');
       message.success('画像已更新');
 
-    } catch (error: any) {
+    } catch (error) {
       console.error('Profile analysis failed:', error);
       const simpleResponse = generateSimpleResponse(userMessage);
       setChatMessages(prev => [...prev, { role: 'assistant', content: simpleResponse }]);
@@ -307,7 +322,7 @@ const Profile: React.FC = () => {
         applyFallbackProfile();
       }
 
-    } catch (error: any) {
+    } catch (error) {
       console.error('Quiz analysis failed:', error);
       applyFallbackProfile();
     } finally {

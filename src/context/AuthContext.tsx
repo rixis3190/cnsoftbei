@@ -5,35 +5,11 @@
  * 支持三种角色：student / teacher / admin
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
+import { AuthContext, type AuthContextType, type User, type UserRole } from './AuthContextObject'
 
-// ==================== 类型定义 ====================
-
-export type UserRole = 'student' | 'teacher' | 'admin'
-
-export interface User {
-  id: string
-  username: string
-  password: string
-  role: UserRole
-  name: string
-  createdAt: string
-}
-
-interface AuthContextType {
-  currentUser: User | null
-  isLoggedIn: boolean
-  login: (username: string, password: string) => boolean
-  register: (username: string, password: string, name: string, role?: UserRole) => { success: boolean; message: string }
-  logout: () => void
-  isAdmin: boolean
-  isTeacher: boolean
-  isStudent: boolean
-  getAllUsers: () => User[]
-  deleteUser: (id: string) => void
-  updateUserRole: (id: string, role: UserRole) => void
-  resetPassword: (id: string, newPassword: string) => void
-}
+// 类型随 AuthContext 一并对外暴露，import 路径保持不变
+export type { User, UserRole, AuthContextType } from './AuthContextObject'
 
 // ==================== 常量 ====================
 
@@ -112,32 +88,38 @@ function seedUsers(): User[] {
   return users
 }
 
-// ==================== Context ====================
+/**
+ * 首帧登录态恢复结果。
+ * `staleUser` 非空表示 localStorage 里的登录用户已不存在，需要清理（由 effect 完成写操作）。
+ */
+interface InitialAuthState {
+  user: User | null
+  staleUser: boolean
+}
 
-const AuthContext = createContext<AuthContextType | null>(null)
+/** 初始化：seed 预置账号 + 恢复登录态。纯计算，可在首帧同步完成 */
+function initAuthState(): InitialAuthState {
+  seedUsers()
+  const saved = loadCurrentUser()
+  if (!saved) return { user: null, staleUser: false }
+  // 验证用户仍然存在
+  const exists = loadUsers().find(u => u.id === saved.id)
+  return exists ? { user: exists, staleUser: false } : { user: null, staleUser: true }
+}
 
 // ==================== Provider ====================
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [ready, setReady] = useState(false)
+  // 登录态在首帧同步恢复，避免「先渲染未登录态再纠正」的闪烁与级联渲染
+  const [initial] = useState<InitialAuthState>(initAuthState)
+  const [currentUser, setCurrentUser] = useState<User | null>(initial.user)
 
-  // 初始化：seed 预置账号 + 恢复登录状态
+  // 失效登录态的清理只涉及 localStorage 写入，不需要触发渲染
   useEffect(() => {
-    seedUsers()
-    const saved = loadCurrentUser()
-    if (saved) {
-      // 验证用户仍然存在
-      const users = loadUsers()
-      const exists = users.find(u => u.id === saved.id)
-      if (exists) {
-        setCurrentUser(exists)
-      } else {
-        saveCurrentUser(null)
-      }
+    if (initial.staleUser) {
+      saveCurrentUser(null)
     }
-    setReady(true)
-  }, [])
+  }, [initial.staleUser])
 
   const login = useCallback((username: string, password: string): boolean => {
     const users = loadUsers()
@@ -239,21 +221,5 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     resetPassword,
   }
 
-  // 等待初始化完成
-  if (!ready) return null
-
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-// ==================== Hook ====================
-
-export function useAuth(): AuthContextType {
-  const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
-  return ctx
-}
-
-/** 获取当前用户的 localStorage key 前缀 */
-export function getUserStoragePrefix(userId: string): string {
-  return `${userId}_`
 }

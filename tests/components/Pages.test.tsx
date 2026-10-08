@@ -1,11 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 
 // Mock 全局 API 和 context，确保模块能正常加载
-vi.mock('../../src/context/PageCacheContext', () => ({
+// 注意：hook 已从 Context 文件拆出（react-refresh/only-export-components），mock 路径需指向 hook 模块
+vi.mock('../../src/context/usePageCache', () => ({
   usePageCache: () => ({ cachedState: null, saveState: vi.fn() }),
 }))
 
-vi.mock('../../src/context/AuthContext', () => ({
+vi.mock('../../src/context/useAuth', () => ({
   useAuth: () => ({
     user: { username: 'test-student', role: 'student', name: '测试学生' },
     login: vi.fn(() => true),

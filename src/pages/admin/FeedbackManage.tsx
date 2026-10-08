@@ -2,7 +2,7 @@
  * FeedbackManage — 管理员反馈管理页面
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Card, Table, Tag, Button, message, Space, Typography, Popconfirm, Descriptions, Modal, Badge } from 'antd'
 import { CheckCircleOutlined, DeleteOutlined, EyeOutlined, MessageOutlined } from '@ant-design/icons'
 import { getAllFeedbacks, resolveFeedback, deleteFeedback, type Feedback } from '../../services/feedback'
@@ -16,13 +16,12 @@ const TYPE_MAP: Record<string, { label: string; color: string }> = {
 }
 
 const FeedbackManage: React.FC = () => {
-  const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
+  // 初始列表在首帧同步读取，后续操作后由 refresh 重新拉取
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>(() => getAllFeedbacks())
   const [detailOpen, setDetailOpen] = useState(false)
   const [selected, setSelected] = useState<Feedback | null>(null)
 
   const refresh = () => setFeedbacks(getAllFeedbacks())
-
-  useEffect(() => { refresh() }, [])
 
   const handleResolve = (fb: Feedback) => {
     resolveFeedback(fb.id)
@@ -64,7 +63,7 @@ const FeedbackManage: React.FC = () => {
       title: '提交人',
       key: 'user',
       width: 120,
-      render: (_: any, r: Feedback) => (
+      render: (_: unknown, r: Feedback) => (
         <Space size={4}>
           <Text>{r.userName}</Text>
           <Tag style={{ fontSize: 11 }}>{r.userRole === 'student' ? '学生' : r.userRole === 'teacher' ? '老师' : '管理员'}</Tag>
@@ -92,7 +91,7 @@ const FeedbackManage: React.FC = () => {
       title: '操作',
       key: 'actions',
       width: 200,
-      render: (_: any, r: Feedback) => (
+      render: (_: unknown, r: Feedback) => (
         <Space>
           <Button size="small" icon={<EyeOutlined />} onClick={() => handleView(r)}>查看</Button>
           {r.status === 'pending' && (

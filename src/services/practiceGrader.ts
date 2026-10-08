@@ -1,4 +1,6 @@
 import { streamChatCompletion } from './api';
+import { jaccardText } from './tutorQuality';
+import { buildGradeByAIMessages } from './promptBuilder';
 import type {
   PracticeQuestion,
   PracticeResult,
@@ -79,29 +81,15 @@ export async function gradeByAI(
   onChunk?: (text: string) => void
 ): Promise<number> {
   if (question.type === 'short') {
+    // prompt 收敛到 promptBuilder，消除双份真相（计划 S3-5 / S6-1）
+    const { system, user } = buildGradeByAIMessages(
+      question.question,
+      question.sampleAnswer ?? '',
+      userAnswer,
+    );
     const messages = [
-      {
-        role: 'system' as const,
-        content: `你是一个严谨的编程教育评估专家。请根据参考答案为用户的答案评分（0-100分）。
-评分标准：
-- 90-100：正确理解题意，答案完整准确，有深度
-- 70-89：基本正确，有少量遗漏或小错误
-- 50-69：理解部分题意，答案有较多不完整或错误
-- 20-49：理解基本错误，答案偏离题意
-- 0-19：完全错误或未作答
-
-请严格按此标准评分，不要随意给高分。`,
-      },
-      {
-        role: 'user' as const,
-        content: `题目：${question.question}
-
-参考答案：${question.sampleAnswer}
-
-用户答案：${userAnswer}
-
-请只输出一个0-100的整数分数，不要输出其他内容。`,
-      },
+      { role: 'system' as const, content: system },
+      { role: 'user' as const, content: user },
     ];
 
     let fullResponse = '';
@@ -129,21 +117,29 @@ export async function gradeByAI(
 }
 
 // ==================== 答案相似度计算（Jaccard） ====================
-function jaccardSimilarity(a: string, b: string): number {
-  const tokenize = (s: string) => {
-    // 按中文字符和英文单词分词
-    const tokens = s.match(/[一-鿿]|[a-zA-Z]+/g) || [];
-    return new Set(tokens.map(t => t.toLowerCase()));
-  };
-  const setA = tokenize(a);
-  const setB = tokenize(b);
-  if (setA.size === 0 && setB.size === 0) return 1;
-  let intersection = 0;
-  for (const t of setA) {
-    if (setB.has(t)) intersection++;
-  }
-  return intersection / (setA.size + setB.size - intersection);
-}
+/**
+ * 相似度阈值（口径 = tutorQuality.jaccardText，中文 2-gram + 英文整词）。
+ *
+ * **口径变更记录（评审 MAJOR-1）**：本文件原有一套私有实现（中文单字 + 英文整词），
+ * 计划 S3-5/S6-1 把它收敛到 `tutorQuality.jaccardText`（中文 2-gram + 英文整词）。
+ * 两种口径的数值**并不相等**。下面每行都标明文本对，且与
+ * `tests/unit/practiceGrader.test.ts` 的数值级用例一一对应（可复现）：
+ *
+ * | 文本对 | 旧口径（单字） | 新口径（2-gram） | 用例 |
+ * |---|---|---|---|
+ * | 完全相同的文本 | 1.000 | 1.000 | `完全相同 → 相似度 1.0` |
+ * | 「Python 是一种解释型编程语言」/ 同句 + 「，支持面向对象」 | 0.647 | 0.625 | `仅差一个从句` |
+ * | 「事务的隔离级别包括读未提交和读已提交」/ 「隔离级别共有四种，其中读未提交可能出现脏读」 | 0.308 | 0.207 | `同主题部分覆盖` |
+ *
+ * 即：新口径在部分覆盖区间整体**偏低约 0.02~0.10**。影响面：
+ *   - 分支 1（相似但低分）判定更严格 → 漏报略增，误报减少（保守，可接受）；
+ *   - 分支 2（差异大但高分）判定更敏感 → 会多触发 `gradeByAIVerified` 的 3 次评审。
+ * 当前**刻意保留** 0.6 / 0.2 不动：教育场景里「判分明显偏高却放行」比多花几次评审更糟。
+ * 若要重新标定，请用 tests/unit/practiceGrader.test.ts 里的分布回归用例做依据，
+ * 不要凭感觉改数字。
+ */
+const SIMILARITY_HIGH = 0.6;
+const SIMILARITY_LOW = 0.2;
 
 // ==================== AI 判分合理性断言 ====================
 export function assertScoreReasonable(
@@ -156,10 +152,10 @@ export function assertScoreReasonable(
     return { reasonable: true };
   }
 
-  const similarity = jaccardSimilarity(userAnswer, sampleAnswer);
+  const similarity = jaccardText(userAnswer, sampleAnswer);
 
   // 答案高度相似但分数过低
-  if (similarity > 0.6 && score < 40) {
+  if (similarity > SIMILARITY_HIGH && score < 40) {
     return {
       reasonable: false,
       reason: `答案相似度 ${(similarity * 100).toFixed(0)}% 但分数仅 ${score}，AI 判分可能偏低`,
@@ -167,7 +163,7 @@ export function assertScoreReasonable(
   }
 
   // 答案差异很大但分数过高
-  if (similarity < 0.2 && score > 80) {
+  if (similarity < SIMILARITY_LOW && score > 80) {
     return {
       reasonable: false,
       reason: `答案相似度仅 ${(similarity * 100).toFixed(0)}% 但分数 ${score}，AI 判分可能偏高`,

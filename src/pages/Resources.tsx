@@ -16,13 +16,27 @@ import { multiAgentScheduler, resourceGenerator, type AgentRole } from '../servi
 import type { ResourceType, StudentProfile } from '../types';
 import { resourceTypeMeta, resourceAgentDisplay } from '../data/mockData';
 import MarkdownRenderer from '../components/MarkdownRenderer';
-import { usePageCache } from '../context/PageCacheContext';
+import { usePageCache } from '../context/usePageCache';
 import { userKey } from '../services/storage';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
 const PAGE_KEY = 'resources';
+
+/** 会话缓存内容：跨页面切换时需要保留的资源生成页状态 */
+interface ResourcesCacheState {
+  generating: boolean;
+  progress: Record<ResourceType, number>;
+  currentStep: string;
+  isModalOpen: boolean;
+  selectedTypes: ResourceType[];
+  learningNeed: string;
+  error: string | null;
+  streamingContent: Record<ResourceType, string>;
+  streamingType: ResourceType | null;
+  isComplete: boolean;
+}
 
 // 图标映射
 const iconMap: Record<string, React.ReactNode> = {
@@ -119,7 +133,7 @@ const StreamingContentCard: React.FC<{
 };
 
 const Resources: React.FC = () => {
-  const { cachedState, saveState } = usePageCache(PAGE_KEY);
+  const { cachedState, saveState } = usePageCache<ResourcesCacheState>(PAGE_KEY);
 
   const [generating, setGenerating] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -240,9 +254,10 @@ const Resources: React.FC = () => {
 
       setIsComplete(true);
       message.success('资源生成完成！');
-    } catch (err: any) {
-      console.error('Generation failed:', err);
-      setError(err.message || '资源生成失败，请重试');
+    } catch (err) {
+      const error = err as Error;
+      console.error('Generation failed:', error);
+      setError(error.message || '资源生成失败，请重试');
       message.error('资源生成失败');
     } finally {
       setGenerating(false);

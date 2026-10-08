@@ -19,7 +19,7 @@ import { defaultTutorHistory, tutorQuickQuestions } from '../data/mockData';
 import { questions as practiceQuestions } from '../services/practiceGrader';
 import type { QAItem, PracticeQuestion } from '../types';
 import MarkdownRenderer from '../components/MarkdownRenderer';
-import { usePageCache } from '../context/PageCacheContext';
+import { usePageCache } from '../context/usePageCache';
 import {
   loadProfile,
   buildProfileContext,
@@ -29,13 +29,31 @@ import {
   buildRegenerateSystemPrompt,
   buildRegenerateUserPrompt,
   buildRelevanceCheckPrompt,
+  buildQualityReviewMessages,
+  buildRagRegenerateHint,
 } from '../services/promptBuilder';
 import { validateAnswerRules, findBestMatchByKeywords } from '../services/tutorQuality';
+import { runQualityFunnel } from '../services/qualityFunnel';
+import { EVAL_SWITCHES } from '../config/evalConfig';
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
 
 const PAGE_KEY = 'tutor';
+
+/** 会话缓存内容：跨页面切换时需要保留的辅导页状态 */
+interface TutorCacheState {
+  question: string;
+  currentAnswer: string;
+  activeMode: 'text' | 'image' | 'video' | 'code';
+  history: QAItem[];
+  feedbackMap: Record<string, 'like' | 'dislike' | null>;
+  quickCache: Record<string, string>;
+  regeneratingId: string | null;
+  followUpParent: QAItem | null;
+  lastGeneratedId: string | null;
+  isGenerating: boolean;
+}
 
 // 模块级引用，确保跨页面切换时后台生成不中断
 const abortRef: { current: AbortController | null } = { current: null };
@@ -94,7 +112,7 @@ function getRecommendedQuestions(userQuestion: string, aiAnswer: string): Practi
 }
 
 const Tutor: React.FC = () => {
-  const { cachedState, saveState } = usePageCache(PAGE_KEY);
+  const { cachedState, saveState } = usePageCache<TutorCacheState>(PAGE_KEY);
 
   const [question, setQuestion] = useState(() => cachedState?.question ?? '');
   const [isGenerating, setIsGenerating] = useState(() => cachedState?.isGenerating ?? false);
@@ -114,8 +132,7 @@ const Tutor: React.FC = () => {
   saveStateRef.current = saveState;
 
   // 直接将进度写入页面缓存，确保跨页面切换不丢失
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const persistProgress = (overrides: Record<string, any>) => {
+  const persistProgress = (overrides: Partial<TutorCacheState>) => {
     saveStateRef.current({
       question, currentAnswer, activeMode, history, feedbackMap, quickCache,
       regeneratingId, followUpParent, lastGeneratedId, isGenerating,
@@ -172,27 +189,28 @@ const Tutor: React.FC = () => {
   // 规则校验已从 tutorQuality.ts 导入
 
   // AI 交叉评审回答质量（0-100 分）
-  const aiReviewAnswer = async (questionText: string, answer: string): Promise<number> => {
+  // 降级语义显式化：解析失败/调用失败返回 degraded=true，不再「假装 80 分通过」（计划 S3-6）
+  const aiReviewAnswer = async (
+    questionText: string,
+    answer: string,
+  ): Promise<{ score: number | null; degraded: boolean }> => {
     try {
-      const messages = [
-        {
-          role: 'system' as const,
-          content: '你是一个严格的教育内容质量评审员。请评估以下回答的质量（0-100分）。评分标准：准确性(40%)、完整性(30%)、清晰度(20%)、实用性(10%)。只输出一个整数分数。',
-        },
-        {
-          role: 'user' as const,
-          content: `问题：${questionText}\n\n回答：${answer.substring(0, 2000)}\n\n请只输出一个0-100的整数分数。`,
-        },
-      ];
-      const result = await chatCompletion(messages);
+      const { system, user } = buildQualityReviewMessages(questionText, answer);
+      const result = await chatCompletion([
+        { role: 'system' as const, content: system },
+        { role: 'user' as const, content: user },
+      ]);
       const match = result.match(/\d+/);
       if (match) {
         const score = parseInt(match[0], 10);
-        return Math.min(100, Math.max(0, score));
+        return { score: Math.min(100, Math.max(0, score)), degraded: false };
       }
-      return 80; // 解析失败默认通过
+      // 解析失败：评审不可用，不阻塞用户体验
+      console.warn('[Tutor QA] 评审结果无法解析为分数，视为降级');
+      return { score: null, degraded: true };
     } catch {
-      return 80; // 评审失败默认通过，不阻塞用户体验
+      console.warn('[Tutor QA] 评审调用失败，视为降级（不阻塞）');
+      return { score: null, degraded: true };
     }
   };
 
@@ -222,18 +240,43 @@ const Tutor: React.FC = () => {
       return fullAnswer; // 规则不通过但不重试，直接返回（避免频繁调 API）
     }
 
-    // AI 交叉评审
+    // AI 交叉评审（带漏斗：规则 → 语义 → 模型，计划 S3-6）
+    // 注意：这里**不注入 reference/scorer** —— 自由提问没有标准答案，
+    // 因此生产链路上语义层恒为 skipped（会在下方统一记录，不静默）。
     let lastAnswer = fullAnswer;
+    let degradedCount = 0;
     for (let attempt = 0; attempt < maxRetries; attempt++) {
-      const reviewScore = await aiReviewAnswer(questionText, lastAnswer);
-      if (reviewScore >= 70) break;
+      const funnel = await runQualityFunnel({
+        answer: lastAnswer,
+        questionText,
+        enableModel: true,
+        callModel: async (a, q) => {
+          const review = await aiReviewAnswer(q, a);
+          if (review.degraded || review.score === null) {
+            throw new Error('评审降级');
+          }
+          return review.score;
+        },
+      });
+      if (funnel.modelDegraded) degradedCount++;
+      // 降级可观测：未执行的层必须被记录，否则「通过」与「没跑」在生产上不可区分
+      if (funnel.layersSkipped.length > 0) {
+        console.log(`[Tutor QA] 未执行的层：${funnel.layersSkipped.join(',')}`);
+      }
+      if (funnel.accepted) {
+        if (funnel.modelDegraded) {
+          console.log(`[Tutor QA] 模型评审降级（不阻塞），降级次数 ${degradedCount}`);
+        }
+        break;
+      }
 
-      // 评审不通过，重新生成（带评审反馈）
-      console.log(`[Tutor QA] AI 评审分数 ${reviewScore} < 70，第 ${attempt + 1} 次重试`);
+      // 被拦截：带反馈重新生成
+      const reason = funnel.reasons.join('；');
+      console.log(`[Tutor QA] ${funnel.blockedBy} 层拦截（${reason}），第 ${attempt + 1} 次重试`);
       const retryMessages = [
         ...messages,
         { role: 'assistant' as const, content: lastAnswer },
-        { role: 'user' as const, content: `你的回答质量评分仅 ${reviewScore} 分，请改进回答的准确性、完整性和清晰度，重新回答。` },
+        { role: 'user' as const, content: buildRagRegenerateHint(funnel.reasons) },
       ];
       lastAnswer = '';
       await streamChatCompletion(
@@ -244,6 +287,9 @@ const Tutor: React.FC = () => {
       );
     }
 
+    // 重试次数耗尽：最后一份回答**没有通过任何一层复检**，必须留下痕迹
+    // （否则用户看到的是一份质量未知的回答，运维侧还以为一切正常）
+    console.warn(`[Tutor QA] 重试 ${maxRetries} 次仍未通过质量校验，返回最后一份回答（未复检）`);
     return lastAnswer;
   };
 
@@ -266,6 +312,27 @@ const Tutor: React.FC = () => {
       return false; // 判断失败时默认视为不相关，作为新问题处理
     }
   };
+
+  // RAG 模块动态加载（计划 S4-9）：向量索引约 350KB，静态 import 会拖慢首屏。
+  // 开关关闭时**连 chunk 都不加载**（否则「RAG 关 = 零成本」只是空话）。
+  const loadRagContext = useCallback(async () => {
+    if (!EVAL_SWITCHES.RAG_ENABLED) return null;
+    try {
+      const [retriever, prompts, builder] = await Promise.all([
+        import('../rag/retriever'),
+        import('../rag/ragPrompts'),
+        import('../services/promptBuilder'),
+      ]);
+      return {
+        retrieveForQuestion: retriever.retrieveForQuestion,
+        formatChunksForPrompt: prompts.formatChunksForPrompt,
+        buildRagAnswerPrompt: builder.buildRagAnswerPrompt,
+      };
+    } catch (error) {
+      console.warn('[Tutor RAG] 模块加载失败，本次不注入上下文', error);
+      return null;
+    }
+  }, []);
 
   const handleAsk = useCallback(async (inputQuestion?: string, parentQA?: QAItem | null) => {
     const q = (inputQuestion ?? question).trim();
@@ -411,9 +478,29 @@ const Tutor: React.FC = () => {
 
     let fullAnswer = '';
     try {
-      const systemPrompt = isFollowUp && contextParent
+      const baseSystemPrompt = isFollowUp && contextParent
         ? buildFollowUpSystemPrompt(profile)
         : buildTutorSystemPrompt(activeMode, profile);
+
+      // RAG 注入：在构造 messages **之前**检索一次，且只在非追问链路注入
+      // （追问已有上下文，注入片段反而会干扰）。检索为空则完全不注入。
+      let systemPrompt = baseSystemPrompt;
+      if (!isFollowUp) {
+        const rag = await loadRagContext();
+        if (rag) {
+          const retrieval = rag.retrieveForQuestion(q, { topK: 3 });
+          if (retrieval.chunks.length > 0) {
+            const formatted = rag.formatChunksForPrompt(retrieval.chunks);
+            const { systemSuffix } = rag.buildRagAnswerPrompt(formatted, profile);
+            systemPrompt = `${systemPrompt}\n${systemSuffix}`;
+            console.log(
+              `[Tutor RAG] 注入 ${formatted.length} 个片段（topScore=${retrieval.topScore.toFixed(3)}，标签=${retrieval.matchedTags.join(',')}）`,
+            );
+          } else if (retrieval.ragUnavailable) {
+            console.warn('[Tutor RAG] 索引不可用，本次不注入上下文（降级 L3）');
+          }
+        }
+      }
 
       const userContent = isFollowUp && contextParent
         ? buildFollowUpUserPrompt(contextParent, q)
