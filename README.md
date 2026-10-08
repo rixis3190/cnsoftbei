@@ -247,7 +247,9 @@ npm run dev        # 启动开发服务器（默认 http://localhost:5173）
 | `npm run test:watch` | Vitest 监听模式 |
 | `npm run test:coverage` | 覆盖率报告（v8 → `coverage/index.html`） |
 | `npm run test:report` | 跑测试并生成中文 HTML 报告 `test-results/report.html` |
-| `npm run test:e2e` | Playwright E2E（自动拉起 dev server） |
+| `npm run test:e2e` | Playwright E2E（自动拉起 dev server；本机需先 `npx playwright install chromium`） |
+| `npm run eval:golden` / `eval:rag` / `eval:report` | 评测：基准集跑批 / 检索与忠实度指标 / 生成 `test-results/eval-report.html`（全部零额度） |
+| `npm run vectors:build` / `golden:check` / `threshold:tune` / `floor:tune` | 语料与阈值工具（`--check` 为只校验模式） |
 
 ### 4.3 典型使用流程
 
@@ -261,9 +263,11 @@ npm run dev        # 启动开发服务器（默认 http://localhost:5173）
 
 ### 4.4 代码质量保障
 
-- **pre-commit**：husky → lint-staged → 对 `*.ts` / `*.tsx` 执行 `eslint --fix`。
-- **CI**（`.github/workflows/ci.yml`，push 到 `main` / `develop` 及 PR 到 `main` 时触发）：
-  `lint` → `test`（含测试报告 artifact）→ `build`，并独立跑 `e2e`（Playwright Chromium，失败时上传截图）。
+- **pre-commit**：husky → lint-staged → 对 `*.ts` / `*.tsx` 执行 `eslint --fix`；对 `tests/golden/*.json`、`src/data/rag*.json` 做 JSON 语法校验；对 `.github/workflows/*.yml` 跑上下文合法性自检（`scripts/check-workflow.mjs`）。
+- **CI**（`.github/workflows/ci.yml`，push 到 `main` / `develop` 及 PR 到 `main` 时触发）共 **6 个 job**：
+  `lint`（含工作流自检）→ `test`（覆盖率 ratchet + 上传 `test-results/`、`coverage/`）→ `build`；
+  依赖前两者成功后跑 `e2e`（Playwright Chromium，失败时上传截图）与 `eval`（确定性评测门禁，**观察阶段**：失败只告警）；
+  `live-eval` 仅在手动 `workflow_dispatch` 且勾选 `run_live_eval` 时运行（需配置 Key）。
 
 ---
 
@@ -287,9 +291,13 @@ npm run dev        # 启动开发服务器（默认 http://localhost:5173）
 tests/
 ├── setup.ts                  # jest-dom + localStorage/sessionStorage mock + msw 生命周期
 ├── test-utils.tsx
-├── unit/                     # api / learningOrchestrator / practiceGrader / questionBank / tutorQuality
+├── unit/                     # api / learningOrchestrator / practiceGrader / questionBank / tutorQuality /
+│                             #   embeddingProvider / vectorStore / answerScorer / qualityFunnel / tagMap /
+│                             #   tuneThreshold / vectorsArtifacts / ragCorpus（评测与检索内核的单测）
 ├── ai/                       # gradeByAI 防幻觉、promptBuilder、角色边界验证
 ├── components/               # 页面与服务模块导入测试
+├── eval/                     # 基准集跑批 / RAG 检索与忠实度 / 降级演练（Chaos Drill，零额度）
+├── golden/                   # 评测基准集（113 条）+ 检索查询集（148 条）+ 加载器与完整性校验器
 ├── integration/              # 真实 DeepSeek 接口连通性测试（独立执行，见 6.2）
 ├── stress/                   # localStorage 大量读写、页面切换、大数据集性能
 ├── mocks/                    # msw handlers / server（SSE 与非流式 mock）
@@ -298,15 +306,15 @@ tests/
 
 msw 已在 `tests/setup.ts` 中全局启动（`server.listen` + `resetHandlers` + `close`），按 system prompt 内容分发 mock 响应，支持 SSE 分块流。
 
-### 6.2 实测结果（2026-10-07）
+### 6.2 实测结果（2026-10-09）
 
-**默认套件 `npm test`（11 个文件，不含 integration）**
+**默认套件 `npm test`（23 个文件，不含 integration）**
 
 | 指标 | 数值 |
 |------|------|
-| 用例总数 | 334 |
-| 通过 | 332 |
-| 失败 | 2 |
+| 用例总数 | 523 |
+| 通过 | 523 |
+| 失败 | 0 |
 
 **真实接口套件 `npm run test:api`（1 个文件）**
 
@@ -317,16 +325,10 @@ msw 已在 `tests/setup.ts` 中全局启动（`server.listen` + `resetHandlers` 
 
 > `tests/integration/` 已从默认套件中排除（`vitest.config.ts` 的 `exclude`），需显式执行 `npm run test:api`。原因：这些用例会真实调用 API 产生费用。独立配置 `vitest.api.config.ts` 使用 node 环境且不加载 `tests/setup.ts`，避免 msw 拦截真实请求。
 
-**失败项（全部集中在 `tests/components/Pages.test.tsx` 的模块导入用例）**
-
-| 用例 | 现象 |
-|------|------|
-| `Home 模块可正常导入` | 稳定失败。`Home.tsx` 依赖 recharts，模块图大，import 耗时 15–22.6s，超过用例设定的 15s 上限 |
-| `Practice 模块可正常导入` | **偶发**失败。同一用例在低负载下耗时 94ms，高负载下升到 6.8–7.9s，超过 vitest 默认 5s 上限 |
-
-> 这两项与模型迁移无关（`Home.tsx` / `Practice.tsx` 未被改动），是纯耗时型 flaky：机器负载高时必然失败。其余 12 条导入用例与服务模块断言全部通过。
+> 上述 2 条模块导入超时（`Home` / `Practice`，recharts 使 import 成本偏高）已于 2026-10-07 修复：
+> 统一放宽为 `IMPORT_TIMEOUT = 60000`，连续多次全量运行均 523/523 通过。
 >
-> 真实接口用例（`tests/integration/api-real.test.ts`，13 条）在配置了有效 Key 时全部通过，会消耗真实额度。
+> 真实接口用例（`tests/integration/api-real.test.ts`）已拆到独立套件，默认不跑、不产生费用。
 
 ### 6.3 已知测试缺口
 
@@ -334,12 +336,12 @@ msw 已在 `tests/setup.ts` 中全局启动（`server.listen` + `resetHandlers` 
 |------|------|------|
 | 组件交互测试缺失 | 现有组件测试仅验证「模块可导入」，未覆盖 Practice 答题提交、Tutor 流式问答、Profile 对话画像等交互 | 补 `@testing-library/user-event` 驱动的交互用例 |
 | 真实接口用例消耗额度 | ✅ 已解决：已从默认套件排除，改由 `npm run test:api` 显式执行 |
-| E2E 断言偏弱 | 9 条用例中多条仅断言「body 有内容」；登录用例使用错误密码 `123456`（真实为 `student123`）且失败被静默跳过 | 按用户旅程补齐「登录 → 画像 → 路径 → 练习 → 判分 → 评估 → 追问」完整闭环断言 |
-| 覆盖率无门槛 | CI 未设置覆盖率阈值 | 在 CI 中加 `--coverage` + 阈值门禁 |
+| E2E 断言偏弱 | ✅ 已解决（2026-10-08）：改为真实登录（`student1` / `student123`）+ 非空断言（选中态、顶栏用户名、侧边栏菜单数 > 0 后才遍历），CI 与本地均 10 用例通过 | 后续可按用户旅程再补「练习 → 判分 → 评估」闭环断言 |
+| 覆盖率门槛 | ✅ 已落地 ratchet（24/20/17/17，实测 statements 30.63 / branches 22.80 / functions 20.25 / lines 31.17） | 达标后按「单次 ≤ +5 点」继续抬升 |
 | Java / 数据库题库无测试 | `questionBank.test.ts` 仅覆盖 Python 题库 | 补充两套题库的数据完整性测试 |
 | `Home` / `Practice` 导入用例不稳定 | 依赖 recharts，import 耗时贴近阈值，高负载下超时 | 拆分测试文件，或为这两个用例单独上调 timeout |
 | 类型检查未通过 | ✅ 已解决：`tsc -b` 0 错误，`npm run build` 通过 |
-| ESLint 未通过 | `npm run lint` 有 **42 errors** / 6 warnings（详见 7.5），CI lint job 会失败。B-0 第 1 批已完成（59→42） | 收窄剩余 31 处 any，再单独重构 set-state-in-effect / only-export-components |
+| ESLint | ✅ 已清零（2026-10-08）：`npm run lint` → **0 error / 0 warning**，CI lint job 转绿（见 7.5） | — |
 
 ---
 
@@ -370,25 +372,25 @@ msw 已在 `tests/setup.ts` 中全局启动（`server.listen` + `resetHandlers` 
 | 检查 | 状态 |
 |------|------|
 | `npx tsc -b` | ✅ 0 错误 |
-| `npm run build` | ✅ 通过（3908 模块，产物 2.16 MB / gzip 709 KB） |
-| `npm run lint` | ❌ 42 errors / 6 warnings（详见 7.5） |
+| `npm run build` | ✅ 通过（首屏 gzip 280.0 KB；RAG 向量与检索为懒加载 chunk，不进首屏） |
+| `npm run lint` | ✅ 0 problem（0 error / 0 warning） |
 
-### 7.5 ESLint 遗留问题（42 errors / 6 warnings）
+### 7.5 ESLint 现状（0 error / 0 warning）
 
-`npm run lint` 与 CI 的 `lint` job 当前会失败。B-0 第 1 批（零行为风险项）已于 2026-10-07 完成，lint 从 **59 → 42 errors**。剩余分布：
+`npm run lint` 与 CI 的 `lint` job 均通过。历史治理轨迹：
 
-| 规则 | 数量 | 主要位置 |
-|------|---------|---------|
-| `@typescript-eslint/no-explicit-any` | 31 | `multiAgentFramework.ts`(9)、`PageCacheContext.tsx`(6)、`StudentOverview.tsx`(4)、`Path/Profile/Resources`(5)、`FeedbackManage.tsx`(2)、`useDebounce.ts`(3) 等 |
-| `react-hooks/set-state-in-effect` | 8 | `AuthContext.tsx`(134)、`Assessment.tsx`(80)、`Home.tsx`(167/279/405)、`FeedbackManage.tsx`(25)、`StudentOverview.tsx`(48)、`UserManage.tsx`(32) |
-| `react-refresh/only-export-components` | 3 | `AuthContext.tsx`(250/257)、`PageCacheContext.tsx`(62) |
-| `react-hooks/exhaustive-deps`（warn） | 6 | `App.tsx`、`Home.tsx`(2)、`Practice.tsx`、`StudentOverview.tsx`、`UserManage.tsx` |
+| 阶段 | 日期 | 结果 |
+|------|------|------|
+| 起点 | 2026-10-07 | 59 errors / 6 warnings |
+| 第 1 批（`no-empty` 6 + `no-unused-vars` 4） | 2026-10-07 | 59 → 42 |
+| 第 2 批（`no-explicit-any` 31 处类型收窄） | 2026-10-08 | 42 → 11 |
+| 第 3 批（`set-state-in-effect` 8 处重构） | 2026-10-08 | 11 → 3 |
+| 第 4 批（`only-export-components` 3 处：hook / 常量拆文件） | 2026-10-08 | 3 → 1 warning |
+| 收尾（`App.tsx` 的 `exhaustive-deps`：补齐依赖数组） | 2026-10-08 | 1 warning → **0** |
 
-**已修复（59 → 42）**：`no-empty` 6 处（空 `catch` 加注释，逻辑不变）、`no-unused-vars` 4 处（删除死代码）。
-
-> `tests/` 目录下的 `no-explicit-any` **已由 `eslint.config.js` 中 `files: ['tests/**'] -> off` 的 override 覆盖**，不需要也不应在测试文件里加 `eslint-disable` 注释（反而会触发 `Unused eslint-disable directive` 告警）。
-
-剩余 42 处中，`set-state-in-effect` 与 `only-export-components` 需重构认证初始化与 hook 导出方式，存在行为回归风险，建议单独一轮处理。完整治理任务卡见 `HANDOVER.md` §8.1 B-0。
+> 编号台账（编号 → 文件:行 → 修复方式 → 提交 SHA）见 `实施计划_细化版.md` §2.1 前置条件 0.6。
+> `tests/` 目录下的 `no-explicit-any` 由 `eslint.config.js` 中 `files: ['tests/**'] -> off` 覆盖，
+> 不需要也不应在测试文件里加 `eslint-disable` 注释。
 
 ---
 
@@ -396,6 +398,7 @@ msw 已在 `tests/setup.ts` 中全局启动（`server.listen` + `resetHandlers` 
 
 | 日期 | 版本 | 内容 |
 |------|------|------|
+| 2026-10-09 | — | **评测体系与工程质量收口**：① ESLint 从 42 errors / 6 warnings 清零到 **0 / 0**（42 条编号台账见 `实施计划_细化版.md` §2.1 0.6）；② 新增三级质量漏斗（规则 → 语义 → 模型）与语义阈值 ROC 标定（**77**，以影子模式运行）；③ 新增 RAG 知识库（题库派生语料 448 块、int8 量化向量、向量+关键词混合召回），**默认关闭交付**（`RAG_ENABLED=false`）；④ 新增评测体系：基准集 113 条、评测报告 `test-results/eval-report.html`、降级可观测卡片（含 L1/L2 演练）、CI `eval` job（观察阶段）；⑤ 测试 334 → **523** 用例（23 文件），覆盖率 ratchet 门槛 24/20/17/17；⑥ 修复 E2E 假通过（真实登录 + 非空断言，10 用例通过）；⑦ 检索 `RETRIEVAL_FLOOR` 按数据标定为 **0.25**（旧值 0.12 挡不住题库外提问） |
 | 2026-10-07 | — | **大模型迁移：MiniMax → DeepSeek**：API 层由 Anthropic 格式改为 OpenAI 兼容格式（`system` 进 messages、SSE 改解析 `choices[].delta.content`、思考内容改接 `reasoning_content` 并保留「思考中…」展示）；代理改为 `/deepseek` → `api.deepseek.com`；API Key 改为环境变量注入（`.env.local` + `.env.example`），仓库内不再有明文 Key；真实接口测试与 msw mock 同步迁移，并拆为独立 `npm run test:api`；修复 `javaQuestionBank.ts` 160 行缺失尾逗号导致的 159 个语法错误；清理 26 个类型错误，`tsc -b` 与 `npm run build` 均通过 |
 | 2026-06-15 | — | **测试缺口补齐**：修复 `calculateModuleProgress` 纯简答模块 NaN、`gradeByAI` 多数字取值问题；新增 `assertScoreReasonable` / `gradeByAIVerified` 判分加固、`tutorQuality` 回答校验、页面/服务模块导入测试、GitHub Actions CI 与 husky pre-commit |
 | 2026-06-08 | — | 新增登录模块、用户管理模块、意见反馈模块；建立测试框架（Vitest + Playwright） |
@@ -408,12 +411,12 @@ msw 已在 `tests/setup.ts` 中全局启动（`server.listen` + `resetHandlers` 
 
 ### 后续计划（按优先级）
 
-1. **P0** 清理 59 个 ESLint 错误（见 7.5），让 CI `lint` job 通过。其中 `AuthContext` 的 effect 内 setState 需重构初始化方式，建议单独一轮。
+1. **P0** ~~清理 ESLint 错误~~ ✅ 已完成：`npm run lint` = 0 error / 0 warning，CI lint job 转绿（见 7.5）。
 2. **P1** 修复 `Pages.test.tsx` 中 `Home` / `Practice` 导入超时（拆分测试文件或上调 timeout）。
 3. **P1** 补齐核心交互组件测试（Practice 答题提交 / Tutor 流式问答 / Profile 画像构建）。
-4. **P1** E2E 按用户旅程补齐完整学习闭环断言，修正登录用例凭据。
+4. **P1** ~~E2E 修正登录凭据与空断言~~ ✅ 已完成（10 用例在 CI 通过）；后续可再补「练习 → 判分 → 评估」闭环断言。
 5. **P2** 接入 Java / 数据库题库，为练习中心增加题库切换。
-6. **P2** CI 增加覆盖率门槛；把 `test:api` 作为手动触发工作流加入 CI；清理临时文件。
+6. **P2** ~~CI 增加覆盖率门槛~~ ✅ 已完成；`test:api` 已作为手动触发 job（`live-eval`）；临时文件清理见 `HANDOVER.md` §13 B-16。
 
 ---
 

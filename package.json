@@ -21,8 +21,12 @@
     "golden:check": "tsx scripts/gen-golden-dataset.ts --check",
     "vectors:build": "tsx scripts/build-vectors.ts",
     "threshold:tune": "tsx scripts/tune-threshold.ts",
+    "floor:tune": "tsx scripts/tune-floor.ts",
+    "check:workflow": "node scripts/check-workflow.mjs",
     "rag:queries": "tsx scripts/gen-rag-queries.ts",
     "eval:rag": "vitest run tests/eval/rag-eval.test.ts",
+    "eval:drill": "vitest run tests/eval/degradationDrill.test.ts",
+    "golden:review-sheet": "tsx scripts/gen-golden-review-sheet.ts",
     "eval:report": "tsx scripts/gen-eval-report.ts",
     "eval:golden": "vitest run tests/eval/runGoldenEval.test.ts",
     "measure:size": "node scripts/measure-entry-size.mjs",
@@ -32,7 +36,8 @@
   "lint-staged": {
     "*.{ts,tsx}": "eslint --fix",
     "tests/golden/*.json": "node scripts/check-json.mjs",
-    "src/data/rag*.json": "node scripts/check-json.mjs"
+    "src/data/rag*.json": "node scripts/check-json.mjs",
+    ".github/workflows/*.yml": "node scripts/check-workflow.mjs"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.1",
