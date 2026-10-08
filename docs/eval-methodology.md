@@ -19,17 +19,25 @@
 **降级可观测性**：`runQualityFunnel` 返回 `layersRun`（跑了哪些层）与 `layersSkipped`（没跑哪些层），
 并保证不变量 `layersRun ∪ layersSkipped = {rule, semantic, model}` 且两者不相交（有单测钉住）。
 
-2026-10-08 起 **`eval-report.html` 已有「降级可观测（§1.3）」卡片**，含三项：
-规则层否决率（禁止项命中）、覆盖率不达标率（< 60%）、检索无覆盖查询数（按生产 `RETRIEVAL_FLOOR` 判定 = L3 降级）。
-数据来源：`test-results/golden-eval.json` 的 `summary.degradation`（**取自负样本轮**，见下）与
-`test-results/rag-metrics.json` 的 `degradation`。
+2026-10-08 起 **`eval-report.html` 已有「降级可观测（§1.3）」卡片**，共六格：
+规则层否决率（禁止项命中）、覆盖率不达标率（< 60%）、检索无覆盖查询数（按生产 `RETRIEVAL_FLOOR` 判定 = L3 降级），
+以及三格**演练**计数：L1 语义层降级、L2 模型层降级、L2 阻塞开关生效。
+数据来源：`test-results/golden-eval.json` 的 `summary.degradation`（**取自负样本轮**，见下）、
+`test-results/rag-metrics.json` 的 `degradation`、`test-results/degradation-drill.json`（演练）。
 
-> ⚠️ 两个必须知道的口径细节：
+> ⚠️ 三个必须知道的口径细节：
 > 1. **金标两格取自「负样本轮」**：`runGoldenEval` 对每个候选轮都会写同一个 `golden-eval.json`，
 >    而 excellent 轮的两个计数**结构性恒为 0**（否决为 0 是构造保证、覆盖率不达标为 0 是校验器保证）。
->    因此只有负样本轮（候选 = poor 锚点）能反映真实拒答能力；其余探路调用一律 `persist=false`。
-> 2. **模型层降级（L2）未接入本报告**：它发生在运行期评审链路，只在 `console.warn` 里可见。
->    报告里不会出现 L2 计数，不要误读为「L2 降级率为 0」。
+>    因此只有负样本轮（候选 = poor 锚点）能反映真实拒答能力；其余探路调用一律 `persist=false`，
+>    落盘轮次由产物里的 `summary.candidate` 字段声明，报告据此渲染标签（不再从 note 文字里猜）。
+> 2. **L1/L2 那三格是「演练」，不是生产降级率**：`tests/eval/degradationDrill.test.ts` 真实注入
+>    语义层异常与模型层失败，验证它们**被正确标记**（`degradation-drill.json`）。
+>    它证明「降级分支存在且行为正确」，**不表示线上降了多少次** ——
+>    生产链路的 L1/L2 降级率仍需运行期埋点，目前只写 `console.warn`，未进报告。
+> 3. **检索无覆盖现在非 0 是好事**：`RETRIEVAL_FLOOR` 由 0.12 标定到 0.25 后，
+>    148 条查询里有 3 条判为无覆盖（L3 降级：不注入上下文、退化为纯 prompt）。
+>    旧值 0.12 连「晚饭吃什么好呢」这类题库外提问都挡不住，`noHitQueries=0` 当时是
+>    「floor 没起作用」而不是「覆盖完美」。标定过程见 §4.1。
 
 ## 1. 怎么跑
 
@@ -159,7 +167,34 @@ MRR 分别为 0.924 / 0.210 / 0.271。
 > （`some(t => c.tags.includes(t))`），金标集合变大 → Recall@3 由 0.345 变为 0.333。
 > 修正后 NDCG@3 = 1.0，说明「top-3 全在金标集合内」，指标回到可解释状态。
 
-### 4.1 忠实度的已知局限
+### 4.1 `RETRIEVAL_FLOOR` 的标定（B-28，2026-10-08）
+
+`RETRIEVAL_FLOOR` 决定「低于多少分视为知识库无覆盖 → L3 不注入上下文」。
+复现命令：`npx tsx scripts/tune-floor.ts`（加 `--check` 只校验已固化值的行为）。
+
+**旧值 0.12 的问题**：8 条「题库外」探针提问里只有 1 条被挡住，其余全部过线
+（「晚饭吃什么好呢推荐一下」top1=0.2408、「今天天气不错…」0.2345、「zzz qqq www」0.1965），
+所以 `noHitQueries = 0` 是 **floor 没起作用**，不是覆盖完美。
+
+**标定数据**（topK=20、floor=0 时的「最佳金标块得分」）：
+
+| 类别 | 可召回 | min | p10 | 中位 |
+|---|---|---|---|---|
+| stem（83） | 83/83 | 0.2660 | 0.3952 | 0.6950 |
+| paraphrase（22） | 16/22 | 0.2001 | 0.2678 | 0.3081 |
+| overview（43） | 33/43 | 0.3883 | 0.3952 | 0.4295 |
+| **无关探针（8）** | — | — | **最高 0.2408** | — |
+
+**结论**：两类**存在重叠**（最弱的 paraphrase 0.2001 比最强的无关提问 0.2408 还低），
+不存在能完美切分的门限。取 **0.25** —— 它能挡掉全部 8 条探针（保守优先，S4-R4：
+宁可不注入也不注入不相关），代价是查询集内 **3/148** 条（`paraphrase-5/-10/-12`）被判无覆盖、
+退化为纯 prompt 回答（是降级而非错误）。
+
+**已知局限**：探针只有 8 条且是人工构造的，真实「题库外提问」分布会更宽；
+想加强证据就往 `scripts/tune-floor.ts` 的 `IRRELEVANT_PROBES` 里补真实样本后重跑。
+生产影响有限：`RAG_ENABLED` 默认 false，本值当前只影响评测链路与降级统计。
+
+### 4.2 忠实度的已知局限
 
 忠实度用「单句 vs 片段」的余弦相似度近似蕴含判断，因此：
 
@@ -171,10 +206,10 @@ MRR 分别为 0.924 / 0.210 / 0.271。
 
 ## 5. 降级链与混沌演练
 
-| 级别 | 触发 | 行为 | 对应测试 |
-|---|---|---|---|
-| L1 语义降级 | `scoreAnswer` 抛异常 | 只记 warn，不阻塞 | `qualityFunnel.test.ts` |
-| L2 模型降级 | 评审超时/解析失败/非数字 | `modelDegraded=true`，不阻塞 | `qualityFunnel.test.ts` |
+| 级别 | 触发 | 行为 | 对应测试 | 报告可见性 |
+|---|---|---|---|---|
+| L1 语义降级 | `scoreAnswer` 抛异常 | 只记 warn，不阻塞 | `qualityFunnel.test.ts`、`degradationDrill.test.ts` | ✅ 演练计数（卡片） |
+| L2 模型降级 | 评审超时/解析失败/非数字 | `modelDegraded=true`，不阻塞 | 同上 | ✅ 演练计数（卡片）；**生产降级率未埋点** |
 | L3 RAG 降级 | 索引缺失/解码失败/检索异常 | 不注入上下文 | `vectorsArtifacts.test.ts`（D-1/D-2） |
 | L4 纯规则 | 无 provider / 全部层异常 | 等价于改造前行为 | `answerScorer.test.ts` |
 

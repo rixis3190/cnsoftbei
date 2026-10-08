@@ -87,6 +87,14 @@ export interface GoldenEvalSummary {
     /** 覆盖率低于规则层门槛的条数 */
     belowCoverageThreshold: number
   }
+  /**
+   * 本轮跑批的**候选来源**（显式记录，而不是让报告去猜）。
+   * 评审 MINOR-3：早先报告靠 `note` 里有没有「负样本轮」字样来判断轮次，
+   * 而该字样只由 `mode` 决定、与实际传入的 `pick` 无关 ——
+   * 「anchor 模式 + excellent 候选 + 忘了传 persist=false」就会被打上错误标签。
+   * 现在事实由产物携带：报告只读这个字段。
+   */
+  candidate: 'poor' | 'excellent' | 'other'
   note: string
 }
 
@@ -98,6 +106,8 @@ export function runGoldenEval(
   /** 是否落盘 golden-eval.json（默认 true）。前几次「探路」调用传 false，
    *  避免后一次覆写把报告要读的降级计数冲成 0（评审 MAJOR-2）。 */
   persist = true,
+  /** 本轮候选来源；落盘的那一轮必须显式给值（报告据它渲染标签） */
+  candidate: 'poor' | 'excellent' | 'other' = 'other',
 ): { rows: GoldenEvalRow[]; summary: GoldenEvalSummary } {
   const rows = items.map(item => evalOne(item, pick(item)))
   const passed = rows.filter(r => r.rulePassed).length
@@ -135,14 +145,15 @@ export function runGoldenEval(
     confidence: rows.length >= 100 ? 'high' : rows.length >= 50 ? 'medium' : 'low',
     fillerOnlyItems,
     degradation,
+    candidate,
     note:
       '锚点已按 2026-10-08 复核口径重构（anchorSource=curated），本报告仍是**管线可用性**证据，' +
       '不代表模型真实质量；对外引用前需完成人工抽检（见 HANDOVER §13 B-24）。' +
       `其中 ${fillerOnlyItems} 条的要点全部为「答题要求」类填充项，其覆盖率不参与打分分母。` +
-      (mode === 'anchor'
+      (candidate === 'poor'
         ? '本次落盘的是**负样本轮**（候选= poor 锚点）：它才是能反映「降级/拒绝」的量，' +
           'excellent 轮的否决数与覆盖率不达标数结构性恒为 0，不适合做降级观测。'
-        : ''),
+        : `本次候选来源 = ${candidate}，不是 poor 锚点，其否决/覆盖率数字不能当「拒答能力」读。`),
   }
 
   if (persist) {
@@ -167,7 +178,7 @@ describe('基准集跑批（零额度）', () => {
   // 其余探路调用一律 persist=false —— 否则后写的 excellent 轮会把
   // 「规则层否决 / 覆盖率不达标」冲成结构性 0，让 §1.3 的降级观测形同虚设。
   it('anchor 模式：excellent 得分必须高于 poor（评分管线具备区分度）', () => {
-    const { rows, summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor', false)
+    const { rows, summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor', false, 'excellent')
     expect(rows.length).toBe(gold.length)
     expect(summary.separation).not.toBeNull()
     expect(summary.separation!).toBeGreaterThan(20)
@@ -208,7 +219,7 @@ describe('基准集跑批（零额度）', () => {
   })
 
   it('anchor 模式：报告含样本量与置信度标注', () => {
-    const { summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor', false)
+    const { summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor', false, 'excellent')
     expect(summary.sampleSize).toBe(83)
     expect(['low', 'medium', 'high']).toContain(summary.confidence)
     expect(summary.note).toContain('管线可用')
@@ -219,16 +230,16 @@ describe('基准集跑批（零额度）', () => {
     // ① excellent 若被自己的禁止项否决 → 数据集自相矛盾（禁止项写错或锚点抄错）；
     // ② poor 若是靠命中禁止项拿 0 分 → 负样本不含真实区分信息，
     //    阈值标定会退化成「验证否决规则能触发」，`negativeDiversity` 也会塌成 1。
-    const excellentRun = runGoldenEval(gold, item => item.anchors.excellent, 'anchor', false)
+    const excellentRun = runGoldenEval(gold, item => item.anchors.excellent, 'anchor', false, 'excellent')
     expect(excellentRun.summary.degradation.vetoedByMustExclude).toBe(0)
     expect(excellentRun.summary.degradation.belowCoverageThreshold).toBe(0)
-    const poorRun = runGoldenEval(gold, item => item.anchors.poor, 'anchor', false)
+    const poorRun = runGoldenEval(gold, item => item.anchors.poor, 'anchor', false, 'poor')
     expect(poorRun.summary.degradation.vetoedByMustExclude).toBe(0)
     expect(poorRun.summary.degradation.belowCoverageThreshold).toBeGreaterThan(0)
   })
 
   it('llm 模式：msw 固定响应下链路可跑通且不消耗额度', () => {
-    const { rows, summary } = runGoldenEval(smoke, () => MOCK_LLM_ANSWER, 'llm', false)
+    const { rows, summary } = runGoldenEval(smoke, () => MOCK_LLM_ANSWER, 'llm', false, 'other')
     expect(rows.length).toBe(smoke.length)
     expect(summary.mode).toBe('llm')
     // 固定 mock 回答与任何基准集都不相关，通过率应显著低于 anchor 模式
@@ -239,13 +250,15 @@ describe('基准集跑批（零额度）', () => {
     // 只有这一条用例 persist=true：报告卡片读的就是这份文件。
     // 若改成 excellent 轮，两个计数会**结构性恒为 0**（否决为 0 是构造保证、
     // 覆盖率不达标为 0 是校验器保证）——等于把 §1.3 的降级观测变成空话。
-    runGoldenEval(gold, item => item.anchors.poor, 'anchor')
+    runGoldenEval(gold, item => item.anchors.poor, 'anchor', true, 'poor')
     const { readFileSync } = await import('node:fs')
     const report = JSON.parse(
       readFileSync(path.resolve(process.cwd(), 'test-results', 'golden-eval.json'), 'utf8'),
     )
     expect(report.rows.length).toBe(83)
     expect(report.summary.mode).toBe('anchor')
+    // 轮次事实由产物携带（评审 MINOR-3）：报告只读 candidate，不再从 note 文字里猜
+    expect(report.summary.candidate).toBe('poor')
     expect(report.summary.note).toContain('负样本轮')
     expect(report.summary.degradation.belowCoverageThreshold).toBeGreaterThan(0)
     expect(report.summary.degradation.vetoedByMustExclude).toBe(0)

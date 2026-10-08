@@ -40,8 +40,26 @@ export const MODEL_PASS_SCORE = 70
  */
 export const MODEL_DEGRADE_SCORE = -1
 
-/** 检索无覆盖阈值：所有候选都低于它就不注入上下文（退化为纯 prompt） */
-export const RETRIEVAL_FLOOR = 0.12
+/**
+ * 检索无覆盖阈值：所有候选都低于它就不注入上下文（退化为纯 prompt，L3 降级）。
+ *
+ * 标定记录（2026-10-08，HANDOVER §13 B-28；脚本 `npx tsx scripts/tune-floor.ts` 可复现）：
+ *   旧值 0.12 **挡不住无关提问** —— 实测 8 条题库外探针里只有 1 条被挡
+ *   （「晚饭吃什么好呢」top1=0.2408、「今天天气不错…」0.2345、「zzz qqq www」0.1965 全部过线），
+ *   于是 `noHitQueries=0` 是「floor 没起作用」而不是「知识库覆盖完美」。
+ *   数据（topK=20，floor=0）：
+ *     查询集内「最佳金标块得分」min：stem 0.2660 / paraphrase 0.2001 / overview 0.3883
+ *     无关探针 top1 最高：0.2408
+ *   → 两类**存在重叠**（最弱的 paraphrase 比最强的无关提问还低），不可能完美切分。
+ *   取 **0.25**：探针 8/8 全挡（保守优先，计划 S4-R4：宁可不注入也不注入不相关），
+ *   代价是查询集内 3/148 条（paraphrase-5/-10/-12）被判「无覆盖」→ 这 3 条退化为纯 prompt 回答，
+ *   属可接受的降级（不是错误答案，只是少了上下文）。
+ *
+ * 已知局限：探针只有 8 条且是人工构造的；真实「题库外提问」的分布会更大。
+ * 想加强证据就往 scripts/tune-floor.ts 的 IRRELEVANT_PROBES 里加真实样本后重跑。
+ * 生产影响：`RAG_ENABLED` 默认为 false，本值当前只影响评测链路与 noHitQueries 统计。
+ */
+export const RETRIEVAL_FLOOR = 0.25
 
 /** 阈值标定元信息（报告与文档用） */
 export const THRESHOLD_PROVENANCE = {

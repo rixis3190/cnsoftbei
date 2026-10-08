@@ -36,9 +36,22 @@ interface GoldenEval {
       vetoedByMustExclude: number
       belowCoverageThreshold: number
     }
+    /** 本轮候选来源（新产物才有；旧产物缺省时回退到 note 文字判断） */
+    candidate?: 'poor' | 'excellent' | 'other'
     note: string
   }
   rows: { id: string; bank: string; coverage: number; ruleScore: number; rulePassed: boolean }[]
+}
+
+/** 降级演练产物（tests/eval/degradationDrill.test.ts 写出，B-27） */
+interface DegradationDrill {
+  generatedAt?: string
+  drill: {
+    l1SemanticFallback: { injected: number; flagged: number; behavior: string }
+    l2ModelFallback: { injected: number; flagged: number; behavior: string; degradeScore?: number }
+    l2BlockingSwitch: { injected: number; blocked: number; behavior: string }
+  }
+  note: string
 }
 
 interface ThresholdReport {
@@ -114,12 +127,21 @@ function renderGolden(data: GoldenEval | null): string {
   // 「负样本轮」的标注由产物自己声明，而不是无条件写死：
   // 一旦将来有 llm 轮或探路调用以默认参数（persist=true）落盘，
   // 无条件标题会把它的成绩标成「差锚点得分」—— 正是 §1.3 要防的静默误读。
-  const isNegativeRound = data.summary.note.includes('负样本轮')
-  const roundTag = isNegativeRound ? ' · 负样本轮：候选 = poor 锚点' : ''
+  //
+  // 判据优先取 `summary.candidate`（新产物显式携带的事实）；
+  // 旧产物没有该字段时回退到 note 文字，且 note 缺失也不能崩（评审 MINOR-1）。
+  const note = typeof data.summary.note === 'string' ? data.summary.note : ''
+  const candidate = data.summary.candidate ?? (note.includes('负样本轮') ? 'poor' : 'other')
+  const isNegativeRound = candidate === 'poor'
+  const roundTag = isNegativeRound ? ' · 负样本轮：候选 = poor 锚点' : ` · 候选来源 = ${candidate}`
   const roundNote = isNegativeRound
     ? `<p class="muted">本节的「通过率 / 平均分」是<strong>差锚点</strong>的得分，不是基准集上的模型成绩；
       excellent 轮的对应数字会贴顶（≈100%），对本报告没有信息量，故只落盘负样本轮。</p>`
-    : `<p class="muted">本节数字来自非负样本轮（候选不是 poor 锚点），请勿当作「拒答能力」读。</p>`
+    : candidate === 'other'
+      ? `<p class="muted">本节<b>未声明候选来源</b>（产物缺 candidate 字段且 note 无标记）：
+        请先确认这份 golden-eval.json 是哪一轮落盘的，再解读下面的数字。</p>`
+      : `<p class="muted">本节候选来源 = ${escapeHtml(candidate)}（不是 poor 锚点），
+        请勿把它当作「拒答能力」或降级观测读。</p>`
   return `
     <h2>基准集跑批（${escapeHtml(data.summary.mode)} 模式${roundTag}）</h2>
     ${roundNote}
@@ -131,7 +153,7 @@ function renderGolden(data: GoldenEval | null): string {
       ${card(escapeHtml(data.summary.confidence), '置信度', 'skip')}
       ${card(String(data.summary.fillerOnlyItems ?? 0), '要点全为填充项', (data.summary.fillerOnlyItems ?? 0) > 0 ? 'skip' : '')}
     </div>
-    <p class="note">${escapeHtml(data.summary.note)}</p>
+    <p class="note">${escapeHtml(note)}</p>
     <table>
       <thead><tr><th>条目</th><th>题库</th><th>覆盖率</th><th>规则分</th><th>通过</th></tr></thead>
       <tbody>
@@ -188,12 +210,24 @@ function renderThreshold(data: ThresholdReport | null): string {
  * 这里把三处来源汇总成一张卡片：规则层否决、覆盖率不达标、检索无覆盖。
  * 缺哪个来源就标「—」，不凭空造数。
  */
-function renderDegradation(golden: GoldenEval | null, rag: RagMetrics | null): string {
+function renderDegradation(
+  golden: GoldenEval | null,
+  rag: RagMetrics | null,
+  drill: DegradationDrill | null,
+): string {
   const g = golden?.summary.degradation
   const r = rag?.degradation
   const total = golden?.summary.sampleSize ?? 0
   const rate = (value: number | undefined, denom: number) =>
     typeof value === 'number' && denom > 0 ? `${value} / ${denom}（${((value / denom) * 100).toFixed(1)}%）` : '—'
+  const d = drill?.drill
+  const drillRate = (flagged: number | undefined, injected: number | undefined) =>
+    typeof flagged === 'number' && typeof injected === 'number' && injected > 0
+      ? `${flagged} / ${injected}`
+      : '—'
+  // 金标两格的解读依赖轮次：只有负样本轮才有意义（评审 MINOR-2：这里要和基准集小节口径一致）
+  const goldenCandidate = golden?.summary.candidate ?? (String(golden?.summary.note ?? '').includes('负样本轮') ? 'poor' : 'other')
+  const goldenIsNegative = goldenCandidate === 'poor'
   return `
     <h2>降级可观测（§1.3）</h2>
     <div class="cards">
@@ -204,13 +238,28 @@ function renderDegradation(golden: GoldenEval | null, rag: RagMetrics | null): s
         `检索无覆盖（floor=${r?.retrievalFloor ?? '—'}）`,
         'skip',
       )}
+      ${card(drillRate(d?.l1SemanticFallback.flagged, d?.l1SemanticFallback.injected), 'L1 语义层降级（演练）', 'skip')}
+      ${card(drillRate(d?.l2ModelFallback.flagged, d?.l2ModelFallback.injected), 'L2 模型层降级（演练）', 'skip')}
+      ${card(drillRate(d?.l2BlockingSwitch.blocked, d?.l2BlockingSwitch.injected), 'L2 阻塞开关生效（演练）', 'skip')}
     </div>
     <p class="muted">口径：规则层否决 = 答案命中禁止项（硬否决，total=0）；覆盖率不达标 = 要点覆盖率 &lt; 60%；
       检索无覆盖 = 该查询在生产 floor（${r?.retrievalFloor ?? '—'}）下无任何片段，生产路径按 L3 降级不注入上下文。
-      金标两格取自 <strong>golden-eval.json 的负样本轮</strong>（候选 = poor 锚点）——
-      excellent 轮的两项结构性恒为 0，不能用作降级观测。
-      降级率长期为 0 且伴随低通过率时，应怀疑「降级分支根本没被走到」而不是「质量很好」。
-      ${r?.modelDegradationNotInstrumented ? '⚠️ 模型层降级（L2）未接入本报告，只在运行期 console 日志中可见。' : ''}</p>`
+      ${goldenIsNegative
+        ? '金标两格取自 <strong>golden-eval.json 的负样本轮</strong>（候选 = poor 锚点）—— excellent 轮的两项结构性恒为 0，不能用作降级观测。'
+        : `⚠️ 金标两格的候选来源是 <strong>${escapeHtml(goldenCandidate)}</strong>，<b>不是负样本轮</b>：这两个数字此时不反映拒答能力，请勿用于降级观测。`}
+      降级率长期为 0 且伴随低通过率时，应怀疑「降级分支根本没被走到」而不是「质量很好」。</p>
+    ${drill
+      ? `<p class="note ${d?.l2ModelFallback.flagged === d?.l2ModelFallback.injected && d?.l1SemanticFallback.flagged === 1 ? 'ok' : 'warn'}">
+      <strong>L1/L2 是演练结果，不是生产降级率</strong>（来源 degradation-drill.json，
+      ${escapeHtml(String(drill.generatedAt ?? '未记录时间'))}）：
+      注入 ${d?.l1SemanticFallback.injected ?? 0} 次语义层异常 → 标记 ${d?.l1SemanticFallback.flagged ?? 0} 次；
+      注入 ${d?.l2ModelFallback.injected ?? 0} 次模型层失败 → 标记 ${d?.l2ModelFallback.flagged ?? 0} 次；
+      阻塞开关注入 ${d?.l2BlockingSwitch.injected ?? 0} 次 → 其中 ${d?.l2BlockingSwitch.blocked ?? 0} 次按配置阻塞。
+      它证明的是「降级分支存在且行为正确」，不是「线上降级了多少次」。
+      ${r?.modelDegradationNotInstrumented ? '⚠️ 生产链路的 L1/L2 降级率**仍需运行期埋点**：当前只写 console，未进本报告。' : ''}
+    </p>
+    <p class="muted">${escapeHtml(String(drill.note ?? ''))}</p>`
+      : '<p class="missing">未找到 degradation-drill.json，L1/L2 降级卡片缺失 —— 请运行 <code>npm run eval:golden</code>（其中包含降级演练）或直接跑该测试文件。</p>'}`
 }
 
 function renderRag(data: RagMetrics | null): string {
@@ -281,8 +330,9 @@ function main(): void {
   const golden = readJson<GoldenEval>('golden-eval.json')
   const threshold = readJson<ThresholdReport>('threshold-report.json')
   const rag = readJson<RagMetrics>('rag-metrics.json')
+  const drill = readJson<DegradationDrill>('degradation-drill.json')
 
-  if (!golden && !threshold && !rag) {
+  if (!golden && !threshold && !rag && !drill) {
     console.error('❌ 没有任何评测产物。请先运行：npm run eval:golden / threshold:tune / eval:rag')
     process.exit(1)
   }
@@ -302,7 +352,7 @@ function main(): void {
   <p class="meta">生成时间：${escapeHtml(now)} ｜ 默认离线运行，零 API 额度</p>
   ${renderGolden(golden)}
   ${renderThreshold(threshold)}
-  ${renderDegradation(golden, rag)}
+  ${renderDegradation(golden, rag, drill)}
   ${renderRag(rag)}
   <div class="footer">自动生成 · 指标口径见 docs/eval-methodology.md</div>
 </div>
