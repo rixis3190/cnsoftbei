@@ -31,6 +31,11 @@ interface GoldenEval {
     confidence: string
     /** 要点全是「答题要求」填充项的条目数（覆盖率对这些条目无意义） */
     fillerOnlyItems?: number
+    /** 降级计数（§1.3：任何降级都要能在报告里看到） */
+    degradation?: {
+      vetoedByMustExclude: number
+      belowCoverageThreshold: number
+    }
     note: string
   }
   rows: { id: string; bank: string; coverage: number; ruleScore: number; rulePassed: boolean }[]
@@ -64,6 +69,8 @@ interface RagMetrics {
       noHintRecallAt3?: number
     }
   >
+  /** 降级计数：无覆盖查询（检索不到任何片段 → 不注入上下文） */
+  degradation?: { noHitQueries: number; totalQueries: number }
   note: string
 }
 
@@ -159,6 +166,33 @@ function renderThreshold(data: ThresholdReport | null): string {
     </table>`
 }
 
+/**
+ * 降级可观测（计划 §1.3 的硬性约束）：
+ * 「任何降级都必须能在 eval-report.html 中看到（降级率、触发次数），否则等于静默失效」。
+ * 这里把三处来源汇总成一张卡片：规则层否决、覆盖率不达标、检索无覆盖。
+ * 缺哪个来源就标「—」，不凭空造数。
+ */
+function renderDegradation(golden: GoldenEval | null, rag: RagMetrics | null): string {
+  const g = golden?.summary.degradation
+  const r = rag?.degradation
+  const num = (value: number | undefined, suffix = '') =>
+    typeof value === 'number' ? `${value}${suffix}` : '—'
+  return `
+    <h2>降级可观测（§1.3）</h2>
+    <div class="cards">
+      ${card(num(g?.vetoedByMustExclude), '规则层否决（禁止项命中）', (g?.vetoedByMustExclude ?? 0) > 0 ? 'skip' : 'pass')}
+      ${card(num(g?.belowCoverageThreshold), '覆盖率不达标（规则层）', 'skip')}
+      ${card(
+        r ? `${r.noHitQueries} / ${r.totalQueries}` : '—',
+        '检索无覆盖查询（不注入上下文）',
+        'skip',
+      )}
+    </div>
+    <p class="muted">口径：规则层否决 = 答案命中禁止项（硬否决，total=0）；覆盖率不达标 = 要点覆盖率 &lt; 60%；
+      检索无覆盖 = 该查询在混合召回下无任何片段超过 floor，生产路径按 L3 降级不注入上下文。
+      降级率长期为 0 且伴随低通过率时，应怀疑「降级分支根本没被走到」而不是「质量很好」。</p>`
+}
+
 function renderRag(data: RagMetrics | null): string {
   if (!data) return '<p class="missing">未找到 rag-metrics.json，请先运行 <code>npm run eval:rag</code></p>'
   // 只渲染「结构完整的检索类型」条目：上游若混入其他形状的对象，
@@ -248,6 +282,7 @@ function main(): void {
   <p class="meta">生成时间：${escapeHtml(now)} ｜ 默认离线运行，零 API 额度</p>
   ${renderGolden(golden)}
   ${renderThreshold(threshold)}
+  ${renderDegradation(golden, rag)}
   ${renderRag(rag)}
   <div class="footer">自动生成 · 指标口径见 docs/eval-methodology.md</div>
 </div>

@@ -353,12 +353,22 @@ describe('产出 rag-metrics.json', () => {
           ndcgAt3: overviewMetrics.ndcg,
         },
       },
+      /**
+       * 降级可观测（计划 §1.3 硬性约束「任何降级都必须能在 eval-report 中看到」）：
+       * 「无覆盖」= 该查询在当前 floor 下检索不到任何片段 → 生产路径不注入上下文（L3 降级）。
+       * 这是 RAG 的边界而非缺陷，但必须显式统计，不能靠「平均分还行」掩盖。
+       */
+      degradation: {
+        noHitQueries: queries.filter(q => runRetrieval(q.query).length === 0).length,
+        totalQueries: queries.length,
+      },
       note:
         'stem 类召回率天然虚高（查询=题干，与块文本高度重合），只作健康检查；' +
         'paraphrase 类为手写口语化查询，金标集合是「该标签下全部块」，' +
         '故 Recall@3 的上限是 min(1, 3/金标块数)，不可与 stem 类横向比较；' +
         'withRag/withoutRag 为模拟对照（excellent vs fair 锚点），不是真实模型输出；' +
-        '实测阈值化通过率在两档均饱和为 100%，说明当前阈值无区分度，故语义层保持影子模式。',
+        '2026-10-08 复核后阈值 74 对 excellent 档饱和（100%）、对 fair 档不再饱和（约 70%），' +
+        '即阈值化指标已能区分「完整回答」与「只答出一部分」。',
     }
     const outDir = path.resolve(process.cwd(), 'test-results')
     mkdirSync(outDir, { recursive: true })
@@ -367,6 +377,7 @@ describe('产出 rag-metrics.json', () => {
     const saved = JSON.parse(readFileSync(path.join(outDir, 'rag-metrics.json'), 'utf8'))
     expect(saved.retrieval.stem.count).toBe(83)
     expect(saved.note).toContain('天然虚高')
+    expect(typeof saved.degradation.noHitQueries).toBe('number')
   })
 })
 

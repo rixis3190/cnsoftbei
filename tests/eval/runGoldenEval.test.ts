@@ -76,6 +76,17 @@ export interface GoldenEvalSummary {
   confidence: 'low' | 'medium' | 'high'
   /** 参数量全部是「答题要求」类填充项的条目数（这些条目的覆盖率无意义） */
   fillerOnlyItems: number
+  /**
+   * 降级可观测性（计划 §1.3 硬性约束：「任何降级都必须能在 eval-report 中看到」）。
+   * 规则层直接判定，因此不经过漏斗；这里统计的是「锚点被规则层否决」的次数，
+   * 用于确认禁止项硬否决确实在工作（而不是静默失效）。
+   */
+  degradation: {
+    /** 命中禁止项（规则层硬否决）的答案条数 */
+    vetoedByMustExclude: number
+    /** 覆盖率低于规则层门槛的条数 */
+    belowCoverageThreshold: number
+  }
   note: string
 }
 
@@ -106,6 +117,12 @@ export function runGoldenEval(
     item => item.expectedPoints.length > 0 && scorablePoints(item.expectedPoints).length === 0,
   ).length
 
+  // 降级可观测（§1.3 硬性约束）：禁止项否决与覆盖率不达标都要能被报告读到
+  const degradation = {
+    vetoedByMustExclude: rows.filter(r => r.excludeHits.length > 0).length,
+    belowCoverageThreshold: rows.filter(r => r.coverage < RULE_COVERAGE_THRESHOLD).length,
+  }
+
   const summary: GoldenEvalSummary = {
     mode,
     sampleSize: rows.length,
@@ -114,6 +131,7 @@ export function runGoldenEval(
     separation,
     confidence: rows.length >= 100 ? 'high' : rows.length >= 50 ? 'medium' : 'low',
     fillerOnlyItems,
+    degradation,
     note:
       '锚点已按 2026-10-08 复核口径重构（anchorSource=curated），本报告仍是**管线可用性**证据，' +
       '不代表模型真实质量；对外引用前需完成人工抽检（见 HANDOVER §12）。' +
@@ -166,6 +184,21 @@ describe('基准集跑批（零额度）', () => {
     expect(summary.sampleSize).toBe(83)
     expect(['low', 'medium', 'high']).toContain(summary.confidence)
     expect(summary.note).toContain('管线可用')
+  })
+
+  it('降级可观测：excellent 锚点不应被禁止项否决（否则说明标注自相矛盾）', () => {
+    // 用户会踩的坑：把 mustExclude 的错误说法塞进 poor 锚点 → 负样本一条不剩地命中否决，
+    // 得分恒 0，看起来「完美可分」但实际什么都没测到。这里用 excellent 侧做守卫：
+    // 若优秀锚点被自己的禁止项否决，说明数据集自相矛盾（要么禁止项写错，要么锚点抄错）。
+    const { summary } = runGoldenEval(gold, item => item.anchors.excellent, 'anchor')
+    expect(summary.degradation.vetoedByMustExclude).toBe(0)
+  })
+
+  it('降级可观测：负样本拒绝率由「语义分低」而非「规则层否决」主导', () => {
+    const { summary } = runGoldenEval(gold, item => item.anchors.poor, 'anchor')
+    // poor 锚点不写错误说法原文 → 不允许靠否决取胜，否则阈值标定会失去意义
+    expect(summary.degradation.vetoedByMustExclude).toBe(0)
+    expect(summary.degradation.belowCoverageThreshold).toBeGreaterThan(0)
   })
 
   it('llm 模式：msw 固定响应下链路可跑通且不消耗额度', () => {
