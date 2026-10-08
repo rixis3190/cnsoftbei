@@ -19,13 +19,17 @@
     "vectors:build": "tsx scripts/build-vectors.ts",
     "threshold:tune": "tsx scripts/tune-threshold.ts",
     "rag:queries": "tsx scripts/gen-rag-queries.ts",
+    "eval:rag": "vitest run tests/eval/rag-eval.test.ts",
+    "eval:report": "tsx scripts/gen-eval-report.ts",
     "eval:golden": "vitest run tests/eval",
     "measure:size": "node scripts/measure-entry-size.mjs",
     "test:e2e": "playwright test",
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{ts,tsx}": "eslint --fix"
+    "*.{ts,tsx}": "eslint --fix",
+    "tests/golden/*.json": "node scripts/check-json.mjs",
+    "src/data/rag*.json": "node scripts/check-json.mjs"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.1",

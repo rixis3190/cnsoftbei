@@ -18,16 +18,24 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html'],
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/main.tsx', 'src/vite-env.d.ts'],
-      // ratchet 门槛（只升不降）
-      // 基线来源：2026-10-07 全绿基线实测值 lines 19.75 / statements 18.99 / functions 13.94 / branches 12.72
-      // 说明：当前 include 覆盖全部页面与组件，分母很大、覆盖率天然偏低。
-      // 每次只抬升约 5 点，达标后再逐步向 70% 靠拢；禁止一步到位设 70（第一天必然红）。
+      exclude: [
+        'src/main.tsx',
+        'src/vite-env.d.ts',
+        // src/config/** 只放常量与阈值（属「生成物 + 人工固化值」），
+        // 正确性由 tuneThreshold.test.ts 的一致性断言保证；
+        // 放进分母只会把常量文件算成「已覆盖」，具有误导性（T5-R7）。
+        'src/config/**',
+      ],
+      // ratchet 门槛（只升不降，单次抬升不超过 5 点）
+      // 2026-10-07 基线：lines 19.75 / statements 18.99 / functions 13.94 / branches 12.72
+      // 2026-10-08 实测（RAG + 漏斗落地后）：lines 29.99 / statements 21.88 / functions 19.80 / branches 30.46
+      // 本次按「单次 ≤ +5 点」抬到 24/20/17/17，留 2~3 点缓冲；
+      // 剩余空间（branches 实际 30.46）留给下一次抬升，不一次性抬到位。
       thresholds: {
-        lines: 19,
-        statements: 18,
-        functions: 13,
-        branches: 12,
+        lines: 24,
+        statements: 20,
+        functions: 17,
+        branches: 17,
       },
     },
   },
