@@ -136,20 +136,36 @@ jobs:
           name: eval-report
           path: test-results/
 
-  # 真实 LLM 评测：只在手动触发且 Key 存在时运行，否则天然 skipped
+  # 真实 LLM 评测：只在手动触发且 Key 存在时运行，否则整 job 的所有 step 被跳过
+  #
+  # ⚠️ 血泪教训（2026-10-08 CI run #2 实测）：**`secrets` 不能出现在 `if:` 里**。
+  # GitHub 的上下文可用性规则（Contexts → Context availability）：
+  #   jobs.<job_id>.if     → 仅 github / needs / vars / inputs（**无 secrets**）
+  #   jobs.<job_id>.steps.if → 仅 … env / steps / inputs 等（**同样无 secrets**）
+  #   secrets 只在 `jobs.<job_id>.env` 与 `steps[*].env` 等**赋值位置**可用
+  # 之前写成 job 级 `if: … && secrets.VITE_DEEPSEEK_API_KEY != ''`，
+  # 属于工作流解析错误 —— 后果不是「这个 job 被跳过」，而是
+  # **整个 workflow 以 0 个 job 立即失败**（CI 全红且看不到任何日志）。
+  # 正确写法：secret 在 job 级 env 求值，再由 step 级 if 读 env（step 级 if 支持 env 上下文）。
   live-eval:
     name: 真实 LLM 评测（手动）
     runs-on: ubuntu-latest
     needs: [lint, test]
-    if: github.event_name == 'workflow_dispatch' && inputs.run_live_eval == true && secrets.VITE_DEEPSEEK_API_KEY != ''
+    if: github.event_name == 'workflow_dispatch' && inputs.run_live_eval == true
+    env:
+      HAS_LLM_KEY: ${{ secrets.VITE_DEEPSEEK_API_KEY != '' }}
     steps:
       - uses: actions/checkout@v4
+        if: env.HAS_LLM_KEY == 'true'
       - uses: actions/setup-node@v4
+        if: env.HAS_LLM_KEY == 'true'
         with:
           node-version: 20.19.0
           cache: npm
       - run: npm ci
+        if: env.HAS_LLM_KEY == 'true'
       - name: 运行真实接口测试
+        if: env.HAS_LLM_KEY == 'true'
         env:
           LLM_E2E: '1'
           VITE_DEEPSEEK_API_KEY: ${{ secrets.VITE_DEEPSEEK_API_KEY }}
