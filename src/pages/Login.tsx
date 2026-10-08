@@ -5,7 +5,7 @@
 import React, { useState } from 'react'
 import { Card, Form, Input, Button, Tabs, message, Typography } from 'antd'
 import { UserOutlined, LockOutlined, SmileOutlined } from '@ant-design/icons'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 
 const { Title, Text } = Typography
 

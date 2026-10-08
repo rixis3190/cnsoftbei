@@ -26,6 +26,11 @@ export function userKey(key: string): string {
   return `${userId}_${key}`
 }
 
+/** 获取指定用户的 localStorage key 前缀 */
+export function getUserStoragePrefix(userId: string): string {
+  return `${userId}_`
+}
+
 // ==================== 业务 key 常量 ====================
 
 export const STORAGE_KEYS = {

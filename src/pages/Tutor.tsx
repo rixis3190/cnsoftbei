@@ -19,7 +19,7 @@ import { defaultTutorHistory, tutorQuickQuestions } from '../data/mockData';
 import { questions as practiceQuestions } from '../services/practiceGrader';
 import type { QAItem, PracticeQuestion } from '../types';
 import MarkdownRenderer from '../components/MarkdownRenderer';
-import { usePageCache } from '../context/PageCacheContext';
+import { usePageCache } from '../context/usePageCache';
 import {
   loadProfile,
   buildProfileContext,

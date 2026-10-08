@@ -5,35 +5,11 @@
  * 支持三种角色：student / teacher / admin
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
+import { AuthContext, type AuthContextType, type User, type UserRole } from './AuthContextObject'
 
-// ==================== 类型定义 ====================
-
-export type UserRole = 'student' | 'teacher' | 'admin'
-
-export interface User {
-  id: string
-  username: string
-  password: string
-  role: UserRole
-  name: string
-  createdAt: string
-}
-
-interface AuthContextType {
-  currentUser: User | null
-  isLoggedIn: boolean
-  login: (username: string, password: string) => boolean
-  register: (username: string, password: string, name: string, role?: UserRole) => { success: boolean; message: string }
-  logout: () => void
-  isAdmin: boolean
-  isTeacher: boolean
-  isStudent: boolean
-  getAllUsers: () => User[]
-  deleteUser: (id: string) => void
-  updateUserRole: (id: string, role: UserRole) => void
-  resetPassword: (id: string, newPassword: string) => void
-}
+// 类型随 AuthContext 一并对外暴露，import 路径保持不变
+export type { User, UserRole, AuthContextType } from './AuthContextObject'
 
 // ==================== 常量 ====================
 
@@ -130,10 +106,6 @@ function initAuthState(): InitialAuthState {
   const exists = loadUsers().find(u => u.id === saved.id)
   return exists ? { user: exists, staleUser: false } : { user: null, staleUser: true }
 }
-
-// ==================== Context ====================
-
-const AuthContext = createContext<AuthContextType | null>(null)
 
 // ==================== Provider ====================
 
@@ -250,17 +222,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-// ==================== Hook ====================
-
-export function useAuth(): AuthContextType {
-  const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
-  return ctx
-}
-
-/** 获取当前用户的 localStorage key 前缀 */
-export function getUserStoragePrefix(userId: string): string {
-  return `${userId}_`
 }

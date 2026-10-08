@@ -16,7 +16,7 @@ import { mockLearningPath, mockResources, smartRecommendations } from '../data/m
 import { streamChatCompletion } from '../services/api';
 import { saveCurrentPathStage, inferKnowledgePoints } from '../services/learningOrchestrator';
 import MarkdownRenderer from '../components/MarkdownRenderer';
-import { usePageCache } from '../context/PageCacheContext';
+import { usePageCache } from '../context/usePageCache';
 import type { LearningPath, LearningNode, StudentProfile } from '../types';
 import { userKey } from '../services/storage';
 

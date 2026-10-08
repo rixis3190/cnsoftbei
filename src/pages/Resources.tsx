@@ -16,7 +16,7 @@ import { multiAgentScheduler, resourceGenerator, type AgentRole } from '../servi
 import type { ResourceType, StudentProfile } from '../types';
 import { resourceTypeMeta, resourceAgentDisplay } from '../data/mockData';
 import MarkdownRenderer from '../components/MarkdownRenderer';
-import { usePageCache } from '../context/PageCacheContext';
+import { usePageCache } from '../context/usePageCache';
 import { userKey } from '../services/storage';
 
 const { Title, Text } = Typography;

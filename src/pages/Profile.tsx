@@ -4,11 +4,11 @@ import { UserOutlined, EditOutlined, SaveOutlined, ReloadOutlined, SendOutlined,
 import { initialProfile, defaultChatMessages, quizQuestionBank, quizSelectionCounts, dimensionOptions } from '../data/mockData';
 import { streamChatCompletion } from '../services/api';
 import type { StudentProfile, ProfileDimension } from '../types';
-import { usePageCache } from '../context/PageCacheContext';
+import { usePageCache } from '../context/usePageCache';
 import { buildLearningProfileSnapshot, saveProfileAndNotify } from '../services/learningOrchestrator';
 import { buildProfileAnalysisPrompt, buildProfileReplyPrompt, buildQuizAnalysisPrompt } from '../services/promptBuilder';
 import { userKey } from '../services/storage';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;

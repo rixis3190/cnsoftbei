@@ -7,7 +7,8 @@
 import React, { useState } from 'react'
 import { Card, Table, Tag, Button, Modal, Descriptions, Typography, Space, Progress, Row, Col, Statistic, Empty } from 'antd'
 import { EyeOutlined, TeamOutlined } from '@ant-design/icons'
-import { useAuth, type User } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
+import type { User } from '../../context/AuthContextObject'
 import type { StudentProfile, PracticeState, LearningPathPlan } from '../../types'
 
 const { Title, Text } = Typography

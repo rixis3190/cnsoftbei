@@ -7,7 +7,8 @@
 import React, { useState } from 'react'
 import { Card, Table, Tag, Button, Modal, Form, Input, Select, message, Popconfirm, Space, Typography } from 'antd'
 import { DeleteOutlined, EditOutlined, KeyOutlined, UserOutlined } from '@ant-design/icons'
-import { useAuth, type User, type UserRole } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
+import type { User, UserRole } from '../../context/AuthContextObject'
 import { useDebounce } from '../../hooks/useDebounce'
 
 const { Title } = Typography

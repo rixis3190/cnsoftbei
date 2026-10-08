@@ -14,7 +14,7 @@ import { initialProfile, homeStats, agentStatusList } from '../data/mockData';
 import type { StudentProfile, PracticeState } from '../types';
 import { userKey } from '../services/storage';
 import { loadPracticeState, learningPlan as practiceLearningPlan, questions as practiceQuestions } from '../services/practiceGrader';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { getAllFeedbacks } from '../services/feedback';
 
 const { Title, Text } = Typography;
